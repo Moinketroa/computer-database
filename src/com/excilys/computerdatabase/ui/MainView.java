@@ -52,7 +52,7 @@ public class MainView extends AbstractView {
 	}
 	
 	private void computerList() {
-		
+		new ComputerListView();
 	}
 	
 	private void companyList() {

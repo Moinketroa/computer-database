@@ -19,6 +19,7 @@ public class CompanyListView extends AbstractView {
 		
 		System.out.println("Press Enter to return to main menu...");
 		scanner.nextLine();
+		scanner.close();
 	}
 	
 	private void display() {
