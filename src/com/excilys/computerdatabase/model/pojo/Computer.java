@@ -1,13 +1,13 @@
 package com.excilys.computerdatabase.model.pojo;
 
-import java.time.LocalDate;
+import java.sql.Date;
 
 public class Computer {
 
 	private int id;
 	private String name;
-	private LocalDate introduced;
-	private LocalDate discontinued;
+	private Date introduced;
+	private Date discontinued;
 	private Company company;
 	
 	public Computer(String name) {
@@ -30,19 +30,19 @@ public class Computer {
 		this.name = name;
 	}
 
-	public LocalDate getIntroduced() {
+	public Date getIntroduced() {
 		return introduced;
 	}
 
-	public void setIntroduced(LocalDate introduced) {
+	public void setIntroduced(Date introduced) {
 		this.introduced = introduced;
 	}
 
-	public LocalDate getDiscontinued() {
+	public Date getDiscontinued() {
 		return discontinued;
 	}
 
-	public void setDiscontinued(LocalDate discontinued) {
+	public void setDiscontinued(Date discontinued) {
 		this.discontinued = discontinued;
 	}
 
