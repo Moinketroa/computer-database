@@ -4,10 +4,17 @@ import java.util.Scanner;
 
 public abstract class AbstractView {
 
-	protected Scanner scanner;
+	protected static Scanner scanner = new Scanner(System.in);;
+	protected Viewer viewer;
 	
-	public AbstractView() {
-		scanner = new Scanner(System.in);
+	public AbstractView(Viewer viewer) {
+		this.viewer = viewer;
+	}
+	
+	public abstract void display();
+	
+	public static void closeView() {
+		scanner.close();
 	}
 	
 }
