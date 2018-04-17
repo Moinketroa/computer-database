@@ -26,7 +26,7 @@ public class DaoFactory {
         	e.printStackTrace();
         }
 
-        DaoFactory instance = new DaoFactory("jdbc:mysql://localhost:3306/computer-database-db", "admincdb", "qwerty1234");
+        DaoFactory instance = new DaoFactory("jdbc:mysql://localhost:3306/computer-database-db?autoReconnect=true&useSSL=false", "admincdb", "qwerty1234");
         return instance;
     }
 

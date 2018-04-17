@@ -27,7 +27,8 @@ public class Computer {
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		if (name != null)
+			this.name = name;
 	}
 
 	public Timestamp getIntroduced() {
@@ -57,7 +58,7 @@ public class Computer {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder("Computer : ");
-		sb.append(id + '\t');
+		sb.append(id + "\t");
 		sb.append(name + '\t');
 		
 		if (introduced != null)

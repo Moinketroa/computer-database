@@ -1,6 +1,7 @@
 package com.excilys.computerdatabase.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -8,10 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.excilys.computerdatabase.model.pojo.Company;
-import com.excilys.computerdatabase.model.pojo.Computer;
 
 public class CompanyDao extends AbstractDao {
 
+	private static final String SQL_SELECT_COMPANY = "SELECT * FROM company WHERE id = ?";
+	
 	public CompanyDao(DaoFactory daoFactory) {
 		super(daoFactory);
 	}
@@ -48,13 +50,13 @@ public class CompanyDao extends AbstractDao {
 	public Company fetchOne(int id) {
 		Company company = null;
 		Connection connexion = null;
-        Statement statement = null;
+		PreparedStatement preparedStatement = null;
         ResultSet result = null;
         
         try {
         	connexion = daoFactory.getConnection();
-            statement = connexion.createStatement();
-            result = statement.executeQuery("SELECT * FROM company WHERE id = " + id + ";");
+        	preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPANY, false, id);
+            result = preparedStatement.executeQuery();
             
             if (result.first()) {
             	int companyId = result.getInt("id");
@@ -66,7 +68,7 @@ public class CompanyDao extends AbstractDao {
         } catch (SQLException e) {
         	e.printStackTrace();
         } finally {
-        	closeResources(statement, connexion, result);
+        	closeResources(preparedStatement, connexion, result);
         }
         
         return company;

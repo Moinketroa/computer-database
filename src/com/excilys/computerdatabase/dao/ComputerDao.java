@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,9 +15,12 @@ import com.excilys.computerdatabase.model.pojo.Computer;
 
 public class ComputerDao extends AbstractDao {
 
+	private static final String SQL_SELECT_COMPUTER = "SELECT * FROM computer WHERE id = ?";
 	private static final String SQL_INSERT_COMPUTER = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
 	private static final String SQL_UPDATE_COMPUTER = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE computer.id = ?";
 	private static final String SQL_DELETE_COMPUTER = "DELETE FROM computer WHERE computer.id = ?";
+	
+	private static final String SQL_SELECT_COMPANY = "SELECT * FROM company WHERE id = ?";
 	
 	public ComputerDao(DaoFactory daoFactory) {
 		super(daoFactory);
@@ -71,7 +75,7 @@ public class ComputerDao extends AbstractDao {
         }
 	}
 
-	public void delete(Computer computer) {
+	public void delete(int id) {
 		Connection connexion = null;
 	    PreparedStatement preparedStatement = null;
 	    ResultSet result = null;
@@ -79,7 +83,7 @@ public class ComputerDao extends AbstractDao {
 	    try {
             connexion = daoFactory.getConnection();
             
-            preparedStatement = initializationPreparedStatement(connexion, SQL_DELETE_COMPUTER, false, computer.getId());
+            preparedStatement = initializationPreparedStatement(connexion, SQL_DELETE_COMPUTER, false, id);
             preparedStatement.executeUpdate();
             
 	    } catch (SQLException e) {
@@ -92,13 +96,14 @@ public class ComputerDao extends AbstractDao {
 	public Computer fetchOne(int computerId) {
 		Computer computer = null;
 		Connection connexion = null;
-        Statement statement = null;
+		PreparedStatement preparedStatement = null;
         ResultSet result = null;
         
         try {
             connexion = daoFactory.getConnection();
-            statement = connexion.createStatement();
-            result = statement.executeQuery("SELECT * FROM computer WHERE id = " + computerId + ";");
+            
+            preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPUTER, false, computerId);
+            result = preparedStatement.executeQuery();
             
             if (result.first()) {
             	int id = result.getInt("id");
@@ -123,7 +128,7 @@ public class ComputerDao extends AbstractDao {
         } catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-        	closeResources(statement, connexion, result);
+        	closeResources(preparedStatement, connexion, result);
         }
 
         return computer;
@@ -173,12 +178,12 @@ public class ComputerDao extends AbstractDao {
 	
 	private Company fetchCompany(Connection connexion, int id) {
 		Company company = null;
-        Statement statement = null;
+		PreparedStatement preparedStatement = null;
         ResultSet result = null;
         
         try {
-            statement = connexion.createStatement();
-            result = statement.executeQuery("SELECT * FROM company WHERE id = " + id + ";");
+        	preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPANY, false, id);
+            result = preparedStatement.executeQuery();
             
             if (result.first()) {
             	int companyId = result.getInt("id");
@@ -190,7 +195,7 @@ public class ComputerDao extends AbstractDao {
         } catch (SQLException e) {
         	e.printStackTrace();
         } finally {
-        	closeResources(statement, result);
+        	closeResources(preparedStatement, result);
         }
         
         return company;
