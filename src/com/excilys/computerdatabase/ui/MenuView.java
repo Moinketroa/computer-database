@@ -34,7 +34,7 @@ public class MenuView extends AbstractView {
 				computerDetails();
 				break;
 			case 4:
-				addComputer();
+				this.viewer.setView(new AddComputerView(viewer));
 				break;
 			case 5:
 				updateComputer();
@@ -59,10 +59,6 @@ public class MenuView extends AbstractView {
 		int computerId = readComputerId();
 		
 		viewer.setView(new ComputerDetailsView(viewer, computerId));
-	}
-	
-	private void addComputer() {
-		
 	}
 	
 	private void updateComputer() {
