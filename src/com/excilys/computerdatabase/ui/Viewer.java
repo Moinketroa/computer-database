@@ -14,7 +14,7 @@ public class Viewer {
 	}
 	
 	public void close() {
-		this.view.closeView();
+		AbstractView.closeView();
 	}
 	
 	public static void main(String[] args) {

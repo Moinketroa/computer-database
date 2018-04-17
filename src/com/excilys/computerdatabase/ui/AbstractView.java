@@ -16,5 +16,4 @@ public abstract class AbstractView {
 	public static void closeView() {
 		scanner.close();
 	}
-	
 }

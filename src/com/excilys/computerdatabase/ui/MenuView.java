@@ -1,5 +1,7 @@
 package com.excilys.computerdatabase.ui;
 
+import java.util.InputMismatchException;
+
 public class MenuView extends AbstractView {
 	
 	public MenuView(Viewer viewer) {
@@ -16,40 +18,47 @@ public class MenuView extends AbstractView {
 		System.out.println("\t5 : Update a computer");
 		System.out.println("\t6 : Remove a computer");
 		System.out.println("\t7 : Exit");
-			
-		int choosenOption = scanner.nextInt();
-		scanner.nextLine();
-			
-		switch(choosenOption) {
-		case 1:
-			this.viewer.setView(new ComputerListView(viewer));
-			break;
-		case 2:
-			this.viewer.setView(new CompanyListView(viewer));
-			break;
-		case 3:
-			computerDetails();
-			break;
-		case 4:
-			addComputer();
-			break;
-		case 5:
-			updateComputer();
-			break;
-		case 6:	
-			removeComputer();
-			break;
-		case 7:
-			viewer.setView(new EndView(viewer));
-			break;
-		default:
+		
+		try {
+			int choosenOption = scanner.nextInt();
+			scanner.nextLine();
+				
+			switch(choosenOption) {
+			case 1:
+				this.viewer.setView(new ComputerListView(viewer));
+				break;
+			case 2:
+				this.viewer.setView(new CompanyListView(viewer));
+				break;
+			case 3:
+				computerDetails();
+				break;
+			case 4:
+				addComputer();
+				break;
+			case 5:
+				updateComputer();
+				break;
+			case 6:	
+				removeComputer();
+				break;
+			case 7:
+				viewer.setView(new EndView(viewer));
+				break;
+			default:
+				tryAgain();
+				break;
+			}
+		} catch (InputMismatchException e) {
+			scanner.nextLine();
 			tryAgain();
-			break;
 		}
 	}
 	
 	private void computerDetails() {
+		int computerId = readComputerId();
 		
+		viewer.setView(new ComputerDetailsView(viewer, computerId));
 	}
 	
 	private void addComputer() {
@@ -66,7 +75,21 @@ public class MenuView extends AbstractView {
 	
 	private int readComputerId() {
 		System.out.println("Please enter the choosen computer's ID");
-		return scanner.nextInt();
+		
+		int computerId;
+		
+		while (true) {
+			try {
+				computerId = scanner.nextInt();
+				scanner.nextLine();
+				break;
+			} catch (InputMismatchException e) {
+				scanner.nextLine();
+				System.out.println("Please enter a valid number");
+			}
+		}
+		
+		return computerId;
 	}
 	
 	private void tryAgain() {

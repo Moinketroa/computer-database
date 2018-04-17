@@ -15,7 +15,7 @@ public class ComputerListView extends AbstractView {
 	}
 
 	public void display() {
-		System.out.println("Complete list of all the computers\n");
+		System.out.println("\nComplete list of all the computers\n");
 		
 		//computerList = computerService.getAll();
 		

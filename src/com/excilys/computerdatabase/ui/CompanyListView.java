@@ -15,7 +15,7 @@ public class CompanyListView extends AbstractView {
 	}
 	
 	public void display() {
-		System.out.println("Complete list of all the companies\n");
+		System.out.println("\nComplete list of all the companies\n");
 		
 		//companyList = companyService.getAll();
 		
