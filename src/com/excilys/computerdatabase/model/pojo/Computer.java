@@ -1,13 +1,13 @@
 package com.excilys.computerdatabase.model.pojo;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 public class Computer {
 
 	private int id;
 	private String name;
-	private Date introduced;
-	private Date discontinued;
+	private Timestamp introduced;
+	private Timestamp discontinued;
 	private Company company;
 	
 	public Computer(String name) {
@@ -30,19 +30,19 @@ public class Computer {
 		this.name = name;
 	}
 
-	public Date getIntroduced() {
+	public Timestamp getIntroduced() {
 		return introduced;
 	}
 
-	public void setIntroduced(Date introduced) {
+	public void setIntroduced(Timestamp introduced) {
 		this.introduced = introduced;
 	}
 
-	public Date getDiscontinued() {
+	public Timestamp getDiscontinued() {
 		return discontinued;
 	}
 
-	public void setDiscontinued(Date discontinued) {
+	public void setDiscontinued(Timestamp discontinued) {
 		this.discontinued = discontinued;
 	}
 
@@ -52,6 +52,30 @@ public class Computer {
 
 	public void setCompany(Company company) {
 		this.company = company;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder("Computer : ");
+		sb.append(id + '\t');
+		sb.append(name + '\t');
+		
+		if (introduced != null)
+			sb.append(introduced.toString() + '\t');
+		else
+			sb.append("null\t");
+		
+		if (discontinued != null)
+			sb.append(discontinued.toString() + '\t');
+		else
+			sb.append("null\t");
+		
+		if (company != null)
+			sb.append(company.toString() + '\t');
+		else
+			sb.append("Company : null\t");
+		
+		return sb.toString();
 	}
 	
 }

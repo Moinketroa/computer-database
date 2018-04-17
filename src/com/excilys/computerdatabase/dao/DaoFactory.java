@@ -3,6 +3,7 @@ package com.excilys.computerdatabase.dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import com.excilys.computerdatabase.model.pojo.Company;
 import com.excilys.computerdatabase.model.pojo.Computer;
@@ -34,20 +35,11 @@ public class DaoFactory {
     }
     
     public ComputerDao getComputerDao() {
-    	return new ComputerDaoImpl(this);
+    	return new ComputerDao(this);
     }
     
     public CompanyDao getCompanyDao() {
-    	return new CompanyDaoImpl(this);
+    	return new CompanyDao(this);
     }
     
-    public static final void main(String ... args) {
-    	for (Computer computer : getInstance().getComputerDao().fetchAll()) {
-    		System.out.println(computer.getId());
-    	}
-    	
-    	for (Company company : getInstance().getCompanyDao().fetchAll()) {
-    		System.out.println(company.getName());
-    	}
-    }
 }
