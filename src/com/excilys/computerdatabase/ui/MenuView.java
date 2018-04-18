@@ -68,7 +68,9 @@ public class MenuView extends AbstractView {
 	}
 	
 	private void removeComputer() {
+		int computerId = readComputerId();
 		
+		viewer.setView(new DeleteComputerView(viewer, computerId));
 	}
 	
 	private int readComputerId() {
