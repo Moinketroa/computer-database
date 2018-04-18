@@ -1,15 +1,15 @@
-package com.excilys.computerdatabase.helper;
+package com.excilys.computerdatabase.mapper;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
 
-public class TimestampHelper {
+public class TimestampMapper {
 
 	public static boolean isValidFormat(String date) {
 		return date.matches("[0-9]{2}/[0-9]{2}/[0-9]{4}");
 	}
 	
-	public static Timestamp fromStringToTimestamp(String date) {
+	public static Timestamp fromString(String date) {
 		String[] dateArrayString = date.split("/");
 		int [] dateArrayInt = new int[3];
 		
