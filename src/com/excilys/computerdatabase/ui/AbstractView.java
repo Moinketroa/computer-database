@@ -16,4 +16,9 @@ public abstract class AbstractView {
 	public static void closeView() {
 		scanner.close();
 	}
+	
+	public static void cleanConsole() {
+		for (int i = 0; i < 50; i++)
+			System.out.println();
+	}
 }

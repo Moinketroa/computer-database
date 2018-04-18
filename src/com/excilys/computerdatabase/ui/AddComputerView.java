@@ -60,6 +60,9 @@ public class AddComputerView extends AbstractView {
 			introductionString = scanner.nextLine().trim();
 		}
 
+		if (introductionString.equals(""))
+			return;
+		
 		introduction = TimestampMapper.fromString(introductionString);
 	}
 	
@@ -75,14 +78,20 @@ public class AddComputerView extends AbstractView {
 				discontinuationString = scanner.nextLine().trim();
 			}
 
+			if (discontinuationString.equals(""))
+				return;
+			
 			discontinuation = TimestampMapper.fromString(discontinuationString);
 			
-			if (discontinuation.after(introduction))
+			if (introduction != null)
+				if (discontinuation.after(introduction))
+					return;
+				else {
+					System.out.println("Please enter a date greater than the introduction date");
+					discontinuationString = scanner.nextLine().trim();
+				}
+			else
 				return;
-			else {
-				System.out.println("Please enter a date greater than the introduction date");
-				discontinuationString = scanner.nextLine().trim();
-			}
 		}
 	}
 	
@@ -101,6 +110,8 @@ public class AddComputerView extends AbstractView {
 					System.out.println("Please enter a valid number");
 					companyIdString = scanner.nextLine().trim();
 				}
+			else
+				return;
 		}
 	}
 }

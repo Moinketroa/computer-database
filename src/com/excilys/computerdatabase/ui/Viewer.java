@@ -9,6 +9,7 @@ public class Viewer {
 	}
 	
 	public void setView(AbstractView view) {
+		AbstractView.cleanConsole();
 		this.view = view;
 		this.view.display();
 	}

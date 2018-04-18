@@ -62,7 +62,9 @@ public class MenuView extends AbstractView {
 	}
 	
 	private void updateComputer() {
+		int computerId = readComputerId();
 		
+		viewer.setView(new UpdateComputerView(viewer, computerId));
 	}
 	
 	private void removeComputer() {
@@ -70,12 +72,12 @@ public class MenuView extends AbstractView {
 	}
 	
 	private int readComputerId() {
-		System.out.println("Please enter the choosen computer's ID");
-		
 		int computerId;
 		
 		while (true) {
 			try {
+				System.out.println("Please enter the choosen computer's ID");
+		
 				computerId = scanner.nextInt();
 				scanner.nextLine();
 				break;

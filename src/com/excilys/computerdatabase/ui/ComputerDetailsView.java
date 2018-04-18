@@ -11,13 +11,12 @@ public class ComputerDetailsView extends AbstractView {
 		super(viewer);
 		
 		this.computerId = computerId;
+		//computer = computerService.getById(computerId);
 	}
 	
 	@Override
 	public void display() {
 		System.out.println("\nDetails for computer #" + computerId + "\n");
-		
-		//computer = computerService.getById(computerId);
 		
 		if (computer == null) {
 			System.out.println("Computer #" + computerId + " not found");
