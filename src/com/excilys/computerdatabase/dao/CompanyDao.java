@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.excilys.computerdatabase.mapper.CompanyMapper;
 import com.excilys.computerdatabase.model.pojo.Company;
 
 public class CompanyDao extends AbstractDao {
@@ -30,13 +31,7 @@ public class CompanyDao extends AbstractDao {
             result = statement.executeQuery("SELECT * FROM company;");
             
             while (result.next()) {
-            	int id = result.getInt("id");
-            	String name = result.getString("name");
-            	
-            	Company company = new Company(name);
-            	company.setId(id);
-            	
-            	companies.add(company);
+            	companies.add(CompanyMapper.fromResultSet(result));
             }
         } catch (SQLException e) {
 			e.printStackTrace();
@@ -59,11 +54,7 @@ public class CompanyDao extends AbstractDao {
             result = preparedStatement.executeQuery();
             
             if (result.first()) {
-            	int companyId = result.getInt("id");
-            	String name = result.getString("name");
-            	
-            	company = new Company(name);
-            	company.setId(companyId);
+            	company = CompanyMapper.fromResultSet(result);
             }
         } catch (SQLException e) {
         	e.printStackTrace();

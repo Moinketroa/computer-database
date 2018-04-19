@@ -10,17 +10,18 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.excilys.computerdatabase.mapper.ComputerMapper;
 import com.excilys.computerdatabase.model.pojo.Company;
 import com.excilys.computerdatabase.model.pojo.Computer;
 
 public class ComputerDao extends AbstractDao {
 
-	private static final String SQL_SELECT_COMPUTER = "SELECT * FROM computer WHERE id = ?";
+	private static final String SQL_SELECT_COMPUTER = "SELECT computer.*, company.name AS company_name FROM computer JOIN company ON computer.company_id = company.id WHERE computer.id = ?";
+	private static final String SQL_SELECT_COMPUTERS = "SELECT computer.*, company.name AS company_name FROM computer JOIN company ON computer.company_id = company.id ORDER BY computer.id";
+	
 	private static final String SQL_INSERT_COMPUTER = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
 	private static final String SQL_UPDATE_COMPUTER = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE computer.id = ?";
 	private static final String SQL_DELETE_COMPUTER = "DELETE FROM computer WHERE computer.id = ?";
-	
-	private static final String SQL_SELECT_COMPANY = "SELECT * FROM company WHERE id = ?";
 	
 	public ComputerDao(DaoFactory daoFactory) {
 		super(daoFactory);
@@ -106,24 +107,7 @@ public class ComputerDao extends AbstractDao {
             result = preparedStatement.executeQuery();
             
             if (result.first()) {
-            	int id = result.getInt("id");
-            	String name = result.getString("name");
-            	Timestamp introduced = null;
-            	Timestamp discontinued = null;
-            	int company_id = result.getInt("company_id");
-            	
-            	try {
-            		introduced = result.getTimestamp("introduced");
-            		discontinued = result.getTimestamp("discontinued");
-            	} catch (Exception e) {
-            		
-				}
-            	
-            	computer = new Computer(name);
-            	computer.setId(id);
-            	computer.setIntroduced(introduced);
-            	computer.setDiscontinued(discontinued);
-            	computer.setCompany(fetchCompany(connexion, company_id));
+            	computer = ComputerMapper.fromResultSet(result);
             }
         } catch (SQLException e) {
 			e.printStackTrace();
@@ -137,68 +121,25 @@ public class ComputerDao extends AbstractDao {
 	public List<Computer> fetchAll() {
 		List<Computer> computers = new ArrayList<>();
 		Connection connexion = null;
-        Statement statement = null;
-        ResultSet result = null;
-        
-        try {
-            connexion = daoFactory.getConnection();
-            statement = connexion.createStatement();
-            result = statement.executeQuery("SELECT * FROM computer;");
-            
-            while (result.next()) {
-            	int id = result.getInt("id");
-            	String name = result.getString("name");
-            	Timestamp introduced = null;
-            	Timestamp discontinued = null;
-            	int company_id = result.getInt("company_id");
-            	
-            	try {
-            		introduced = result.getTimestamp("introduced");
-            		discontinued = result.getTimestamp("discontinued");
-            	} catch (Exception e) {
-            		
-				}
-            	
-            	Computer computer = new Computer(name);
-            	computer.setId(id);
-            	computer.setIntroduced(introduced);
-            	computer.setDiscontinued(discontinued);
-            	computer.setCompany(fetchCompany(connexion, company_id));
-            	
-            	computers.add(computer);
-            }
-        } catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-        	closeResources(statement, connexion, result);
-        }
-
-        return computers;
-	}
-	
-	private Company fetchCompany(Connection connexion, int id) {
-		Company company = null;
 		PreparedStatement preparedStatement = null;
         ResultSet result = null;
         
         try {
-        	preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPANY, false, id);
+            connexion = daoFactory.getConnection();
+            
+            preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPUTERS, false);
             result = preparedStatement.executeQuery();
             
-            if (result.first()) {
-            	int companyId = result.getInt("id");
-            	String name = result.getString("name");
-            	
-            	company = new Company(name);
-            	company.setId(companyId);
+            while (result.next()) {
+            	computers.add(ComputerMapper.fromResultSet(result));
             }
         } catch (SQLException e) {
-        	e.printStackTrace();
-        } finally {
-        	closeResources(preparedStatement, result);
+			e.printStackTrace();
+		} finally {
+        	closeResources(preparedStatement, connexion, result);
         }
-        
-        return company;
+
+        return computers;
 	}
 
 }
