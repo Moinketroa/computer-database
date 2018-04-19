@@ -13,6 +13,10 @@ public class CompanyService extends AbstractService {
 		companyDao = daoFactory.getCompanyDao();
 	}
 	
+	public Company getById(int id) {
+		return companyDao.fetchOne(id);
+	}
+	
 	public List<Company> getAll() {
 		return companyDao.fetchAll();
 	}

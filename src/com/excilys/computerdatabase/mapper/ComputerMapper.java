@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import com.excilys.computerdatabase.model.pojo.Company;
 import com.excilys.computerdatabase.model.pojo.Computer;
+import com.excilys.computerdatabase.service.CompanyService;
 
 public class ComputerMapper {
 
@@ -29,6 +30,19 @@ public class ComputerMapper {
     	computer.setCompany(company);
     	
     	return computer;
+	}
+    	
+	public static Computer fromParameters(String name, Date introduced, Date discontinued, Integer companyId) {
+		Computer computer = new Computer(name);
+		computer.setIntroduced(introduced);
+		computer.setDiscontinued(discontinued);
+		
+		if (companyId != null) {
+			CompanyService companyService = new CompanyService();
+			computer.setCompany(companyService.getById(companyId));
+		}
+		
+		return computer;
 	}
 	
 }
