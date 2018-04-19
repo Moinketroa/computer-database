@@ -3,13 +3,17 @@ package com.excilys.computerdatabase.service;
 import java.util.List;
 
 import com.excilys.computerdatabase.dao.CompanyDao;
+import com.excilys.computerdatabase.dao.DaoFactory;
 import com.excilys.computerdatabase.model.pojo.Company;
 
-public class CompanyService extends AbstractService {
+public enum CompanyService {
 
-	private CompanyDao companyDao;
+	INSTANCE;
 	
-	public CompanyService() {
+	private CompanyDao companyDao;
+	private DaoFactory daoFactory = DaoFactory.INSTANCE;
+	
+	private CompanyService() {
 		companyDao = daoFactory.getCompanyDao();
 	}
 	

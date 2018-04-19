@@ -13,7 +13,7 @@ public class DeleteComputerView extends AbstractView {
 		super(viewer);
 		
 		this.computerId = id;
-		computerService = new ComputerService();
+		computerService = ComputerService.INSTANCE;
 		computer = computerService.getById(computerId);
 	}
 

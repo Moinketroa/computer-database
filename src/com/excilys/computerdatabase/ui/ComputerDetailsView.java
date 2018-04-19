@@ -13,7 +13,7 @@ public class ComputerDetailsView extends AbstractView {
 		super(viewer);
 		
 		this.computerId = computerId;
-		computerService = new ComputerService();
+		computerService = ComputerService.INSTANCE;
 		computer = computerService.getById(computerId);
 	}
 	

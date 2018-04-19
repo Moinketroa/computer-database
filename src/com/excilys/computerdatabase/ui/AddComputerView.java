@@ -19,7 +19,7 @@ public class AddComputerView extends AbstractView {
 	public AddComputerView(Viewer viewer) {
 		super(viewer);
 		
-		computerService = new ComputerService();
+		computerService = ComputerService.INSTANCE;
 	}
 
 	@Override

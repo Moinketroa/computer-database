@@ -3,13 +3,17 @@ package com.excilys.computerdatabase.service;
 import java.util.List;
 
 import com.excilys.computerdatabase.dao.ComputerDao;
+import com.excilys.computerdatabase.dao.DaoFactory;
 import com.excilys.computerdatabase.model.pojo.Computer;
 
-public class ComputerService extends AbstractService {
+public enum ComputerService {
 
-	private ComputerDao computerDao;
+	INSTANCE;
 	
-	public ComputerService() {
+	private ComputerDao computerDao;
+	private DaoFactory daoFactory = DaoFactory.INSTANCE;
+	
+	private ComputerService() {
 		computerDao = daoFactory.getComputerDao();
 	}
 	
@@ -32,4 +36,5 @@ public class ComputerService extends AbstractService {
 	public void delete(Computer computer) {
 		computerDao.delete(computer.getId());
 	}
+
 }

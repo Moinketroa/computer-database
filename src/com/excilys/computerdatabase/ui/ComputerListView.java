@@ -15,7 +15,7 @@ public class ComputerListView extends AbstractView {
 		super(viewer);
 		
 		computerList = new ArrayList<>();
-		computerService = new ComputerService();
+		computerService = ComputerService.INSTANCE;
 	}
 
 	public void display() {

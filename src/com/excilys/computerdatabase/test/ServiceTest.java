@@ -12,8 +12,8 @@ public class ServiceTest {
 
 	public static void main(String[] args) {
 
-		CompanyService companyService = new CompanyService();
-		ComputerService computerService = new ComputerService();
+		CompanyService companyService = CompanyService.INSTANCE;
+		ComputerService computerService = ComputerService.INSTANCE;
 		
 		List<Company> companies = companyService.getAll();
 		List<Computer> computers = computerService.getAll();

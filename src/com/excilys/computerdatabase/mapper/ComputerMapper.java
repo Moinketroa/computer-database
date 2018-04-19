@@ -37,12 +37,9 @@ public class ComputerMapper {
 		computer.setIntroduced(introduced);
 		computer.setDiscontinued(discontinued);
 		
-		if (companyId != null) {
-			CompanyService companyService = new CompanyService();
-			computer.setCompany(companyService.getById(companyId));
-		}
+		if (companyId != null)
+			computer.setCompany(CompanyService.INSTANCE.getById(companyId));
 		
 		return computer;
 	}
-	
 }

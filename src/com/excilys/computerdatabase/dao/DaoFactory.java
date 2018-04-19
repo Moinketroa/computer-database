@@ -8,26 +8,20 @@ import java.sql.Timestamp;
 import com.excilys.computerdatabase.model.pojo.Company;
 import com.excilys.computerdatabase.model.pojo.Computer;
 
-public class DaoFactory {
-    private String url;
-    private String username;
-    private String password;
+public enum DaoFactory {
+	
+	INSTANCE;
+	
+    private String url = "jdbc:mysql://localhost:3306/computer-database-db?autoReconnect=true&useSSL=false";
+    private String username = "admincdb";
+    private String password = "qwerty1234";
 
-    DaoFactory(String url, String username, String password) {
-        this.url = url;
-        this.username = username;
-        this.password = password;
-    }
-
-    public static DaoFactory getInstance() {
-        try {
+    private DaoFactory() {
+    	try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException e) {
         	e.printStackTrace();
         }
-
-        DaoFactory instance = new DaoFactory("jdbc:mysql://localhost:3306/computer-database-db?autoReconnect=true&useSSL=false", "admincdb", "qwerty1234");
-        return instance;
     }
 
     public Connection getConnection() throws SQLException {
@@ -35,11 +29,11 @@ public class DaoFactory {
     }
     
     public ComputerDao getComputerDao() {
-    	return new ComputerDao(this);
+    	return ComputerDao.INSTANCE;
     }
     
     public CompanyDao getCompanyDao() {
-    	return new CompanyDao(this);
+    	return CompanyDao.INSTANCE;
     }
     
 }

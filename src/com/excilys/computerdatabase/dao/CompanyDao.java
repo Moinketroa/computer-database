@@ -11,57 +11,58 @@ import java.util.List;
 import com.excilys.computerdatabase.mapper.CompanyMapper;
 import com.excilys.computerdatabase.model.pojo.Company;
 
-public class CompanyDao extends AbstractDao {
+public enum CompanyDao {
 
-	private static final String SQL_SELECT_COMPANY = "SELECT * FROM company WHERE id = ?";
+	INSTANCE;
 	
-	public CompanyDao(DaoFactory daoFactory) {
-		super(daoFactory);
-	}
+	private static final String SQL_SELECT_COMPANY = "SELECT * FROM company WHERE id = ?";
+	private static final String SQL_SELECT_COMPANIES = "SELECT * FROM company";
+	
+	private DaoFactory daoFactory = DaoFactory.INSTANCE;
 
 	public List<Company> fetchAll() {
 		List<Company> companies = new ArrayList<>();
-		Connection connexion = null;
-        Statement statement = null;
-        ResultSet result = null;
         
-        try {
-            connexion = daoFactory.getConnection();
-            statement = connexion.createStatement();
-            result = statement.executeQuery("SELECT * FROM company;");
+        try (	Connection connexion = daoFactory.getConnection();
+        		PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPANIES, false);
+        		ResultSet result = preparedStatement.executeQuery()) {
             
             while (result.next()) {
             	companies.add(CompanyMapper.fromResultSet(result));
             }
+            
         } catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-        	closeResources(statement, connexion, result);
-        }
+		} 
+
 
         return companies;
 	}
 
 	public Company fetchOne(int id) {
 		Company company = null;
-		Connection connexion = null;
-		PreparedStatement preparedStatement = null;
-        ResultSet result = null;
         
-        try {
-        	connexion = daoFactory.getConnection();
-        	preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPANY, false, id);
-            result = preparedStatement.executeQuery();
+        try (	Connection connexion = daoFactory.getConnection();
+        		PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPANY, false, id);
+        		ResultSet result = preparedStatement.executeQuery()) {
             
             if (result.first()) {
             	company = CompanyMapper.fromResultSet(result);
             }
+            
         } catch (SQLException e) {
         	e.printStackTrace();
-        } finally {
-        	closeResources(preparedStatement, connexion, result);
         }
         
         return company;
+	}
+	
+	private static PreparedStatement initializationPreparedStatement(Connection connexion, String sql, boolean returnGeneratedKeys, Object... objets) throws SQLException {
+	    PreparedStatement preparedStatement = connexion.prepareStatement(sql, returnGeneratedKeys ? Statement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS);
+
+	    for (int i = 0; i < objets.length; i++)
+	        preparedStatement.setObject(i + 1, objets[i]);
+
+	    return preparedStatement;
 	}
 }

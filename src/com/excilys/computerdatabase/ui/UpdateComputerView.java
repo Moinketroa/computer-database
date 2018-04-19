@@ -22,7 +22,7 @@ public class UpdateComputerView extends AbstractView {
 		super(viewer);
 
 		computerId = id;
-		computerService = new ComputerService();
+		computerService = ComputerService.INSTANCE;
 		computer = computerService.getById(id);
 		
 		if (computer != null) {
