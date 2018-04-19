@@ -1,12 +1,12 @@
 package com.excilys.computerdatabase.mapper;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 
 import com.excilys.computerdatabase.model.pojo.Computer;
 
 public class ComputerMapper {
 
-	public static Computer fromParameters(String name, Timestamp introduced, Timestamp discontinued, Integer companyId) {
+	public static Computer fromParameters(String name, Date introduced, Date discontinued, Integer companyId) {
 		Computer computer = new Computer(name);
 		computer.setIntroduced(introduced);
 		computer.setDiscontinued(discontinued);

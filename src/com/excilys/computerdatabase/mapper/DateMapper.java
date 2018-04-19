@@ -1,16 +1,15 @@
 package com.excilys.computerdatabase.mapper;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 import java.util.Calendar;
-import java.util.Date;
 
-public class TimestampMapper {
+public class DateMapper {
 
 	public static boolean isValidFormat(String date) {
 		return date.matches("[0-9]{2}/[0-9]{2}/[0-9]{4}");
 	}
 	
-	public static Timestamp fromString(String date) {
+	public static Date fromString(String date) {
 		String[] dateArrayString = date.split("/");
 		int [] dateArrayInt = new int[3];
 		
@@ -19,12 +18,12 @@ public class TimestampMapper {
 		
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(dateArrayInt[2], (dateArrayInt[1] - 1), dateArrayInt[0]);
-		return new Timestamp(calendar.getTime().getTime());
+		return new Date(calendar.getTimeInMillis());
 	}
 	
-	public static String toDailyFormat(Timestamp timestamp) {
+	public static String toDailyFormat(Date date) {
 		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(new Date(timestamp.getTime()));
+		calendar.setTime(date);
 		
 		String fillerDay = "", fillerMonth = "";
 		

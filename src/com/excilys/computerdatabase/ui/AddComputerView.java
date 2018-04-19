@@ -1,15 +1,16 @@
 package com.excilys.computerdatabase.ui;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.InputMismatchException;
 
-import com.excilys.computerdatabase.mapper.TimestampMapper;
+import com.excilys.computerdatabase.mapper.DateMapper;
 
 public class AddComputerView extends AbstractView {
 
 	private String name;
-	private Timestamp introduction;
-	private Timestamp discontinuation;
+	private Date introduction;
+	private Date discontinuation;
 	private Integer companyId;
 	
 	public AddComputerView(Viewer viewer) {
@@ -55,7 +56,7 @@ public class AddComputerView extends AbstractView {
 		
 		String introductionString = scanner.nextLine().trim();
 		
-		while (!introductionString.equals("") && !TimestampMapper.isValidFormat(introductionString)) {
+		while (!introductionString.equals("") && !DateMapper.isValidFormat(introductionString)) {
 			System.out.println("Please enter a valid date format");
 			introductionString = scanner.nextLine().trim();
 		}
@@ -63,7 +64,7 @@ public class AddComputerView extends AbstractView {
 		if (introductionString.equals(""))
 			return;
 		
-		introduction = TimestampMapper.fromString(introductionString);
+		introduction = DateMapper.fromString(introductionString);
 	}
 	
 	private void readDiscontinuationDate() {
@@ -73,7 +74,7 @@ public class AddComputerView extends AbstractView {
 		String discontinuationString = scanner.nextLine().trim();
 		
 		while (true) {
-			while (!discontinuationString.equals("") && !TimestampMapper.isValidFormat(discontinuationString)) {
+			while (!discontinuationString.equals("") && !DateMapper.isValidFormat(discontinuationString)) {
 				System.out.println("Please enter a valid date format");
 				discontinuationString = scanner.nextLine().trim();
 			}
@@ -81,7 +82,7 @@ public class AddComputerView extends AbstractView {
 			if (discontinuationString.equals(""))
 				return;
 			
-			discontinuation = TimestampMapper.fromString(discontinuationString);
+			discontinuation = DateMapper.fromString(discontinuationString);
 			
 			if (introduction != null)
 				if (discontinuation.after(introduction))
