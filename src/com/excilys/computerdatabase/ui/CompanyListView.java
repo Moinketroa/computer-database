@@ -1,12 +1,13 @@
 package com.excilys.computerdatabase.ui;
 
+import java.util.List;
+
 import com.excilys.computerdatabase.model.pojo.Company;
 import com.excilys.computerdatabase.service.CompanyService;
-import com.excilys.computerdatabase.ui.page.Page;
 
 public class CompanyListView extends AbstractView {
 
-	private Page<Company> companyList;
+	private List<Company> companyList;
 	private CompanyService companyService;
 	
 	public CompanyListView(Viewer viewer) {
@@ -14,7 +15,7 @@ public class CompanyListView extends AbstractView {
 		
 		companyService = CompanyService.INSTANCE;
 		
-		companyList = new Page<Company>(companyService.getAll());
+		companyList = companyService.getAll();
 		
 	}
 	
@@ -27,7 +28,7 @@ public class CompanyListView extends AbstractView {
 			System.out.println("ID\tNAME");
 			System.out.println("-----------------------");
 			
-			for (Company company : companyList.currentPage()) {
+			for (Company company : companyList) {
 				System.out.println(company.getId() + "\t" + company.getName());
 			}
 		}
