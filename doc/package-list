@@ -1,0 +1,8 @@
+com.excilys.computerdatabase.dao
+com.excilys.computerdatabase.exceptions
+com.excilys.computerdatabase.mapper
+com.excilys.computerdatabase.model.pojo
+com.excilys.computerdatabase.page
+com.excilys.computerdatabase.service
+com.excilys.computerdatabase.test
+com.excilys.computerdatabase.ui

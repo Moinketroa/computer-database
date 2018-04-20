@@ -15,6 +15,13 @@ import com.excilys.computerdatabase.model.pojo.Company;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.page.Page;
 
+/**
+ * 
+ * The class helps accessing Computer entries of the database
+ * 
+ * @author jmdebicki
+ *
+ */
 public enum ComputerDao {
 
 	INSTANCE;
@@ -29,6 +36,12 @@ public enum ComputerDao {
 
 	private DaoFactory daoFactory = DaoFactory.INSTANCE;
 	
+	/**
+	 * Adds a new computer to the database
+	 * 
+	 * @param computer The computer to be added to the database
+	 * @return The id of the added computer
+	 */
 	public int add(Computer computer) {
 		Integer companyId = null;
         
@@ -56,6 +69,11 @@ public enum ComputerDao {
 	    return computer.getId();
 	}
 
+	/**
+	 * Updates a computer in the database
+	 * 
+	 * @param computer The computer to be updated in the database with its fields changed
+	 */
 	public void update(Computer computer) {
 		Integer companyId = null;
 		
@@ -72,6 +90,11 @@ public enum ComputerDao {
 	    }
 	}
 
+	/**
+	 * Deletes a computer in the database
+	 * 
+	 * @param id The id of the computer to be deleted
+	 */
 	public void delete(int id) {
 	    try (	Connection connexion = daoFactory.getConnection();
 		    	PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_DELETE_COMPUTER, false, id)) {
@@ -83,6 +106,12 @@ public enum ComputerDao {
 	    } 
 	}
 
+	/**
+	 * Fetches one computer in the database by searching by the computer id
+	 * 
+	 * @param computerId The id of the wanted computer
+	 * @return The found computer or null if no computer were found
+	 */
 	public Computer fetchOne(int computerId) {
 		Computer computer = null;
         
@@ -101,6 +130,13 @@ public enum ComputerDao {
         return computer;
 	}
 
+	/**
+	 * Fetches a given number (or fewer) of computers from the database under the form of a {@link Page}
+	 * 
+	 * @param offset the index of the first entity wanted in the page
+	 * @param numberOfElementsPerPage maximum number of elements in the wanted page
+	 * @return A {@link Page} of the found computers
+	 */
 	public Page<Computer> fetchAll(int offset, int numberOfElementsPerPage) {
 		List<Computer> computers = new ArrayList<>();
 		int totalNumberOfElements = 0;
@@ -132,8 +168,19 @@ public enum ComputerDao {
         return new Page<>(computers, offset, numberOfElementsPerPage, totalNumberOfElements);
 	}
 	
-	private static PreparedStatement initializationPreparedStatement(Connection connexion, String sql, boolean returnGeneratedKeys, Object... objets) throws SQLException {
-	    PreparedStatement preparedStatement = connexion.prepareStatement(sql, returnGeneratedKeys ? Statement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS);
+	/**
+	 * Initialize a {@link PreparedStatement} with a given SQL query.
+	 * Sets the parameters of the query if any.
+	 * 
+	 * @param connection the connection to the database
+	 * @param sql the SQL query to be represented
+	 * @param returnGeneratedKeys to be set to true if generated keys due to the query are wanted to be retrieved
+	 * @param objets the parameters to be set in the SQL query
+	 * @return A {@link PreparedStatement} representing the wanted SQL query with the parameters set
+	 * @throws SQLException
+	 */
+	private static PreparedStatement initializationPreparedStatement(Connection connection, String sql, boolean returnGeneratedKeys, Object... objets) throws SQLException {
+	    PreparedStatement preparedStatement = connection.prepareStatement(sql, returnGeneratedKeys ? Statement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS);
 
 	    for (int i = 0; i < objets.length; i++)
 	        preparedStatement.setObject(i + 1, objets[i]);
