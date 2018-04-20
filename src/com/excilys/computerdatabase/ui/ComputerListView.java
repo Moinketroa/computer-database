@@ -1,57 +1,74 @@
 package com.excilys.computerdatabase.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.excilys.computerdatabase.mapper.DateMapper;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.service.ComputerService;
 
-public class ComputerListView extends AbstractView {
+public class ComputerListView extends AbstractListView<Computer> {
 
-	private List<Computer> computerList;
 	private ComputerService computerService;
 	
 	public ComputerListView(Viewer viewer) {
 		super(viewer);
 		
-		computerList = new ArrayList<>();
 		computerService = ComputerService.INSTANCE;
+		
+		page = computerService.getAll(0, ENTITIES_PER_PAGE);
 	}
 
 	public void display() {
 		System.out.println("\nComplete list of all the computers\n");
-		
-		computerList = computerService.getAll();
-		
-		if (computerList.size() == 0) {
+			
+		if (page.isEmpty()) {
 			System.out.println("There is currently no computer");	
 		} else {
-			System.out.println("ID\tNAME\t\tINTRODUCED\tDISCONTINUED\tCOMPANY ID");
-			System.out.println("--------------------------------------------------------------------------------------");
-			
-			for (Computer computer : computerList) {
-				System.out.print(computer.getId());
-				System.out.print("\t");
-				System.out.print(computer.getName());
-				System.out.print("\t");
-				System.out.print(computer.getIntroduced());
-				System.out.print("\t\t");
-				System.out.print(computer.getDiscontinued());
-				System.out.print("\t\t");
-				
-				if (computer.getCompany() != null)
-					System.out.println(computer.getCompany().getId());
-				else
-					System.out.println("null");
-			}
+			displayPage();
+			readResponse();
 		}
+	}
 
+	@Override
+	protected void displayPage() {
 		System.out.println();
+		String format = "|%1$-7s|%2$-25s|%3$-10s|%4$-12s|%5$-10s|\n";
 		
-		System.out.println("Press Enter to return to main menu...");
-		scanner.nextLine();
+		System.out.println("----------------------------------------------------------------------");
+		System.out.format(format, "ID", "NAME", "INTRODUCED", "DISCONTINUED", "COMPANY ID");
+		System.out.println("----------------------------------------------------------------------");
 		
-		viewer.setView(new MenuView(viewer));
+		for (Computer computer : page.result()) {
+			String companyId;
+			String computerName = computer.getName();
+			
+			if (computer.getCompany() != null)
+				companyId = computer.getCompany().getId() + "";
+			else
+				companyId = "null";
+			
+			if (computerName.length() >= 25)
+				computerName = computerName.substring(0, 25);
+			
+			System.out.format(	format, 
+								computer.getId(), 
+								computerName, 
+								DateMapper.toDailyFormat(computer.getIntroduced()),
+								DateMapper.toDailyFormat(computer.getDiscontinued()),
+								companyId);
+			
+		}
+		
+		System.out.println("----------------------------------------------------------------------");
+		System.out.println();
+	}
+
+	@Override
+	protected void previousPage() {
+		page = computerService.getAll(page.getPreviousPageOffset(), ENTITIES_PER_PAGE);
+	}
+
+	@Override
+	protected void nextPage() {
+		page = computerService.getAll(page.getNextPageOffset(), ENTITIES_PER_PAGE);
 	}
 	
 }

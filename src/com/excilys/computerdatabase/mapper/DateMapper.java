@@ -22,6 +22,9 @@ public class DateMapper {
 	}
 	
 	public static String toDailyFormat(Date date) {
+		if (date == null)
+			return "null";
+		
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		

@@ -9,6 +9,7 @@ public class EndView extends AbstractView {
 	@Override
 	public void display() {
 		System.out.println("Good bye ! Have a nice day !");
+		System.exit(0);
 	}
 
 }

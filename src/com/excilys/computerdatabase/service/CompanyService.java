@@ -1,10 +1,9 @@
 package com.excilys.computerdatabase.service;
 
-import java.util.List;
-
 import com.excilys.computerdatabase.dao.CompanyDao;
 import com.excilys.computerdatabase.dao.DaoFactory;
 import com.excilys.computerdatabase.model.pojo.Company;
+import com.excilys.computerdatabase.page.Page;
 
 public enum CompanyService {
 
@@ -21,8 +20,8 @@ public enum CompanyService {
 		return companyDao.fetchOne(id);
 	}
 	
-	public List<Company> getAll() {
-		return companyDao.fetchAll();
+	public Page<Company> getAll(int offset, int numberOfElementsPerPage) {
+		return companyDao.fetchAll(offset, numberOfElementsPerPage);
 	}
 	
 }

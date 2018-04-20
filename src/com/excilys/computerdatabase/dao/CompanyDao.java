@@ -10,21 +10,24 @@ import java.util.List;
 
 import com.excilys.computerdatabase.mapper.CompanyMapper;
 import com.excilys.computerdatabase.model.pojo.Company;
+import com.excilys.computerdatabase.page.Page;
 
 public enum CompanyDao {
 
 	INSTANCE;
 	
 	private static final String SQL_SELECT_COMPANY = "SELECT * FROM company WHERE id = ?";
-	private static final String SQL_SELECT_COMPANIES = "SELECT * FROM company";
+	private static final String SQL_SELECT_COMPANIES = "SELECT * FROM company LIMIT ? OFFSET ?";
+	private static final String SQL_SELECT_COUNT = "SELECT COUNT(*) FROM company";
 	
 	private DaoFactory daoFactory = DaoFactory.INSTANCE;
 
-	public List<Company> fetchAll() {
+	public Page<Company> fetchAll(int offset, int numberOfElementsPerPage) {
 		List<Company> companies = new ArrayList<>();
+		int totalNumberOfElements = 0;
         
         try (	Connection connexion = daoFactory.getConnection();
-        		PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPANIES, false);
+        		PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPANIES, false, numberOfElementsPerPage, offset);
         		ResultSet result = preparedStatement.executeQuery()) {
             
             while (result.next()) {
@@ -35,8 +38,20 @@ public enum CompanyDao {
 			e.printStackTrace();
 		} 
 
+        try (	Connection connexion = daoFactory.getConnection();
+        		PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COUNT, false);
+        		ResultSet result = preparedStatement.executeQuery()) {
+            
+            if (result.first()) {
+            	totalNumberOfElements = result.getInt(1);
+            }
+            
+        } catch (SQLException e) {
+			e.printStackTrace();
+		} 
+        
 
-        return companies;
+        return new Page<>(companies, offset, numberOfElementsPerPage, totalNumberOfElements);
 	}
 
 	public Company fetchOne(int id) {

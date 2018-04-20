@@ -13,13 +13,15 @@ import java.util.List;
 import com.excilys.computerdatabase.mapper.ComputerMapper;
 import com.excilys.computerdatabase.model.pojo.Company;
 import com.excilys.computerdatabase.model.pojo.Computer;
+import com.excilys.computerdatabase.page.Page;
 
 public enum ComputerDao {
 
 	INSTANCE;
 	
 	private static final String SQL_SELECT_COMPUTER = "SELECT computer.*, company.name AS company_name FROM computer JOIN company ON computer.company_id = company.id WHERE computer.id = ?";
-	private static final String SQL_SELECT_COMPUTERS = "SELECT computer.*, company.name AS company_name FROM computer JOIN company ON computer.company_id = company.id ORDER BY computer.id";
+	private static final String SQL_SELECT_COMPUTERS = "SELECT computer.*, company.name AS company_name FROM computer JOIN company ON computer.company_id = company.id ORDER BY computer.id LIMIT ? OFFSET ?";
+	private static final String SQL_SELECT_COUNT = "SELECT COUNT(*) FROM computer";
 	
 	private static final String SQL_INSERT_COMPUTER = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
 	private static final String SQL_UPDATE_COMPUTER = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE computer.id = ?";
@@ -85,7 +87,7 @@ public enum ComputerDao {
 		Computer computer = null;
         
         try (	Connection connexion = daoFactory.getConnection();
-        		PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPUTER, false);
+        		PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPUTER, false, computerId);
         		ResultSet result = preparedStatement.executeQuery()) {
             
             if (result.first()) {
@@ -99,11 +101,12 @@ public enum ComputerDao {
         return computer;
 	}
 
-	public List<Computer> fetchAll() {
+	public Page<Computer> fetchAll(int offset, int numberOfElementsPerPage) {
 		List<Computer> computers = new ArrayList<>();
-        
+		int totalNumberOfElements = 0;
+		
         try (	Connection connexion = daoFactory.getConnection();
-        		PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPUTERS, false);
+        		PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPUTERS, false, numberOfElementsPerPage, offset);
         		ResultSet result = preparedStatement.executeQuery()) {
             
             while (result.next()) {
@@ -113,8 +116,20 @@ public enum ComputerDao {
         } catch (SQLException e) {
 			e.printStackTrace();
 		}
+        
+        try (	Connection connexion = daoFactory.getConnection();
+        		PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COUNT, false);
+        		ResultSet result = preparedStatement.executeQuery()) {
+            
+            if (result.first()) {
+            	totalNumberOfElements = result.getInt(1);
+            }
+            
+        } catch (SQLException e) {
+			e.printStackTrace();
+		} 
 
-        return computers;
+        return new Page<>(computers, offset, numberOfElementsPerPage, totalNumberOfElements);
 	}
 	
 	private static PreparedStatement initializationPreparedStatement(Connection connexion, String sql, boolean returnGeneratedKeys, Object... objets) throws SQLException {

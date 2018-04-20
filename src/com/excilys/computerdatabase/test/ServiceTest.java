@@ -15,14 +15,14 @@ public class ServiceTest {
 		CompanyService companyService = CompanyService.INSTANCE;
 		ComputerService computerService = ComputerService.INSTANCE;
 		
-		List<Company> companies = companyService.getAll();
-		List<Computer> computers = computerService.getAll();
+		//List<Company> companies = companyService.getAll();
+		//List<Computer> computers = computerService.getAll();
 		
-		for (Company company : companies)
-			System.out.println(company);
+		//for (Company company : companies)
+		//	System.out.println(company);
 		
-		for (Computer computer : computers)
-			System.out.println(computer);
+		//for (Computer computer : computers)
+		//	System.out.println(computer);
 		
 		Computer computer = new Computer("TESTCOMPUTER");
 		computer.setIntroduced(new Date(0));
