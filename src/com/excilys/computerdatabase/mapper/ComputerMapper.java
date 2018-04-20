@@ -3,6 +3,7 @@ package com.excilys.computerdatabase.mapper;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 import com.excilys.computerdatabase.model.pojo.Company;
 import com.excilys.computerdatabase.model.pojo.Computer;
@@ -13,8 +14,14 @@ public class ComputerMapper {
 	public static Computer fromResultSet(ResultSet result) throws SQLException {
 		int id = result.getInt("id");
     	String name = result.getString("name");
-    	Date introduced = result.getDate("introduced");
-    	Date discontinued = result.getDate("discontinued");
+    	
+    	LocalDate introduced = null;
+    	if (result.getDate("introduced") != null)
+    		introduced = result.getDate("introduced").toLocalDate();
+    	
+    	LocalDate discontinued = null;
+    	if (result.getDate("discontinued") != null)
+    		discontinued = result.getDate("discontinued").toLocalDate();
     	
     	int company_id = result.getInt("company_id");
     	String company_name = result.getString("company_name");
@@ -32,7 +39,7 @@ public class ComputerMapper {
     	return computer;
 	}
     	
-	public static Computer fromParameters(String name, Date introduced, Date discontinued, Integer companyId) {
+	public static Computer fromParameters(String name, LocalDate introduced, LocalDate discontinued, Integer companyId) {
 		Computer computer = new Computer(name);
 		computer.setIntroduced(introduced);
 		computer.setDiscontinued(discontinued);

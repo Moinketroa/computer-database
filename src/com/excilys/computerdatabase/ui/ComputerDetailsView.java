@@ -1,6 +1,6 @@
 package com.excilys.computerdatabase.ui;
 
-import com.excilys.computerdatabase.mapper.DateMapper;
+import com.excilys.computerdatabase.mapper.LocalDateMapper;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.service.ComputerService;
 
@@ -46,8 +46,8 @@ public class ComputerDetailsView extends AbstractView {
 			System.out.format(	format, 
 								computer.getId(), 
 								computerName, 
-								DateMapper.toDailyFormat(computer.getIntroduced()),
-								DateMapper.toDailyFormat(computer.getDiscontinued()),
+								LocalDateMapper.toFormattedString(computer.getIntroduced()),
+								LocalDateMapper.toFormattedString(computer.getDiscontinued()),
 								companyId);
 						
 			System.out.println("----------------------------------------------------------------------");

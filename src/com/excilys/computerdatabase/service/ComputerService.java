@@ -24,8 +24,8 @@ public enum ComputerService {
 		return computerDao.fetchOne(id);
 	}
 	
-	public void create(Computer computer) {
-		computerDao.add(computer);
+	public int create(Computer computer) {
+		return computerDao.add(computer);
 	}
 	
 	public void update(Computer computer) {

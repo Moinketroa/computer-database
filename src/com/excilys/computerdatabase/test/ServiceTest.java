@@ -25,8 +25,8 @@ public class ServiceTest {
 		//	System.out.println(computer);
 		
 		Computer computer = new Computer("TESTCOMPUTER");
-		computer.setIntroduced(new Date(0));
-		computer.setDiscontinued(new Date(100000));
+		//computer.setIntroduced(new Date(0));
+		//computer.setDiscontinued(new Date(100000));
 		
 		Company company = new Company("IBMTEST");
 		company.setId(13);

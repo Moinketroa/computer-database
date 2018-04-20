@@ -1,17 +1,17 @@
 package com.excilys.computerdatabase.ui;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 import com.excilys.computerdatabase.mapper.ComputerMapper;
-import com.excilys.computerdatabase.mapper.DateMapper;
+import com.excilys.computerdatabase.mapper.LocalDateMapper;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.service.ComputerService;
 
 public class AddComputerView extends AbstractView {
 
 	private String name;
-	private Date introduction;
-	private Date discontinuation;
+	private LocalDate introduction;
+	private LocalDate discontinuation;
 	private Integer companyId;
 	
 	private ComputerService computerService;
@@ -32,9 +32,8 @@ public class AddComputerView extends AbstractView {
 		readCompanyId();
 		
 		Computer computer = ComputerMapper.fromParameters(name, introduction, discontinuation, companyId);
-		computerService.create(computer);
 		
-		viewer.setView(new ComputerDetailsView(viewer, computer.getId()));
+		viewer.setView(new ComputerDetailsView(viewer, computerService.create(computer)));
 	}
 
 	private void readName() {
@@ -53,7 +52,7 @@ public class AddComputerView extends AbstractView {
 		
 		String introductionString = scanner.nextLine().trim();
 		
-		while (!introductionString.equals("") && !DateMapper.isValidFormat(introductionString)) {
+		while (!introductionString.equals("") && !LocalDateMapper.isValidFormat(introductionString)) {
 			System.out.println("Please enter a valid date format");
 			introductionString = scanner.nextLine().trim();
 		}
@@ -61,7 +60,7 @@ public class AddComputerView extends AbstractView {
 		if (introductionString.equals(""))
 			return;
 		
-		introduction = DateMapper.fromString(introductionString);
+		introduction = LocalDateMapper.fromString(introductionString);
 	}
 	
 	private void readDiscontinuationDate() {
@@ -71,7 +70,7 @@ public class AddComputerView extends AbstractView {
 		String discontinuationString = scanner.nextLine().trim();
 		
 		while (true) {
-			while (!discontinuationString.equals("") && !DateMapper.isValidFormat(discontinuationString)) {
+			while (!discontinuationString.equals("") && !LocalDateMapper.isValidFormat(discontinuationString)) {
 				System.out.println("Please enter a valid date format");
 				discontinuationString = scanner.nextLine().trim();
 			}
@@ -79,10 +78,10 @@ public class AddComputerView extends AbstractView {
 			if (discontinuationString.equals(""))
 				return;
 			
-			discontinuation = DateMapper.fromString(discontinuationString);
+			discontinuation = LocalDateMapper.fromString(discontinuationString);
 			
 			if (introduction != null)
-				if (discontinuation.after(introduction))
+				if (discontinuation.isAfter(introduction))
 					return;
 				else {
 					System.out.println("Please enter a date greater than the introduction date");

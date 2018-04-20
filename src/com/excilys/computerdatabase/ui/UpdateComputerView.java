@@ -1,9 +1,8 @@
 package com.excilys.computerdatabase.ui;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
-import com.excilys.computerdatabase.mapper.DateMapper;
-import com.excilys.computerdatabase.model.pojo.Company;
+import com.excilys.computerdatabase.mapper.LocalDateMapper;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.service.ComputerService;
 
@@ -11,8 +10,8 @@ public class UpdateComputerView extends AbstractView {
 
 	private int computerId;
 	private String name;
-	private Date introduction;
-	private Date discontinuation;
+	private LocalDate introduction;
+	private LocalDate discontinuation;
 	private Integer companyId;
 	
 	private Computer computer;
@@ -69,7 +68,7 @@ public class UpdateComputerView extends AbstractView {
 	private void readIntroductionDate() {
 		System.out.println("Please enter the introduction date (DD/MM/YYYY format !)");
 		if (introduction != null)
-			System.out.println("Default : null\tCurrent : " + DateMapper.toDailyFormat(introduction));
+			System.out.println("Default : null\tCurrent : " + LocalDateMapper.toFormattedString(introduction));
 		else
 			System.out.println("Default : null\tCurrent : null");
 		
@@ -79,11 +78,11 @@ public class UpdateComputerView extends AbstractView {
 			if (introductionString.equals("")) {
 				introduction = null;
 				return;
-			} else if (!DateMapper.isValidFormat(introductionString)) {
+			} else if (!LocalDateMapper.isValidFormat(introductionString)) {
 				System.out.println("Please enter a valid date format");
 				introductionString = scanner.nextLine().trim();
 			} else {
-				introduction = DateMapper.fromString(introductionString);
+				introduction = LocalDateMapper.fromString(introductionString);
 				return;
 			}
 		}
@@ -92,23 +91,23 @@ public class UpdateComputerView extends AbstractView {
 	private void readDiscontinuationDate() {
 		System.out.println("Please enter the discontinuation date (DD/MM/YYYY format !)");
 		if (discontinuation != null)
-			System.out.println("Default : null\tCurrent : " + DateMapper.toDailyFormat(discontinuation));
+			System.out.println("Default : null\tCurrent : " + LocalDateMapper.toFormattedString(discontinuation));
 		else
 			System.out.println("Default : null\tCurrent : null");
 		
 		String discontinuationString = scanner.nextLine().trim();
 		
 		while (true) {
-			if (discontinuationString.equals("") || DateMapper.isValidFormat(discontinuationString)) {
+			if (discontinuationString.equals("") || LocalDateMapper.isValidFormat(discontinuationString)) {
 				if (discontinuationString.equals("")) {
 					discontinuation = null;
 					return;
 				}
 					
-				discontinuation = DateMapper.fromString(discontinuationString);
+				discontinuation = LocalDateMapper.fromString(discontinuationString);
 			
 				if (introduction != null)
-					if (discontinuation.after(introduction))
+					if (discontinuation.isAfter(introduction))
 						return;
 					else {
 						System.out.println("Please enter a date greater than the introduction date");
