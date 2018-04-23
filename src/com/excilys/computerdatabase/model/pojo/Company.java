@@ -1,10 +1,22 @@
 package com.excilys.computerdatabase.model.pojo;
 
+/**
+ * 
+ * The class represents companies like those in the database 
+ * 
+ * @author jmdebicki
+ *
+ */
 public class Company {
 
 	private int id;
 	private String name;
 	
+	/**
+	 * A constructor which initialize a new company object with a name which is mandatory
+	 * 
+	 * @param name the needed name of the company
+	 */
 	public Company(String name) {
 		this.name = name;
 	}

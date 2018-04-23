@@ -2,6 +2,13 @@ package com.excilys.computerdatabase.model.pojo;
 
 import java.time.LocalDate;
 
+/**
+ * 
+ * The class represents computers like those in the database
+ * 
+ * @author jmdebicki
+ *
+ */
 public class Computer {
 
 	private int id;
@@ -10,6 +17,11 @@ public class Computer {
 	private LocalDate discontinued;
 	private Company company;
 	
+	/**
+	 * A constructor which initialize a new computer object with a name which is mandatory
+	 * 
+	 * @param name the needed name of the computer
+	 */
 	public Computer(String name) {
 		this.name = name;
 	}
