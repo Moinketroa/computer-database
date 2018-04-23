@@ -1,5 +1,6 @@
 package com.excilys.computerdatabase.ui;
 
+import com.excilys.computerdatabase.exceptions.WrongPageParameterException;
 import com.excilys.computerdatabase.model.pojo.Company;
 import com.excilys.computerdatabase.service.CompanyService;
 
@@ -12,7 +13,11 @@ public class CompanyListView extends AbstractListView<Company> {
 		
 		companyService = CompanyService.INSTANCE;
 		
-		page = companyService.getAll(0, ENTITIES_PER_PAGE);
+		try {
+			page = companyService.getAll(0, ENTITIES_PER_PAGE);
+		} catch (WrongPageParameterException e) {
+			viewer.setView(new ErrorView(viewer, e));
+		}
 	}
 	
 	public void display() {
@@ -50,12 +55,20 @@ public class CompanyListView extends AbstractListView<Company> {
 
 	@Override
 	protected void previousPage() {
-		page = companyService.getAll(page.getPreviousPageOffset(), ENTITIES_PER_PAGE);
+		try {
+			page = companyService.getAll(page.getPreviousPageOffset(), ENTITIES_PER_PAGE);
+		} catch (WrongPageParameterException e) {
+			viewer.setView(new ErrorView(viewer, e));
+		}
 	}
 
 	@Override
 	protected void nextPage() {
-		page = companyService.getAll(page.getNextPageOffset(), ENTITIES_PER_PAGE);
+		try {
+			page = companyService.getAll(page.getNextPageOffset(), ENTITIES_PER_PAGE);
+		} catch (WrongPageParameterException e) {
+			viewer.setView(new ErrorView(viewer, e));
+		}
 	}
 	
 }

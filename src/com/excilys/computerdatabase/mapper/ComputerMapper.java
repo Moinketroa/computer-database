@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
+import com.excilys.computerdatabase.exceptions.CompanyNotFoundException;
 import com.excilys.computerdatabase.model.pojo.Company;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.service.CompanyService;
@@ -37,18 +38,21 @@ public class ComputerMapper {
     	if (result.getDate("discontinued") != null)
     		discontinued = result.getDate("discontinued").toLocalDate();
     	
-    	int company_id = result.getInt("company_id");
-    	String company_name = result.getString("company_name");
-    	
     	Computer computer = new Computer(name);
     	computer.setId(id);
     	computer.setIntroduced(introduced);
     	computer.setDiscontinued(discontinued);
     	
-    	Company company = new Company(company_name);
-    	company.setId(company_id);
+    	int company_id = result.getInt("company_id");
     	
-    	computer.setCompany(company);
+    	if (company_id != 0) {
+    		String company_name = result.getString("company_name");
+    		
+    		Company company = new Company(company_name);
+    		company.setId(company_id);
+    		
+    		computer.setCompany(company);
+    	}
     	
     	return computer;
 	}
@@ -61,15 +65,22 @@ public class ComputerMapper {
 	 * @param discontinued the date when the computer was withdrawn from sale (null if none)
 	 * @param companyId the id of the computer's company (null if none)
 	 * @return a new {@link Computer} without any id
+	 * @throws CompanyNotFoundException if the company to add to the computer doesn't exist
 	 */
-	public static Computer fromParameters(String name, LocalDate introduced, LocalDate discontinued, Integer companyId) {
+	public static Computer fromParameters(String name, LocalDate introduced, LocalDate discontinued, Integer companyId) throws CompanyNotFoundException {
 		Computer computer = new Computer(name);
 		computer.setIntroduced(introduced);
 		computer.setDiscontinued(discontinued);
 		
-		if (companyId != null)
-			computer.setCompany(CompanyService.INSTANCE.getById(companyId));
-		
+		if (companyId != null) {
+			Company company = CompanyService.INSTANCE.getById(companyId);
+			
+			if (company != null)
+				computer.setCompany(company);
+			else
+				throw new CompanyNotFoundException(companyId);
+		}
+			
 		return computer;
 	}
 }

@@ -44,7 +44,7 @@ public class DeleteComputerView extends AbstractView {
 		
 			if (response.matches("[yn]")) {
 				if (response.equals("y")) {
-					computerService.delete(computer);
+					computerService.delete(computerId);
 					System.out.println("Computer #" + computerId + " deleted !");
 					return;
 				} else {

@@ -1,5 +1,6 @@
 package com.excilys.computerdatabase.ui;
 
+import com.excilys.computerdatabase.exceptions.WrongPageParameterException;
 import com.excilys.computerdatabase.mapper.LocalDateMapper;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.service.ComputerService;
@@ -13,7 +14,11 @@ public class ComputerListView extends AbstractListView<Computer> {
 		
 		computerService = ComputerService.INSTANCE;
 		
-		page = computerService.getAll(0, ENTITIES_PER_PAGE);
+		try {
+			page = computerService.getAll(0, ENTITIES_PER_PAGE);
+		} catch (WrongPageParameterException e) {
+			viewer.setView(new ErrorView(viewer, e));
+		}
 	}
 
 	public void display() {
@@ -63,12 +68,20 @@ public class ComputerListView extends AbstractListView<Computer> {
 
 	@Override
 	protected void previousPage() {
-		page = computerService.getAll(page.getPreviousPageOffset(), ENTITIES_PER_PAGE);
+		try {
+			page = computerService.getAll(page.getPreviousPageOffset(), ENTITIES_PER_PAGE);
+		} catch (WrongPageParameterException e) {
+			viewer.setView(new ErrorView(viewer, e));
+		}
 	}
 
 	@Override
 	protected void nextPage() {
-		page = computerService.getAll(page.getNextPageOffset(), ENTITIES_PER_PAGE);
+		try {
+			page = computerService.getAll(page.getNextPageOffset(), ENTITIES_PER_PAGE);
+		} catch (WrongPageParameterException e) {
+			viewer.setView(new ErrorView(viewer, e));
+		}
 	}
 	
 }

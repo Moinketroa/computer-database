@@ -2,6 +2,7 @@ package com.excilys.computerdatabase.ui;
 
 import java.time.LocalDate;
 
+import com.excilys.computerdatabase.exceptions.DiscontinuationPriorToIntroductionExpection;
 import com.excilys.computerdatabase.mapper.LocalDateMapper;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.service.ComputerService;
@@ -51,8 +52,12 @@ public class UpdateComputerView extends AbstractView {
 			readDiscontinuationDate();
 			readCompanyId();
 			
-			computerService.update(computer);
-			viewer.setView(new ComputerDetailsView(viewer, computer.getId()));
+			try {
+				computerService.update(computer);
+				viewer.setView(new ComputerDetailsView(viewer, computer.getId()));
+			} catch (DiscontinuationPriorToIntroductionExpection e) {
+				viewer.setView(new ErrorView(viewer, e));
+			}
 		}
 	}
 	

@@ -2,6 +2,8 @@ package com.excilys.computerdatabase.ui;
 
 import java.time.LocalDate;
 
+import com.excilys.computerdatabase.exceptions.CompanyNotFoundException;
+import com.excilys.computerdatabase.exceptions.DiscontinuationPriorToIntroductionExpection;
 import com.excilys.computerdatabase.mapper.ComputerMapper;
 import com.excilys.computerdatabase.mapper.LocalDateMapper;
 import com.excilys.computerdatabase.model.pojo.Computer;
@@ -31,9 +33,13 @@ public class AddComputerView extends AbstractView {
 		readDiscontinuationDate();
 		readCompanyId();
 		
-		Computer computer = ComputerMapper.fromParameters(name, introduction, discontinuation, companyId);
 		
-		viewer.setView(new ComputerDetailsView(viewer, computerService.create(computer)));
+		try {
+			Computer computer = ComputerMapper.fromParameters(name, introduction, discontinuation, companyId);
+			viewer.setView(new ComputerDetailsView(viewer, computerService.create(computer)));
+		} catch (CompanyNotFoundException | DiscontinuationPriorToIntroductionExpection e) {
+			viewer.setView(new ErrorView(viewer, e));
+		}
 	}
 
 	private void readName() {
