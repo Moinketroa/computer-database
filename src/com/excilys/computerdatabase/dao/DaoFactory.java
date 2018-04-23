@@ -1,12 +1,13 @@
 package com.excilys.computerdatabase.dao;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-
-import com.excilys.computerdatabase.model.pojo.Company;
-import com.excilys.computerdatabase.model.pojo.Computer;
+import java.util.Properties;
 
 /**
  * 
@@ -18,17 +19,29 @@ import com.excilys.computerdatabase.model.pojo.Computer;
 public enum DaoFactory {
 	
 	INSTANCE;
-	
-    private String url = "jdbc:mysql://localhost:3306/computer-database-db?autoReconnect=true&useSSL=false";
-    private String username = "admincdb";
-    private String password = "qwerty1234";
 
+	private String url;
+	private String username;
+	private String password;
+	
     private DaoFactory() {
-    	try {
+    	try (InputStream input = new FileInputStream("config.properties");){
             Class.forName("com.mysql.jdbc.Driver");
+            
+            Properties properties = new Properties();
+            properties.load(input);
+            
+            url = properties.getProperty("databaseUrl");
+            username = properties.getProperty("username");
+            password = properties.getProperty("password");
+            
         } catch (ClassNotFoundException e) {
         	e.printStackTrace();
-        }
+        } catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (IOException e2) {
+			e2.printStackTrace();
+		}
     }
 
     /**
