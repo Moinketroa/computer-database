@@ -119,7 +119,7 @@ public enum ComputerDao {
         		PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPUTER, false, computerId);
         		ResultSet result = preparedStatement.executeQuery()) {
             
-            if (result.first()) {
+            if (result.next()) {
             	computer = ComputerMapper.fromResultSet(result);
             }
             
@@ -157,7 +157,7 @@ public enum ComputerDao {
         		PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COUNT, false);
         		ResultSet result = preparedStatement.executeQuery()) {
             
-            if (result.first()) {
+            if (result.next()) {
             	totalNumberOfElements = result.getInt(1);
             }
             

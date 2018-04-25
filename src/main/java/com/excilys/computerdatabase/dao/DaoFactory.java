@@ -22,14 +22,13 @@ public enum DaoFactory {
 	
     private DaoFactory() {
     	try {
-            Class.forName("com.mysql.jdbc.Driver");
-            
             ResourceBundle input = ResourceBundle.getBundle("config");
 
             url = input.getString("databaseUrl");
             username = input.getString("username");
             password = input.getString("password");
             
+            Class.forName(input.getString("driver"));
         } catch (ClassNotFoundException e) {
         	e.printStackTrace();
         }

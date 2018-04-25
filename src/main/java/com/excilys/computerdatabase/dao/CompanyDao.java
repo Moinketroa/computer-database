@@ -56,7 +56,7 @@ public enum CompanyDao {
         		PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COUNT, false);
         		ResultSet result = preparedStatement.executeQuery()) {
             
-            if (result.first()) {
+            if (result.next()) {
             	totalNumberOfElements = result.getInt(1);
             }
             
@@ -81,7 +81,7 @@ public enum CompanyDao {
         		PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPANY, false, id);
         		ResultSet result = preparedStatement.executeQuery()) {
             
-            if (result.first()) {
+            if (result.next()) {
             	company = CompanyMapper.fromResultSet(result);
             }
             
