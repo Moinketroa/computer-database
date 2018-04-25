@@ -36,6 +36,7 @@ public class AddComputerView extends AbstractView {
 		
 		try {
 			Computer computer = ComputerMapper.fromParameters(name, introduction, discontinuation, companyId);
+			System.out.println("allahu ackbar");
 			viewer.setView(new ComputerDetailsView(viewer, computerService.create(computer)));
 		} catch (CompanyNotFoundException | DiscontinuationPriorToIntroductionExpection e) {
 			viewer.setView(new ErrorView(viewer, e));

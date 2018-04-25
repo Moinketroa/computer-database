@@ -5,13 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
+import java.sql.Date;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.excilys.computerdatabase.mapper.ComputerMapper;
-import com.excilys.computerdatabase.model.pojo.Company;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.page.Page;
 
@@ -48,8 +47,11 @@ public enum ComputerDao {
 		if (computer.getCompany() != null)
         	companyId = computer.getCompany().getId();
 		
+		Date introduced = computer.getIntroduced() == null ? null : Date.valueOf(computer.getIntroduced());
+        Date discontinued = computer.getDiscontinued() == null ? null : Date.valueOf(computer.getDiscontinued());
+		
 	    try (	Connection connexion = daoFactory.getConnection();
-	    		PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_INSERT_COMPUTER, true, computer.getName(), computer.getIntroduced(), computer.getDiscontinued(), companyId)) {
+	    		PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_INSERT_COMPUTER, true, computer.getName(), introduced, discontinued, companyId)) {
             
             preparedStatement.executeUpdate();
             
@@ -80,8 +82,11 @@ public enum ComputerDao {
         if (computer.getCompany() != null)
         	companyId = computer.getCompany().getId();
 	    
+        Date introduced = computer.getIntroduced() == null ? null : Date.valueOf(computer.getIntroduced());
+        Date discontinued = computer.getDiscontinued() == null ? null : Date.valueOf(computer.getDiscontinued());
+        
 	    try (	Connection connexion = daoFactory.getConnection();
-	            PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_UPDATE_COMPUTER, false, computer.getName(), computer.getIntroduced(), computer.getDiscontinued(), companyId, computer.getId())) {
+	            PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_UPDATE_COMPUTER, false, computer.getName(), introduced, discontinued, companyId, computer.getId())) {
             
             preparedStatement.executeUpdate();
             
