@@ -14,64 +14,65 @@ import com.excilys.computerdatabase.model.pojo.Company;
 
 public class CompanyDaoTest {
 
-	private HSQLDatabase hsqldb = HSQLDatabase.INSTANCE;
-	private CompanyDao companyDao = CompanyDao.INSTANCE;
-	
-	@Before
-	public void setUp() throws Exception {
-		hsqldb.init();
-	}
+  private HSQLDatabase hsqldb = HSQLDatabase.INSTANCE;
+  private CompanyDao companyDao = CompanyDao.INSTANCE;
 
-	@After
-	public void tearDown() throws Exception {
-		hsqldb.destroy();
-	}
+  @Before
+  public void setUp() throws Exception {
+    hsqldb.init();
+  }
 
-	@Test
-	public void testFetchAll() {
-		List<Company> companyListNormal = companyDao.fetchAll(0, 12).result();
-		List<Company> companyListEnd	= companyDao.fetchAll(40, 12).result();
-		
-		Company firstOfListNormal = getFirstElement(companyListNormal);
-		Company lastOfListNormal  = getLastElement(companyListNormal);
-		Company firstOfListEnd	  = getFirstElement(companyListEnd);
-		Company lastOfListEnd	  = getLastElement(companyListEnd);
-		
-		assertEquals(1, firstOfListNormal.getId());
-		assertEquals(12, lastOfListNormal.getId());
-		
-		assertEquals(42, firstOfListEnd.getId());
-		assertEquals(43, lastOfListEnd.getId());
-	}
+  @After
+  public void tearDown() throws Exception {
+    hsqldb.destroy();
+  }
 
-	@Test
-	public void testFetchOne() {
-		Company companyNumber13 = companyDao.fetchOne(13);
-		Company companyNumber123 = companyDao.fetchOne(123);
-		Company companyNumberMinus1 = companyDao.fetchOne(-1);
-		
-		assertEquals(13 , companyNumber13.getId());
-		assertEquals("IBM", companyNumber13.getName());
-		
-		assertNull(companyNumber123);
-		assertNull(companyNumberMinus1);
-	}
-	
-	private static <T> T getFirstElement(final Iterable<T> elements) {
-        if (elements == null) 
-            return null;
+  @Test
+  public void testFetchAll() {
+    List<Company> companyListNormal = companyDao.fetchAll(0, 12).result();
+    List<Company> companyListEnd = companyDao.fetchAll(40, 12).result();
 
-        return elements.iterator().next();
+    Company firstOfListNormal = getFirstElement(companyListNormal);
+    Company lastOfListNormal = getLastElement(companyListNormal);
+    Company firstOfListEnd = getFirstElement(companyListEnd);
+    Company lastOfListEnd = getLastElement(companyListEnd);
+
+    assertEquals(1, firstOfListNormal.getId());
+    assertEquals(12, lastOfListNormal.getId());
+
+    assertEquals(42, firstOfListEnd.getId());
+    assertEquals(43, lastOfListEnd.getId());
+  }
+
+  @Test
+  public void testFetchOne() {
+    Company companyNumber13 = companyDao.fetchOne(13);
+    Company companyNumber123 = companyDao.fetchOne(123);
+    Company companyNumberMinus1 = companyDao.fetchOne(-1);
+
+    assertEquals(13, companyNumber13.getId());
+    assertEquals("IBM", companyNumber13.getName());
+
+    assertNull(companyNumber123);
+    assertNull(companyNumberMinus1);
+  }
+
+  private static <T> T getFirstElement(final Iterable<T> elements) {
+    if (elements == null) {
+      return null;
     }
 
-	private static <T> T getLastElement(final Iterable<T> elements) {
-        final Iterator<T> itr = elements.iterator();
-        T lastElement = itr.next();
+    return elements.iterator().next();
+  }
 
-        while(itr.hasNext()) {
-            lastElement=itr.next();
-        }
+  private static <T> T getLastElement(final Iterable<T> elements) {
+    final Iterator<T> itr = elements.iterator();
+    T lastElement = itr.next();
 
-        return lastElement;
+    while (itr.hasNext()) {
+      lastElement = itr.next();
     }
+
+    return lastElement;
+  }
 }
