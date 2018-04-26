@@ -21,6 +21,7 @@ public class EndView extends AbstractView {
   @Override
   public void display() {
     System.out.println("Good bye ! Have a nice day !");
+    viewer.close();
     System.exit(0);
   }
 

@@ -2,6 +2,9 @@ package com.excilys.computerdatabase.ui;
 
 import java.util.Scanner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The abstract class is to be extended in order to be compatible with a Viewer.
  *
@@ -10,7 +13,9 @@ import java.util.Scanner;
  */
 public abstract class AbstractView {
 
-  protected static Scanner scanner = new Scanner(System.in);;
+  private static final Logger LOGGER = LoggerFactory.getLogger(AbstractView.class);
+
+  protected static Scanner scanner = new Scanner(System.in);
   protected Viewer viewer;
 
   /**
@@ -32,6 +37,7 @@ public abstract class AbstractView {
    * Closes the resources associated with the views.
    */
   public static void closeView() {
+    LOGGER.warn("Closing the resources for the views");
     scanner.close();
   }
 

@@ -10,6 +10,9 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.computerdatabase.mapper.ComputerMapper;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.page.Page;
@@ -31,6 +34,8 @@ public enum ComputerDao {
   private static final String SQL_INSERT_COMPUTER = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
   private static final String SQL_UPDATE_COMPUTER = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE computer.id = ?";
   private static final String SQL_DELETE_COMPUTER = "DELETE FROM computer WHERE computer.id = ?";
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDao.class);
 
   private DaoFactory daoFactory = DaoFactory.INSTANCE;
 
@@ -64,11 +69,11 @@ public enum ComputerDao {
         }
 
       } catch (SQLException e) {
-        e.printStackTrace();
+        LOGGER.error("Something went wrong with the ResultSet", e);
       }
 
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.error("Something went wrong while building the statement", e);
     }
 
     return computer.getId();
@@ -97,7 +102,7 @@ public enum ComputerDao {
       preparedStatement.executeUpdate();
 
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.error("Something went wrong while building the statement", e);
     }
   }
 
@@ -115,7 +120,7 @@ public enum ComputerDao {
       preparedStatement.executeUpdate();
 
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.error("Something went wrong while building the statement", e);
     }
   }
 
@@ -139,7 +144,7 @@ public enum ComputerDao {
       }
 
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.error("Something went wrong with the ResultSet or while building the statement", e);
     }
 
     return computer;
@@ -169,7 +174,7 @@ public enum ComputerDao {
       }
 
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.error("Something went wrong with the ResultSet or while building the statement", e);
     }
 
     try (Connection connexion = daoFactory.getConnection();
@@ -181,7 +186,7 @@ public enum ComputerDao {
       }
 
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.error("Something went wrong with the ResultSet or while building the statement", e);
     }
 
     return new Page<>(computers, offset, numberOfElementsPerPage, totalNumberOfElements);

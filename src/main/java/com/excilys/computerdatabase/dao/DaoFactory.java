@@ -5,6 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The class helps retrieving the different DAOs and the connection to the
  * database.
@@ -19,22 +22,20 @@ public enum DaoFactory {
   private String url;
   private String username;
   private String password;
+  private String driver;
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(DaoFactory.class);
 
   /**
    * Loads connection informations form the config.properties file.
    */
   DaoFactory() {
-    try {
-      ResourceBundle input = ResourceBundle.getBundle("config");
+    ResourceBundle input = ResourceBundle.getBundle("config");
 
-      url = input.getString("databaseUrl");
-      username = input.getString("username");
-      password = input.getString("password");
-
-      Class.forName(input.getString("driver"));
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-    }
+    url = input.getString("databaseUrl");
+    username = input.getString("username");
+    password = input.getString("password");
+    driver = input.getString("driver");
   }
 
   /**
@@ -44,8 +45,20 @@ public enum DaoFactory {
    * @throws SQLException
    *           if something went wrong while trying to connect to the DB
    */
-  public Connection getConnection() throws SQLException {
-    return DriverManager.getConnection(url, username, password);
+  public Connection getConnection() {
+    try {
+      Class.forName(driver);
+    } catch (ClassNotFoundException e) {
+      LOGGER.error("Driver not found", e);
+    }
+
+    try {
+      return DriverManager.getConnection(url, username, password);
+    } catch (SQLException e) {
+      LOGGER.error("Can't establish connection", e);
+    }
+
+    return null;
   }
 
   /**
