@@ -72,8 +72,10 @@ public enum ComputerService {
     LocalDate introduced = computer.getIntroduced();
     LocalDate discontinued = computer.getDiscontinued();
 
-    if (introduced.isAfter(discontinued)) {
-      throw new DiscontinuationPriorToIntroductionExpection();
+    if (introduced != null && discontinued != null) {
+      if (introduced.isAfter(discontinued)) {
+        throw new DiscontinuationPriorToIntroductionExpection();
+      }
     }
 
     return computerDao.add(computer);

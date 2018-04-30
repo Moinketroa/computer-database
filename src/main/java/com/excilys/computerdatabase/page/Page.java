@@ -95,6 +95,10 @@ public class Page<E> {
     return totalNumberOfElements == 0;
   }
 
+  public int getTotalNumberOfElements() {
+    return totalNumberOfElements;
+  }
+
   /**
    * Returns the portion of the entire collection that the current page encapsulates.
    * @return the (number of elements per page) elements available in the current page

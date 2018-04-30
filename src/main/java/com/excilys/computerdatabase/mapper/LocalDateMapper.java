@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 public class LocalDateMapper {
 
   private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+  private static final DateTimeFormatter US_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
   /**
    * Determines if a {@link String} representing a date is in the wanted format
@@ -49,5 +50,17 @@ public class LocalDateMapper {
    */
   public static String toFormattedString(LocalDate date) {
     return date == null ? "null" : date.format(DATE_TIME_FORMATTER);
+  }
+
+  /**
+   * Transforms a {@link String} in a US format to its {@link LocalDate}
+   * equivalent.
+   *
+   * @param date
+   *          a date in the "yyyy-mm-dd" format
+   * @return A {@link LocalDate} representing the date given in parameter
+   */
+  public static LocalDate fromUSFormatString(String date) {
+    return LocalDate.parse(date, US_DATE_TIME_FORMATTER);
   }
 }
