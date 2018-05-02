@@ -17,16 +17,25 @@ public class CompanyDaoTest {
   private HSQLDatabase hsqldb = HSQLDatabase.INSTANCE;
   private CompanyDao companyDao = CompanyDao.INSTANCE;
 
+  /**
+   * Initializes the database before each test.
+   */
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     hsqldb.init();
   }
 
+  /**
+   * Drops all the tables of the database after each test.
+   */
   @After
-  public void tearDown() throws Exception {
+  public void tearDown() {
     hsqldb.destroy();
   }
 
+  /**
+   * Tests various cases of fetching all companies.
+   */
   @Test
   public void testFetchAll() {
     List<Company> companyListNormal = companyDao.fetchAll(0, 12).result();
@@ -44,6 +53,9 @@ public class CompanyDaoTest {
     assertEquals(43, lastOfListEnd.getId());
   }
 
+  /**
+   * Tests various cases of fetching a specific company.
+   */
   @Test
   public void testFetchOne() {
     Company companyNumber13 = companyDao.fetchOne(13);
@@ -57,6 +69,12 @@ public class CompanyDaoTest {
     assertNull(companyNumberMinus1);
   }
 
+  /**
+   * Return the first element of an iterable.
+   * @param <T> the type of the iterable set
+   * @param elements iterable set of elements
+   * @return the first element of the iterable set
+   */
   private static <T> T getFirstElement(final Iterable<T> elements) {
     if (elements == null) {
       return null;
@@ -65,6 +83,12 @@ public class CompanyDaoTest {
     return elements.iterator().next();
   }
 
+  /**
+   * Return the last element of an iterable.
+   * @param <T> the type of the iterable set
+   * @param elements iterable set of elements
+   * @return the last element of the iterable set
+   */
   private static <T> T getLastElement(final Iterable<T> elements) {
     final Iterator<T> itr = elements.iterator();
     T lastElement = itr.next();

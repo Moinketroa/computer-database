@@ -1,6 +1,8 @@
 package com.excilys.computerdatabase.dao;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 
 import java.time.LocalDate;
 import java.util.Iterator;
@@ -18,13 +20,19 @@ public class ComputerDaoTest {
   private HSQLDatabase hsqldb = HSQLDatabase.INSTANCE;
   private ComputerDao computerDao = ComputerDao.INSTANCE;
 
+  /**
+   * Initializes the database before each test.
+   */
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     hsqldb.init();
   }
 
+  /**
+   * Drops all the tables of the database after each test.
+   */
   @After
-  public void tearDown() throws Exception {
+  public void tearDown() {
     hsqldb.destroy();
   }
 
@@ -140,6 +148,12 @@ public class ComputerDaoTest {
     assertEquals(574, lastOfListEnd.getId());
   }
 
+  /**
+   * Return the first element of an iterable.
+   * @param <T> the type of the iterable set
+   * @param elements iterable set of elements
+   * @return the first element of the iterable set
+   */
   private static <T> T getFirstElement(final Iterable<T> elements) {
     if (elements == null) {
       return null;
@@ -148,6 +162,12 @@ public class ComputerDaoTest {
     return elements.iterator().next();
   }
 
+  /**
+   * Return the last element of an iterable.
+   * @param <T> the type of the iterable set
+   * @param elements iterable set of elements
+   * @return the last element of the iterable set
+   */
   private static <T> T getLastElement(final Iterable<T> elements) {
     final Iterator<T> itr = elements.iterator();
     T lastElement = itr.next();
