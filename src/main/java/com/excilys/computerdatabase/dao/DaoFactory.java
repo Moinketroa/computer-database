@@ -1,9 +1,12 @@
 package com.excilys.computerdatabase.dao;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ResourceBundle;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,12 +33,29 @@ public enum DaoFactory {
    * Loads connection informations form the config.properties file.
    */
   DaoFactory() {
-    ResourceBundle input = ResourceBundle.getBundle("config");
+    final Properties properties = new Properties();
+    final InputStream path = ClassLoader.getSystemClassLoader().getResourceAsStream("config.properties");
 
-    url = input.getString("databaseUrl");
-    username = input.getString("username");
-    password = input.getString("password");
-    driver = input.getString("driver");
+    try {
+      properties.load(path);
+
+      driver = properties.getProperty("driver");
+
+      url = properties.getProperty("databaseUrl");
+      username = properties.getProperty("username");
+      password = properties.getProperty("password");
+    } catch (FileNotFoundException e) {
+      // LOGGER.error(e.getMessage());
+    } catch (IOException e) {
+      // LOGGER.error(e.getMessage());
+    }
+
+    /*
+     * ResourceBundle input = ResourceBundle.getBundle("config");
+     * 
+     * url = input.getString("databaseUrl"); username = input.getString("username");
+     * password = input.getString("password"); driver = input.getString("driver");
+     */
   }
 
   /**
