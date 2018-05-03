@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib tagdir="/WEB-INF/tags" prefix="cdb"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <html>
@@ -75,7 +76,8 @@
 							<tr>
 								<td class="editMode"><input type="checkbox" name="cb"
 									class="cb" value="0"></td>
-								<td><a href="./computer?computerId=${ computer.computer.id }">${ computer.computer.name }</a></td>
+								<td><a
+									href="<cdb:link target="computer"	computerId="${ computer.computer.id }"/>">${ computer.computer.name }</a></td>
 								<td><fmt:parseDate pattern="yyyy-MM-dd"
 										value="${ computer.computer.introduced }" var="parsedDate" />
 									<fmt:formatDate value="${ parsedDate }" pattern="dd/MM/yyyy" />
@@ -95,31 +97,9 @@
 
 		<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
-			<ul class="pagination">
-				<c:if test="${ isPreviousPageAvailable }">
-					<li><a
-						href="./dashboard?offset=${ previousPageOffset }&entitiesPerPage=${ entitiesPerPage }"
-						aria-label="Previous"> <span aria-hidden="true">&laquo;
-								Previous Page</span>
-					</a></li>
-				</c:if>
-				<c:if test="${ isNextPageAvailable }">
-					<li><a
-						href="./dashboard?offset=${ nextPageOffset }&entitiesPerPage=${ entitiesPerPage }"
-						aria-label="Next"> <span aria-hidden="true">Next Page
-								&raquo;</span>
-					</a></li>
-				</c:if>
-			</ul>
+			<cdb:page />
 
-			<div class="btn-group btn-group-sm pull-right" role="group">
-				<a href="./dashboard?offset=${ offset }&entitiesPerPage=10"
-					type="button" class="btn btn-default">10</a> <a
-					href="./dashboard?offset=${ offset }&entitiesPerPage=50"
-					type="button" class="btn btn-default">50</a> <a
-					href="./dashboard?offset=${ offset }&entitiesPerPage=100"
-					type="button" class="btn btn-default">100</a>
-			</div>
+			<cdb:entitiesPerPage />
 		</div>
 		</footer>
 	</c:if>

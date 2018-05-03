@@ -87,6 +87,7 @@ public class DashboardServlet extends HttpServlet {
 
       request.setAttribute("offset", offset);
       request.setAttribute("entitiesPerPage", entitiesPerPage);
+      request.setAttribute("page", page);
 
       request.setAttribute("computers", computers);
     } catch (WrongPageParameterException e) {

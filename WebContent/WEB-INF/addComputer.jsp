@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <html>
@@ -22,10 +23,12 @@
 		<div class="row">
 			<div class="col-xs-8 col-xs-offset-2 box">
 				<h1>Add Computer</h1>
-				<form action="./addComputer" method="POST">
+				<form
+					action='<cdb:addComputer path="addComputer"></cdb:addComputer>'
+					method="POST">
 					<fieldset>
 						<div class="form-group">
-							<labsel for="name">Computer name</label> <input type="text"
+							<label for="name">Computer name</label> <input type="text"
 								class="form-control" id="name" name="name"
 								placeholder="Computer name">
 						</div>

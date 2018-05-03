@@ -67,6 +67,7 @@ public class Page<E> {
 
   /**
    * Returns the index from where the page following the current begins.
+   *
    * @return the next page offset
    */
   public int getNextPageOffset() {
@@ -75,6 +76,7 @@ public class Page<E> {
 
   /**
    * Returns the index from where the page preceding the current begin.
+   *
    * @return the previous page offset
    */
   public int getPreviousPageOffset() {
@@ -89,6 +91,7 @@ public class Page<E> {
 
   /**
    * Determines if the page is empty and thus if the entire collection is empty.
+   *
    * @return true if the total number of elements is zero
    */
   public boolean isEmpty() {
@@ -99,9 +102,16 @@ public class Page<E> {
     return totalNumberOfElements;
   }
 
+  public int getNumberOfElementsPerPage() {
+    return numberOfElementsPerPage;
+  }
+
   /**
-   * Returns the portion of the entire collection that the current page encapsulates.
-   * @return the (number of elements per page) elements available in the current page
+   * Returns the portion of the entire collection that the current page
+   * encapsulates.
+   *
+   * @return the (number of elements per page) elements available in the current
+   *         page
    */
   public List<E> result() {
     return elements;

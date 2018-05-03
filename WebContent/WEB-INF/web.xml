@@ -8,11 +8,4 @@
 	    <servlet-name>default</servlet-name>
 	    <url-pattern>*.js</url-pattern>
   	</servlet-mapping>
-  
-  	<jsp-config>
-		<taglib>
-	    	<taglib-uri>taglib-URI</taglib-uri>
-	    	<taglib-location>/WEB-INF/lib/taglib.jar</taglib-location>
-		</taglib>
-	</jsp-config>
 </web-app>
