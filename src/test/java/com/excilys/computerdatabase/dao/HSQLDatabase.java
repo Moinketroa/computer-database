@@ -7,6 +7,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public enum HSQLDatabase {
 
   INSTANCE;
@@ -16,6 +19,8 @@ public enum HSQLDatabase {
   private static final String DROP_COMPANY = "DROP TABLE company";
 
   private DaoFactory daoFactory = DaoFactory.INSTANCE;
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(HSQLDatabase.class);
 
   /**
    * Initializes the HSQL Database with tables and entries.
@@ -28,7 +33,9 @@ public enum HSQLDatabase {
 
       Statement statement = connexion.createStatement();
 
+      LOGGER.info("Creating the schema for the HSQLDB");
       executeScript(tablesStrings, statement);
+      LOGGER.info("Inserting entries in the HSQLDB tables");
       executeScript(entriesStrings, statement);
 
     } catch (SQLException e) {
@@ -43,6 +50,7 @@ public enum HSQLDatabase {
     try (Connection connexion = daoFactory.getConnection()) {
       Statement statement = connexion.createStatement();
 
+      LOGGER.info("Dropping HSQLDB tables");
       statement.executeUpdate(DROP_CONSTRAINT);
       statement.executeUpdate(DROP_COMPANY);
       statement.executeUpdate(DROP_COMPUTER);
@@ -87,7 +95,8 @@ public enum HSQLDatabase {
    * @param statement
    *          a {@link Statement} connected to the database executing the SQL
    *          queries
-   * @throws SQLException if something went wrong while executing the script
+   * @throws SQLException
+   *           if something went wrong while executing the script
    */
   private void executeScript(String[] sqlLines, Statement statement) throws SQLException {
     for (int i = 0; i < sqlLines.length; i++) {

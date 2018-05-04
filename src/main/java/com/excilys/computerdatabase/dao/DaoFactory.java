@@ -1,11 +1,14 @@
 package com.excilys.computerdatabase.dao;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -27,7 +30,7 @@ public enum DaoFactory {
   private String password;
   private String driver;
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DaoFactory.class);
+  private final Logger LOGGER = LoggerFactory.getLogger(DaoFactory.class);
 
   /**
    * Loads connection informations form the config.properties file.
@@ -44,18 +47,15 @@ public enum DaoFactory {
       url = properties.getProperty("databaseUrl");
       username = properties.getProperty("username");
       password = properties.getProperty("password");
-    } catch (FileNotFoundException e) {
-      // LOGGER.error(e.getMessage());
-    } catch (IOException e) {
-      // LOGGER.error(e.getMessage());
-    }
 
-    /*
-     * ResourceBundle input = ResourceBundle.getBundle("config");
-     * 
-     * url = input.getString("databaseUrl"); username = input.getString("username");
-     * password = input.getString("password"); driver = input.getString("driver");
-     */
+      if (properties.getProperty("hsql.initDB").equals("true")) {
+        initHSQLDB();
+      }
+    } catch (FileNotFoundException e) {
+      LOGGER.error(e.getMessage());
+    } catch (IOException e) {
+      LOGGER.error(e.getMessage());
+    }
   }
 
   /**
@@ -99,4 +99,72 @@ public enum DaoFactory {
     return CompanyDao.INSTANCE;
   }
 
+  /**
+   * Initializes the HSQL Database with tables and entries.
+   * Used only for ITs.
+   */
+  private void initHSQLDB() {
+    try (Connection connexion = getConnection()) {
+
+      String[] tablesStrings = transferDataFromFile("db/1-SCHEMA.sql");
+      String[] entriesStrings = transferDataFromFile("db/3-ENTRIES.sql");
+
+      Statement statement = connexion.createStatement();
+
+      LOGGER.info("Creating the schema for the HSQLDB");
+      executeScript(tablesStrings, statement);
+      LOGGER.info("Inserting entries in the HSQLDB tables");
+      executeScript(entriesStrings, statement);
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Creates a String array representing a SQL file.
+   *
+   * @param filename
+   *          the path to the SQL file to be represented
+   * @return String array representing a SQL file
+   * @throws IOException
+   */
+  private String[] transferDataFromFile(String filename) {
+    try (FileReader fileReader = new FileReader(getClass().getClassLoader().getResource(filename).getFile());
+        BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+
+      String tempString = new String();
+      StringBuilder stringBuilder = new StringBuilder();
+
+      while ((tempString = bufferedReader.readLine()) != null) {
+        stringBuilder.append(tempString);
+      }
+
+      bufferedReader.close();
+
+      return stringBuilder.toString().split(";");
+    } catch (IOException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  /**
+   * Executes several SQL statements and avoids executing empty statements.
+   *
+   * @param sqlLines
+   *          an array of String representing SQL statements
+   * @param statement
+   *          a {@link Statement} connected to the database executing the SQL
+   *          queries
+   * @throws SQLException
+   *           if something went wrong while executing the script
+   */
+  private void executeScript(String[] sqlLines, Statement statement) throws SQLException {
+    for (int i = 0; i < sqlLines.length; i++) {
+      if (!sqlLines[i].trim().equals("")) {
+        statement.executeUpdate(sqlLines[i] + ";");
+      }
+    }
+  }
 }
