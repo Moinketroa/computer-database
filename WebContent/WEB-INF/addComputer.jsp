@@ -23,22 +23,23 @@
 		<div class="row">
 			<div class="col-xs-8 col-xs-offset-2 box">
 				<h1>Add Computer</h1>
-				<form action='<cdb:link target="addComputer"/>' method="POST">
+				<div id="errorMsg" hidden="true" class="alert alert-danger"></div>
+				<form id="addComputerForm" action='<cdb:link target="addComputer"/>' method="POST">
 					<fieldset>
 						<div class="form-group">
 							<label for="name">Computer name</label> <input type="text"
-								class="form-control" id="name" name="name" 
-								placeholder="Computer name">
+								class="form-control" id="name" name="name"
+								placeholder="Computer name" onkeyup="verify()">
 						</div>
 						<div class="form-group">
 							<label for="introduced">Introduced date</label> <input
 								type="date" class="form-control" id="introduced"
-								name="introduced" placeholder="Introduced date">
+								name="introduced" placeholder="Introduced date" onchange="verify()">
 						</div>
 						<div class="form-group">
 							<label for="discontinued">Discontinued date</label> <input
 								type="date" class="form-control" id="discontinued"
-								name="discontinued" placeholder="Discontinued date">
+								name="discontinued" placeholder="Discontinued date" onchange="verify()">
 						</div>
 						<div class="form-group">
 							<label for="companyId">Company</label> <select
@@ -51,7 +52,7 @@
 						</div>
 					</fieldset>
 					<div class="actions pull-right">
-						<input type="submit" value="Add" id="addComputerButton" class="btn btn-primary">
+						<input type="submit" disabled="true" value="Add" id="addComputerButton" class="btn btn-primary">
 						or <a href="dashboard" class="btn btn-default">Cancel</a>
 					</div>
 				</form>
@@ -59,5 +60,38 @@
 		</div>
 	</div>
 	</section>
+	
+	
+	<script src="static/js/jquery.min.js"></script>
+	<script src="static/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+	function verify() {
+		var isCorrect = true;
+		
+		if (!$('#name').val().trim()) {
+			isCorrect = false;
+			$('#errorMsg').show();
+			$('#errorMsg').text("Please enter a non-empty name for the computer.");
+		}
+		
+		if ($('#introduced').val().trim() && $('#discontinued').val().trim()) {
+			if (toDate($('#introduced').val()) > toDate($('#discontinued').val())) {
+				isCorrect = false;
+				$('#errorMsg').show();
+				$('#errorMsg').text("The introduction date is greater than the discontinuation date. Please enter valid dates.");
+			}
+		}
+		
+		if (isCorrect) {
+			$('#errorMsg').hide();
+			$('#addComputerButton').removeAttr('disabled');
+		}
+	}
+	
+	function toDate(formDate) {
+		var dateArray = formDate.split('-');
+		return new Date(dateArray[0], dateArray[1], dateArray[2]);
+	}
+	</script>
 </body>
 </html>
