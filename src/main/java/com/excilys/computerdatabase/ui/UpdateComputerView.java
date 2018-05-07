@@ -6,6 +6,7 @@ import com.excilys.computerdatabase.exceptions.DiscontinuationPriorToIntroductio
 import com.excilys.computerdatabase.mapper.LocalDateMapper;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.service.ComputerService;
+import com.excilys.computerdatabase.validator.LocalDateValidator;
 
 /**
  * The class directs the user in order to update a computer.
@@ -108,7 +109,7 @@ public class UpdateComputerView extends AbstractView {
       if (introductionString.equals("")) {
         introduction = null;
         return;
-      } else if (!LocalDateMapper.isValidFormat(introductionString)) {
+      } else if (!LocalDateValidator.isValidFormat(introductionString)) {
         System.out.println("Please enter a valid date format");
         introductionString = scanner.nextLine().trim();
       } else {
@@ -133,7 +134,7 @@ public class UpdateComputerView extends AbstractView {
     String discontinuationString = scanner.nextLine().trim();
 
     while (true) {
-      if (discontinuationString.equals("") || LocalDateMapper.isValidFormat(discontinuationString)) {
+      if (discontinuationString.equals("") || LocalDateValidator.isValidFormat(discontinuationString)) {
         if (discontinuationString.equals("")) {
           discontinuation = null;
           return;

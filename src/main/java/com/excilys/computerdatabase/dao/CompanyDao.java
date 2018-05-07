@@ -22,8 +22,8 @@ public enum CompanyDao {
 
   INSTANCE;
 
-  private static final String SQL_SELECT_COMPANY = "SELECT * FROM company WHERE id = ?";
-  private static final String SQL_SELECT_COMPANIES = "SELECT * FROM company LIMIT ? OFFSET ?";
+  private static final String SQL_SELECT_COMPANY = "SELECT id, name FROM company WHERE id = ?";
+  private static final String SQL_SELECT_COMPANIES = "SELECT id, name FROM company LIMIT ? OFFSET ?";
   private static final String SQL_SELECT_COUNT = "SELECT COUNT(*) FROM company";
 
   private DaoFactory daoFactory = DaoFactory.INSTANCE;

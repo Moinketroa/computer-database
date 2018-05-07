@@ -8,6 +8,7 @@ import com.excilys.computerdatabase.mapper.ComputerMapper;
 import com.excilys.computerdatabase.mapper.LocalDateMapper;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.service.ComputerService;
+import com.excilys.computerdatabase.validator.LocalDateValidator;
 
 /**
  * The class directs the user in order to add a new computer.
@@ -77,7 +78,7 @@ public class AddComputerView extends AbstractView {
 
     String introductionString = scanner.nextLine().trim();
 
-    while (!introductionString.equals("") && !LocalDateMapper.isValidFormat(introductionString)) {
+    while (!introductionString.equals("") && !LocalDateValidator.isValidFormat(introductionString)) {
       System.out.println("Please enter a valid date format");
       introductionString = scanner.nextLine().trim();
     }
@@ -100,7 +101,7 @@ public class AddComputerView extends AbstractView {
     String discontinuationString = scanner.nextLine().trim();
 
     while (true) {
-      while (!discontinuationString.equals("") && !LocalDateMapper.isValidFormat(discontinuationString)) {
+      while (!discontinuationString.equals("") && !LocalDateValidator.isValidFormat(discontinuationString)) {
         System.out.println("Please enter a valid date format");
         discontinuationString = scanner.nextLine().trim();
       }
