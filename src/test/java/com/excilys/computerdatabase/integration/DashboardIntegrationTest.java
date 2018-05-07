@@ -20,36 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.computerdatabase.dao.HSQLDatabase;
 
-public class DashboardIntegrationTest {
-
-  private HSQLDatabase hsqldb = HSQLDatabase.INSTANCE;
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(DashboardIntegrationTest.class);
-
-  private static WebDriver driver;
-
-  @BeforeClass
-  public static void init() {
-    LOGGER.debug("Locating the selenium chrome driver");
-    System.setProperty("webdriver.chrome.driver", "/home/debicki/chromedriver");
-    driver = new ChromeDriver();
-  }
-
-  @Before
-  public void setUp() throws Exception {
-    hsqldb.init();
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    hsqldb.destroy();
-  }
-
-  @AfterClass
-  public static void quit() {
-    driver.close();
-    driver.quit();
-  }
+public class DashboardIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   public void checkElementsTest() {
@@ -127,6 +98,25 @@ public class DashboardIntegrationTest {
 
     computerRows = driver.findElements(By.id("computerRow"));
     assertEquals(4, computerRows.size());
+
+    driver.navigate().to("http://localhost:8086/computer-database/dashboard");
+
+    computerRows = driver.findElements(By.id("computerRow"));
+    WebElement macBookPro = computerRows.get(5);
+
+    WebElement macBookProName = macBookPro.findElement(By.id("computerName"));
+    assertEquals("MacBook Pro", macBookProName.getText());
+    WebElement macBookProLink = macBookProName.findElement(By.xpath("./a"));
+    assertEquals("http://localhost:8086/computer-database/computer?&computerId=6", macBookProLink.getAttribute("href"));
+
+    WebElement macBookProIntroduced = macBookPro.findElement(By.id("computerIntroduced"));
+    assertEquals("10/01/2006", macBookProIntroduced.getText());
+
+    WebElement macBookProDiscontinued = macBookPro.findElement(By.id("computerDiscontinued"));
+    assertEquals("", macBookProDiscontinued.getText());
+
+    WebElement macBookProCompany = macBookPro.findElement(By.id("computerCompany"));
+    assertEquals("Apple Inc.", macBookProCompany.getText());
   }
 
 }

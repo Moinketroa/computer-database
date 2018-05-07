@@ -35,7 +35,7 @@
 					</form>
 				</div>
 				<div class="pull-right">
-					<a class="btn btn-success" id="addComputer" href="addComputer">Add
+					<a class="btn btn-success" id="addComputer" href="<cdb:link target="addComputer"/>">Add
 						Computer</a> <a class="btn btn-default" id="editComputer" href="#"
 						onclick="$.fn.toggleEditMode();">Edit</a>
 				</div>
@@ -76,17 +76,17 @@
 							<tr id="computerRow">
 								<td class="editMode"><input type="checkbox" name="cb"
 									class="cb" value="0"></td>
-								<td><a
+								<td id="computerName"><a
 									href="<cdb:link target="computer"	computerId="${ computer.computer.id }"/>">${ computer.computer.name }</a></td>
-								<td><fmt:parseDate pattern="yyyy-MM-dd"
+								<td id="computerIntroduced"><fmt:parseDate pattern="yyyy-MM-dd"
 										value="${ computer.computer.introduced }" var="parsedDate" />
 									<fmt:formatDate value="${ parsedDate }" pattern="dd/MM/yyyy" />
 								</td>
-								<td><fmt:parseDate pattern="yyyy-MM-dd"
+								<td id="computerDiscontinued"><fmt:parseDate pattern="yyyy-MM-dd"
 										value="${ computer.computer.discontinued }" var="parsedDate" />
 									<fmt:formatDate value="${ parsedDate }" pattern="dd/MM/yyyy" />
 								</td>
-								<td>${ computer.company.name }</td>
+								<td id="computerCompany">${ computer.company.name }</td>
 
 							</tr>
 						</c:forEach>

@@ -23,13 +23,11 @@
 		<div class="row">
 			<div class="col-xs-8 col-xs-offset-2 box">
 				<h1>Add Computer</h1>
-				<form
-					action='<cdb:addComputer path="addComputer"></cdb:addComputer>'
-					method="POST">
+				<form action='<cdb:link target="addComputer"/>' method="POST">
 					<fieldset>
 						<div class="form-group">
 							<label for="name">Computer name</label> <input type="text"
-								class="form-control" id="name" name="name"
+								class="form-control" id="name" name="name" 
 								placeholder="Computer name">
 						</div>
 						<div class="form-group">
@@ -53,7 +51,7 @@
 						</div>
 					</fieldset>
 					<div class="actions pull-right">
-						<input type="submit" value="Add" class="btn btn-primary">
+						<input type="submit" value="Add" id="addComputerButton" class="btn btn-primary">
 						or <a href="dashboard" class="btn btn-default">Cancel</a>
 					</div>
 				</form>
