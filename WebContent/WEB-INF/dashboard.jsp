@@ -77,13 +77,13 @@
 								<td class="editMode"><input type="checkbox" name="cb"
 									class="cb" value="0"></td>
 								<td id="computerName"><a
-									href="<cdb:link target="computer"	computerId="${ computer.computer.id }"/>">${ computer.computer.name }</a></td>
+									href="<cdb:link target="computer"	computerId="${ computer.id }"/>">${ computer.name }</a></td>
 								<td id="computerIntroduced"><fmt:parseDate pattern="yyyy-MM-dd"
-										value="${ computer.computer.introduced }" var="parsedDate" />
+										value="${ computer.introduced }" var="parsedDate" />
 									<fmt:formatDate value="${ parsedDate }" pattern="dd/MM/yyyy" />
 								</td>
 								<td id="computerDiscontinued"><fmt:parseDate pattern="yyyy-MM-dd"
-										value="${ computer.computer.discontinued }" var="parsedDate" />
+										value="${ computer.discontinued }" var="parsedDate" />
 									<fmt:formatDate value="${ parsedDate }" pattern="dd/MM/yyyy" />
 								</td>
 								<td id="computerCompany">${ computer.company.name }</td>

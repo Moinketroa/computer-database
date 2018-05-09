@@ -1,17 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <html>
 <head>
-<title>Computer #${ computerId }</title>
+<title>Computer Database</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
 <link href="static/css/bootstrap.min.css" rel="stylesheet"
 	media="screen">
-<link href="static/css/font-awesome.css" rel="stylesheet" media="screen">
+<link href="static/css/font-awesome.min.css" rel="stylesheet" media="screen">
 <link href="static/css/main.css" rel="stylesheet" media="screen">
 </head>
 
@@ -22,6 +23,9 @@
 		<section id="main">
 		<div class="container">
 			<h1 id="homeTitle">Details for Computer #${ computerId }</h1>
+			<div class="pull-right">
+				<a class="btn btn-default" id="editComputer" href='<cdb:link target="editComputer" computerId="${ computerId }"/>'>Edit <i class="far fa-edit"></i></a>
+			</div>
 		</div>
 
 		<div class="container" style="margin-top: 10px;">
@@ -41,12 +45,12 @@
 				<!-- Browse attribute computers -->
 				<tbody id="results">
 					<tr>
-						<td><span>${ computer.computer.name }</span></td>
+						<td><span>${ computer.name }</span></td>
 						<td><fmt:parseDate pattern="yyyy-MM-dd"
-								value="${ computer.computer.introduced }" var="parsedDate" /> <fmt:formatDate
+								value="${ computer.introduced }" var="parsedDate" /> <fmt:formatDate
 								value="${ parsedDate }" pattern="dd/MM/yyyy" /></td>
 						<td><fmt:parseDate pattern="yyyy-MM-dd"
-								value="${ computer.computer.discontinued }" var="parsedDate" />
+								value="${ computer.discontinued }" var="parsedDate" />
 							<fmt:formatDate value="${ parsedDate }" pattern="dd/MM/yyyy" />
 						</td>
 						<td>${ computer.company.name }</td>
@@ -56,11 +60,11 @@
 		</div>
 		</section>
 	</c:if>
-	
+
 	<c:if test="${ empty computer }">
 		<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">Computer #${ computerId } not found</h1>
+			<h1 id="homeTitle">Computer not found</h1>
 		</div>
 		</section>
 	</c:if>

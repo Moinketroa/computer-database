@@ -13,23 +13,27 @@
 	<c:choose>
 		<c:when test="${ target.equals('dashboard') }">
 			<cdb:dashboard path="${ path }" offset="${ offset }"
-				entitiesPerPage="${ entitiesPerPage }"></cdb:dashboard>
+				entitiesPerPage="${ entitiesPerPage }"/>
 		</c:when>
 
 		<c:when test="${ target.equals('addComputer') }">
-			<cdb:addComputer path="${ path }"></cdb:addComputer>
+			<cdb:addComputer path="${ path }"/>
+		</c:when>
+		
+		<c:when test="${ target.equals('editComputer') }">
+			<cdb:editComputer path="${ path }" computerId="${ computerId }"/>
 		</c:when>
 
 		<c:when test="${ target.equals('computer') }">
-			<cdb:computer path="${ path }" computerId="${ computerId }"></cdb:computer>
+			<cdb:computer path="${ path }" computerId="${ computerId }"/>
 		</c:when>
 
 		<c:otherwise>
-			<cdb:dashboard path="${ path }"></cdb:dashboard>
+			<cdb:dashboard path="${ path }"/>
 		</c:otherwise>
 	</c:choose>
 </c:if>
 
 <c:if test="${ empty target }">
-	<cdb:dashboard path="${ path }"></cdb:dashboard>
+	<cdb:dashboard path="${ path }"/>
 </c:if>

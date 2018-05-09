@@ -22,38 +22,45 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-8 col-xs-offset-2 box">
-				<h1>Add Computer</h1>
+				<h1>Edit Computer #${ computerId }</h1>
 				<div id="errorMsg" hidden="true" class="alert alert-danger"></div>
-				<form id="addComputerForm" action='<cdb:link target="addComputer"/>' method="POST">
+				<form id="editComputerForm" action='<cdb:link target="editComputer" computerId="${ computerId }"/>' method="POST">
 					<fieldset>
 						<div class="form-group">
 							<label for="name">Computer name</label> <input type="text"
 								class="form-control" id="name" name="name"
-								placeholder="Computer name" onkeyup="verify()">
+								placeholder="Computer name" value="${ computer.name }" onkeyup="verify()">
 						</div>
 						<div class="form-group">
 							<label for="introduced">Introduced date</label> <input
 								type="date" class="form-control" id="introduced"
-								name="introduced" placeholder="Introduced date" onchange="verify()">
+								name="introduced" placeholder="Introduced date" value="${ computer.introduced }" onchange="verify()">
 						</div>
 						<div class="form-group">
 							<label for="discontinued">Discontinued date</label> <input
 								type="date" class="form-control" id="discontinued"
-								name="discontinued" placeholder="Discontinued date" onchange="verify()">
+								name="discontinued" placeholder="Discontinued date" value="${ computer.discontinued }" onchange="verify()">
 						</div>
 						<div class="form-group">
 							<label for="companyId">Company</label> <select
 								class="form-control" id="companyId" name="companyId">
 								<option value="0">No company</option>
 								<c:forEach var="company" items="${ companies }">
-									<option value="${ company.id }">${ company.name }</option>
+									<c:choose>
+										<c:when test="${ company.id == computer.company.id }">
+											<option value="${ company.id }" selected>${ company.name }</option>
+										</c:when>
+										<c:otherwise>
+											<option value="${ company.id }">${ company.name }</option>
+										</c:otherwise>
+									</c:choose>
 								</c:forEach>
 							</select>
 						</div>
 					</fieldset>
 					<div class="actions pull-right">
-						<input type="submit" disabled="true" value="Add" id="addComputerButton" class="btn btn-primary">
-						or <a href="<cdb:link target="dashboard"/>" class="btn btn-default">Cancel</a>
+						<input type="submit" value="Edit" id="editComputerButton" class="btn btn-primary">
+						or <a href='<cdb:link target="computer" computerId="${ computerId }"/>' class="btn btn-default">Cancel</a>
 					</div>
 				</form>
 			</div>
@@ -84,9 +91,9 @@
 		
 		if (isCorrect) {
 			$('#errorMsg').hide();
-			$('#addComputerButton').removeAttr('disabled');
+			$('#editComputerButton').removeAttr('disabled');
 		} else {
-			$('#addComputerButton').attr('disabled', 'true');
+			$('#editComputerButton').attr('disabled', 'true');
 		}
 	}
 	

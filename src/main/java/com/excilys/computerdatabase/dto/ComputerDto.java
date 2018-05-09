@@ -1,5 +1,7 @@
 package com.excilys.computerdatabase.dto;
 
+import java.time.LocalDate;
+
 import com.excilys.computerdatabase.model.pojo.Computer;
 
 public class ComputerDto {
@@ -26,8 +28,19 @@ public class ComputerDto {
     return company;
   }
 
-  public ComputerBasicView getComputer() {
-    return computer;
+  public int getId() {
+    return computer.getId();
   }
 
+  public String getName() {
+    return computer.getName();
+  }
+
+  public LocalDate getIntroduced() {
+    return computer.getIntroduced();
+  }
+
+  public LocalDate getDiscontinued() {
+    return computer.getDiscontinued();
+  }
 }

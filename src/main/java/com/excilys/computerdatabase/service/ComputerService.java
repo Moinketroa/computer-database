@@ -31,15 +31,16 @@ public enum ComputerService {
   }
 
   /**
-   * Fetches a given number (or fewer) of computers from the {@link ComputerDao} under the
-   * form of a {@link Page}.
+   * Fetches a given number (or fewer) of computers from the {@link ComputerDao}
+   * under the form of a {@link Page}.
    *
    * @param offset
    *          the index of the first entity wanted in the page
    * @param numberOfElementsPerPage
    *          maximum number of elements in the wanted page
    * @return A {@link Page} of the found computers
-   * @throws WrongPageParameterException if the parameters are incorrect
+   * @throws WrongPageParameterException
+   *           if the parameters are incorrect
    */
   public Page<Computer> getAll(int offset, int numberOfElementsPerPage) throws WrongPageParameterException {
     if ((offset < 0) || (numberOfElementsPerPage <= 0)) {
@@ -50,7 +51,8 @@ public enum ComputerService {
   }
 
   /**
-   * Fetches one computer from the {@link ComputerDao} by searching by the computer id.
+   * Fetches one computer from the {@link ComputerDao} by searching by the
+   * computer id.
    *
    * @param id
    *          The id of the wanted computer
@@ -66,7 +68,8 @@ public enum ComputerService {
    * @param computer
    *          The computer to be added to the database
    * @return The id of the added computer
-   * @throws DiscontinuationPriorToIntroductionExpection if the continuity of the dates are incorrect
+   * @throws DiscontinuationPriorToIntroductionExpection
+   *           if the continuity of the dates are incorrect
    */
   public int create(Computer computer) throws DiscontinuationPriorToIntroductionExpection {
     LocalDate introduced = computer.getIntroduced();
@@ -86,14 +89,17 @@ public enum ComputerService {
    *
    * @param computer
    *          The computer to be updated in the database with its fields changed
-   * @throws DiscontinuationPriorToIntroductionExpection if the continuity of the dates are incorrect
+   * @throws DiscontinuationPriorToIntroductionExpection
+   *           if the continuity of the dates are incorrect
    */
   public void update(Computer computer) throws DiscontinuationPriorToIntroductionExpection {
     LocalDate introduced = computer.getIntroduced();
     LocalDate discontinued = computer.getDiscontinued();
 
-    if (introduced.isAfter(discontinued)) {
-      throw new DiscontinuationPriorToIntroductionExpection();
+    if (introduced == null && discontinued == null) {
+      if (introduced.isAfter(discontinued)) {
+        throw new DiscontinuationPriorToIntroductionExpection();
+      }
     }
 
     computerDao.update(computer);

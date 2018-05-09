@@ -8,13 +8,19 @@ public class CompanyDto {
 
   /**
    * Turns a company to a CompanyDto.
-   * @param company the company to be transformed
+   *
+   * @param company
+   *          the company to be transformed
    */
   public CompanyDto(Company company) {
     this.company = new CompanyBasicView(company);
   }
 
-  public CompanyBasicView getCompany() {
-    return company;
+  public String getName() {
+    return company.getName();
+  }
+
+  public int getId() {
+    return company.getId();
   }
 }
