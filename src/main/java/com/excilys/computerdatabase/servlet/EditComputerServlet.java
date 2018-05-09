@@ -146,7 +146,7 @@ public class EditComputerServlet extends HttpServlet {
     Computer computerToUpdate = null;
 
     try {
-      computerToUpdate = ComputerMapper.fromParameters(companyId, nameParameter, introduced, discontinued, companyId);
+      computerToUpdate = ComputerMapper.fromParameters(computerId, nameParameter, introduced, discontinued, companyId);
     } catch (CompanyNotFoundException e) {
       request.setAttribute("error", "Requested company wasn't found");
       this.getServletContext().getRequestDispatcher("/WEB-INF/404.jsp").forward(request, response);

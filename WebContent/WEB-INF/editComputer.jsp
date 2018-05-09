@@ -22,7 +22,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-8 col-xs-offset-2 box">
-				<h1>Edit Computer #${ computerId }</h1>
+				<h1 id="title">Edit Computer #${ computerId }</h1>
 				<div id="errorMsg" hidden="true" class="alert alert-danger"></div>
 				<form id="editComputerForm" action='<cdb:link target="editComputer" computerId="${ computerId }"/>' method="POST">
 					<fieldset>

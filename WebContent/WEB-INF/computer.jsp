@@ -45,15 +45,15 @@
 				<!-- Browse attribute computers -->
 				<tbody id="results">
 					<tr>
-						<td><span>${ computer.name }</span></td>
-						<td><fmt:parseDate pattern="yyyy-MM-dd"
+						<td id="computerName"><span>${ computer.name }</span></td>
+						<td id="computerIntroduced"><fmt:parseDate pattern="yyyy-MM-dd"
 								value="${ computer.introduced }" var="parsedDate" /> <fmt:formatDate
 								value="${ parsedDate }" pattern="dd/MM/yyyy" /></td>
-						<td><fmt:parseDate pattern="yyyy-MM-dd"
+						<td id="computerDiscontinued"><fmt:parseDate pattern="yyyy-MM-dd"
 								value="${ computer.discontinued }" var="parsedDate" />
 							<fmt:formatDate value="${ parsedDate }" pattern="dd/MM/yyyy" />
 						</td>
-						<td>${ computer.company.name }</td>
+						<td id="computerCompany">${ computer.company.name }</td>
 					</tr>
 				</tbody>
 			</table>
