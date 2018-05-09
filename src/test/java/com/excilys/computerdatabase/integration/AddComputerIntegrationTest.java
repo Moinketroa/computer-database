@@ -33,7 +33,7 @@ public class AddComputerIntegrationTest extends AbstractIntegrationTest {
     }
 
     WebElement addComputerButton = driver.findElement(By.id("addComputerButton"));
-    addComputerButton.click();
+    //addComputerButton.click();
   }
 
 }

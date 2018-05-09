@@ -8,20 +8,9 @@ import org.junit.Test;
 
 public class LocalDateMapperTest {
 
-  private String wrongDayDate = "123/11/2012";
-  private String wrongMonthDate = "12/113/2012";
-  private String wrongYearDate = "12/11/201";
   private String goodDate = "12/11/2012";
 
   private LocalDate twelveOctober2012 = LocalDate.of(2012, 11, 12);
-
-  @Test
-  public void testIsValidFormat() {
-    assertFalse(LocalDateMapper.isValidFormat(wrongDayDate));
-    assertFalse(LocalDateMapper.isValidFormat(wrongMonthDate));
-    assertFalse(LocalDateMapper.isValidFormat(wrongYearDate));
-    assertTrue(LocalDateMapper.isValidFormat(goodDate));
-  }
 
   @Test
   public void testFromString() {

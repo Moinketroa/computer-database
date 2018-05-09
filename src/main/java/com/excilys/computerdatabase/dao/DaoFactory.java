@@ -14,6 +14,9 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 /**
  * The class helps retrieving the different DAOs and the connection to the
  * database.
@@ -25,10 +28,9 @@ public enum DaoFactory {
 
   INSTANCE;
 
-  private String url;
-  private String username;
-  private String password;
   private String driver;
+
+  private HikariDataSource dataSource;
 
   private final Logger LOGGER = LoggerFactory.getLogger(DaoFactory.class);
 
@@ -38,15 +40,19 @@ public enum DaoFactory {
   DaoFactory() {
     final Properties properties = new Properties();
     final InputStream path = ClassLoader.getSystemClassLoader().getResourceAsStream("config.properties");
+    HikariConfig config = new HikariConfig();
 
     try {
       properties.load(path);
 
       driver = properties.getProperty("driver");
 
-      url = properties.getProperty("databaseUrl");
-      username = properties.getProperty("username");
-      password = properties.getProperty("password");
+      config.setJdbcUrl(properties.getProperty("jdbcUrl"));
+      config.setUsername(properties.getProperty("username"));
+      config.setPassword(properties.getProperty("password"));
+      config.setDriverClassName(properties.getProperty("driver"));
+
+      dataSource = new HikariDataSource(config);
 
       if (properties.getProperty("hsql.initDB").equals("true")) {
         initHSQLDB();
@@ -73,7 +79,7 @@ public enum DaoFactory {
     }
 
     try {
-      return DriverManager.getConnection(url, username, password);
+      return dataSource.getConnection();
     } catch (SQLException e) {
       LOGGER.error("Can't establish connection", e);
     }
@@ -100,8 +106,7 @@ public enum DaoFactory {
   }
 
   /**
-   * Initializes the HSQL Database with tables and entries.
-   * Used only for ITs.
+   * Initializes the HSQL Database with tables and entries. Used only for ITs.
    */
   private void initHSQLDB() {
     try (Connection connexion = getConnection()) {
