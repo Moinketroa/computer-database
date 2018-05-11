@@ -27,6 +27,10 @@
 		<c:when test="${ target.equals('computer') }">
 			<cdb:computer path="${ path }" computerId="${ computerId }"/>
 		</c:when>
+		
+		<c:when test="${ target.equals('deleteComputer') }">
+			<cdb:deleteComputer path="${ path }" computerId="${ computerId }"/>
+		</c:when>
 
 		<c:otherwise>
 			<cdb:dashboard path="${ path }"/>

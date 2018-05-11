@@ -13,7 +13,7 @@
 <!-- Bootstrap -->
 <link href="static/css/bootstrap.min.css" rel="stylesheet"
 	media="screen">
-<link href="static/css/font-awesome.css" rel="stylesheet" media="screen">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
 <link href="static/css/main.css" rel="stylesheet" media="screen">
 </head>
 
@@ -54,11 +54,10 @@
 							<!-- Variable declarations for passing labels as parameters -->
 							<!-- Table header for Computer Name -->
 
-							<th class="editMode" style="width: 65px; height: 22px;"><input
+							<th class="editMode" style="width: 58px; height: 22px;"><input
 								type="checkbox" id="selectall" /> <span
 								style="vertical-align: top;"> - <a href="#"
-									id="deleteSelected" onclick="$.fn.deleteSelected();"> <i
-										class="fa fa-trash-o fa-lg"></i>
+									id="deleteSelected" onclick="$.fn.deleteSelected();"><i class="fas fa-trash-alt"></i>
 								</a>
 							</span></th>
 							<th>Computer name</th>

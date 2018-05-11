@@ -12,7 +12,7 @@
 <!-- Bootstrap -->
 <link href="static/css/bootstrap.min.css" rel="stylesheet"
 	media="screen">
-<link href="static/css/font-awesome.min.css" rel="stylesheet" media="screen">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
 <link href="static/css/main.css" rel="stylesheet" media="screen">
 </head>
 
@@ -25,8 +25,13 @@
 			<h1 id="homeTitle">Details for Computer #${ computerId }</h1>
 			<div class="pull-right">
 				<a class="btn btn-default" id="editComputer" href='<cdb:link target="editComputer" computerId="${ computerId }"/>'>Edit <i class="far fa-edit"></i></a>
+				<a class="btn btn-danger" id="deleteComputer" href='<cdb:link target="deleteComputer"/>' onclick="$.fn.deleteSelected(${ computerId });">Delete <i class="fas fa-trash-alt"></i></a>
 			</div>
 		</div>
+
+		<form id="deleteForm" action='<cdb:link target="deleteComputer" computerId="${ computerId }"/>' method="DELETE">
+			<input type="hidden" name="computerId" value="">
+		</form>
 
 		<div class="container" style="margin-top: 10px;">
 			<table class="table table-striped table-bordered">
@@ -68,5 +73,18 @@
 		</div>
 		</section>
 	</c:if>
+	
+	<script src="static/js/jquery.min.js"></script>
+	<script src="static/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+	(function ( $ ) {
+	    $.fn.deleteSelected = function(computerId) {
+	        if (confirm("Are you sure you want to delete the computer #" + computerId + " ?")) { 
+	        	$('#deleteForm input[name=computerId]').setValue(computerId);
+	            $('#deleteForm').submit();
+	        }
+	    };
+	}( jQuery ));
+	</script>
 </body>
 </html>

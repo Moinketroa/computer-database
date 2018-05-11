@@ -96,7 +96,7 @@ public class ComputerMapper {
 
     return computer;
   }
-  
+
   /**
    * Builds a {@link Computer} from parameters describing each fields of the
    * computer except its id.
@@ -116,8 +116,8 @@ public class ComputerMapper {
    * @throws CompanyNotFoundException
    *           if the company to add to the computer doesn't exist
    */
-  public static Computer fromParameters(int computerId, String name, LocalDate introduced, LocalDate discontinued, Integer companyId)
-      throws CompanyNotFoundException {
+  public static Computer fromParameters(int computerId, String name, LocalDate introduced, LocalDate discontinued,
+      Integer companyId) throws CompanyNotFoundException {
     Computer computer = new Computer(name);
     computer.setId(computerId);
     computer.setIntroduced(introduced);
@@ -136,4 +136,3 @@ public class ComputerMapper {
     return computer;
   }
 }
-
