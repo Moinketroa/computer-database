@@ -25,11 +25,11 @@
 			<h1 id="homeTitle">Details for Computer #${ computerId }</h1>
 			<div class="pull-right">
 				<a class="btn btn-default" id="editComputer" href='<cdb:link target="editComputer" computerId="${ computerId }"/>'>Edit <i class="far fa-edit"></i></a>
-				<a class="btn btn-danger" id="deleteComputer" href='<cdb:link target="deleteComputer"/>' onclick="$.fn.deleteSelected(${ computerId });">Delete <i class="fas fa-trash-alt"></i></a>
+				<a class="btn btn-danger" id="deleteComputer" href='#' onclick="$.fn.deleteSelected(${ computerId });">Delete <i class="fas fa-trash-alt"></i></a>
 			</div>
 		</div>
 
-		<form id="deleteForm" action='<cdb:link target="deleteComputer" computerId="${ computerId }"/>' method="DELETE">
+		<form id="deleteForm" action='<cdb:link target="deleteComputer"/>' method="GET">
 			<input type="hidden" name="computerId" value="">
 		</form>
 
@@ -80,7 +80,7 @@
 	(function ( $ ) {
 	    $.fn.deleteSelected = function(computerId) {
 	        if (confirm("Are you sure you want to delete the computer #" + computerId + " ?")) { 
-	        	$('#deleteForm input[name=computerId]').setValue(computerId);
+	        	$('#deleteForm input[name=computerId]').val(computerId);
 	            $('#deleteForm').submit();
 	        }
 	    };

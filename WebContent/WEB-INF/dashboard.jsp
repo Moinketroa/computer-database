@@ -42,7 +42,7 @@
 			</div>
 		</div>
 
-		<form id="deleteForm" action="#" method="POST">
+		<form id="deleteForm" action="<cdb:link target="deleteComputer"/>" method="POST">
 			<input type="hidden" name="selection" value="">
 		</form>
 
@@ -56,7 +56,7 @@
 
 							<th class="editMode" style="width: 58px; height: 22px;"><input
 								type="checkbox" id="selectall" /> <span
-								style="vertical-align: top;"> - <a href="#"
+								style="vertical-align: top;"> - <a href='#'
 									id="deleteSelected" onclick="$.fn.deleteSelected();"><i class="fas fa-trash-alt"></i>
 								</a>
 							</span></th>
@@ -74,7 +74,7 @@
 						<c:forEach var="computer" items="${ computers }">
 							<tr id="computerRow">
 								<td class="editMode"><input type="checkbox" name="cb"
-									class="cb" value="0"></td>
+									class="cb" value="${ computer.id }"></td>
 								<td id="computerName"><a
 									href="<cdb:link target="computer"	computerId="${ computer.id }"/>">${ computer.name }</a></td>
 								<td id="computerIntroduced"><fmt:parseDate pattern="yyyy-MM-dd"

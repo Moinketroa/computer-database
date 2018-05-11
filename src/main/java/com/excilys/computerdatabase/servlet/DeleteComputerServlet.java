@@ -13,7 +13,7 @@ import com.excilys.computerdatabase.service.ComputerService;
  * Servlet implementation class DeleteComputer
  */
 @WebServlet("/deleteComputer")
-public class DeleteComputer extends HttpServlet {
+public class DeleteComputerServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
   private ComputerService computerService = ComputerService.INSTANCE;
@@ -21,7 +21,7 @@ public class DeleteComputer extends HttpServlet {
   /**
    * @see HttpServlet#HttpServlet()
    */
-  public DeleteComputer() {
+  public DeleteComputerServlet() {
     super();
     // TODO Auto-generated constructor stub
   }
@@ -48,10 +48,22 @@ public class DeleteComputer extends HttpServlet {
       }
     }
 
+    if (computerId == 0) {
+      request.setAttribute("error", "Please enter a valid ID");
+      this.getServletContext().getRequestDispatcher("/WEB-INF/400.jsp").forward(request, response);
+    }
+
     computerService.delete(computerId);
 
     request.setAttribute("msg", "Computer #" + computerId + " deleted !");
     this.getServletContext().getRequestDispatcher("/WEB-INF/204.jsp").forward(request, response);
   }
 
+  /**
+   * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+   *      response)
+   */
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    
+  }
 }
