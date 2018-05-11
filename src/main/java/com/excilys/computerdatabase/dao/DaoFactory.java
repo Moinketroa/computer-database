@@ -50,6 +50,7 @@ public enum DaoFactory {
       config.setUsername(properties.getProperty("username"));
       config.setPassword(properties.getProperty("password"));
       config.setDriverClassName(properties.getProperty("driver"));
+     
 
       dataSource = new HikariDataSource(config);
 

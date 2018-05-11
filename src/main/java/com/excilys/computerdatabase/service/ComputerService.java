@@ -115,4 +115,14 @@ public enum ComputerService {
     computerDao.delete(id);
   }
 
+  /**
+   * Deletes several computer in one call, if one deletion go wrong then all
+   * wanted deletions won't occur.
+   *
+   * @param idVarargs
+   *          one or more id of computers wanted to be deleted
+   */
+  public void deteleSeveral(Integer... idVarargs) {
+    computerDao.deleteSeveral(idVarargs);
+  }
 }

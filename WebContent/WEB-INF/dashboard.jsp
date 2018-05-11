@@ -54,11 +54,11 @@
 							<!-- Variable declarations for passing labels as parameters -->
 							<!-- Table header for Computer Name -->
 
-							<th class="editMode" style="width: 58px; height: 22px;"><input
-								type="checkbox" id="selectall" /> <span
-								style="vertical-align: top;"> - <a href='#'
+							<th class="editMode" style="width: 60px; height: 22px;"><input
+								type="checkbox" id="selectall"/> <span
+								style="vertical-align: top;"><span id="trashCan" hidden> - <a href='#'
 									id="deleteSelected" onclick="$.fn.deleteSelected();"><i class="fas fa-trash-alt"></i>
-								</a>
+								</a></span>
 							</span></th>
 							<th>Computer name</th>
 							<th>Introduced date</th>

@@ -115,6 +115,40 @@ public class ComputerDaoTest {
   }
 
   @Test
+  public void testDeleteSeveralFail() {
+    Integer[] idsToBeDeletedWithOneNonExistent = {1, 2, 3, 4, 5678};
+
+    for (int i = 0; i < 4; i++) {
+      assertNotNull(computerDao.fetchOne(idsToBeDeletedWithOneNonExistent[i]));
+    }
+    assertNull(computerDao.fetchOne(idsToBeDeletedWithOneNonExistent[4]));
+
+    // should rollback thus not delete the first 4 ones
+    computerDao.deleteSeveral(idsToBeDeletedWithOneNonExistent);
+
+    for (int i = 0; i < 4; i++) {
+      assertNotNull("Computer #" + idsToBeDeletedWithOneNonExistent[i] + " is null",
+          computerDao.fetchOne(idsToBeDeletedWithOneNonExistent[i]));
+    }
+    assertNull(computerDao.fetchOne(idsToBeDeletedWithOneNonExistent[4]));
+  }
+
+  @Test
+  public void testDeleteSeveralOk() {
+    Integer[] idsToBeDeleted = {1, 2, 3, 4, 5};
+
+    for (int id : idsToBeDeleted) {
+      assertNotNull(computerDao.fetchOne(id));
+    }
+
+    computerDao.deleteSeveral(idsToBeDeleted);
+
+    for (int id : idsToBeDeleted) {
+      assertNull(computerDao.fetchOne(id));
+    }
+  }
+
+  @Test
   public void testFetchOne() {
     Computer computerNumber12 = computerDao.fetchOne(12);
     Computer computerNumber1234 = computerDao.fetchOne(1234);
@@ -150,8 +184,11 @@ public class ComputerDaoTest {
 
   /**
    * Return the first element of an iterable.
-   * @param <T> the type of the iterable set
-   * @param elements iterable set of elements
+   * 
+   * @param <T>
+   *          the type of the iterable set
+   * @param elements
+   *          iterable set of elements
    * @return the first element of the iterable set
    */
   private static <T> T getFirstElement(final Iterable<T> elements) {
@@ -164,8 +201,11 @@ public class ComputerDaoTest {
 
   /**
    * Return the last element of an iterable.
-   * @param <T> the type of the iterable set
-   * @param elements iterable set of elements
+   * 
+   * @param <T>
+   *          the type of the iterable set
+   * @param elements
+   *          iterable set of elements
    * @return the last element of the iterable set
    */
   private static <T> T getLastElement(final Iterable<T> elements) {

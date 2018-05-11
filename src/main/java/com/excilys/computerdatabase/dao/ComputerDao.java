@@ -1,12 +1,12 @@
 package com.excilys.computerdatabase.dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.sql.Statement;
-import java.sql.Date;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,6 +121,44 @@ public enum ComputerDao {
 
     } catch (SQLException e) {
       LOGGER.error("Something went wrong while building the statement", e);
+    }
+  }
+
+  /**
+   * Deletes several computer in one call, if one deletion go wrong then all
+   * wanted deletions won't occur.
+   *
+   * @param idVarargs
+   *          one or more id of computers wanted to be deleted
+   */
+  public void deleteSeveral(Integer... idVarargs) {
+    try (Connection connexion = daoFactory.getConnection()) {
+      connexion.setAutoCommit(false);
+
+      Savepoint beforeMultipleDeletion = connexion.setSavepoint();
+
+      for (int id : idVarargs) {
+        try (PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_DELETE_COMPUTER,
+            false, id)) {
+
+          int result = preparedStatement.executeUpdate();
+
+          if (result == 0) {
+            connexion.rollback();
+          }
+        } catch (SQLException e) {
+          LOGGER.error("Something went wrong while deleting a row", e);
+        }
+      }
+      connexion.commit();
+    } catch (SQLException e) {
+      LOGGER.error("Something went wrong during the multiple deletion", e);
+    } finally {
+      try (Connection connexion = daoFactory.getConnection()) {
+        connexion.setAutoCommit(true);
+      } catch (SQLException e) {
+        LOGGER.error("Something went wrong while setting the autocommit parameter to true", e);
+      }
     }
   }
 
