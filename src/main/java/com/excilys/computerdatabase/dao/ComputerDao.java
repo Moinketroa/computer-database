@@ -35,6 +35,8 @@ public enum ComputerDao {
   private static final String SQL_UPDATE_COMPUTER = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE computer.id = ?";
   private static final String SQL_DELETE_COMPUTER = "DELETE FROM computer WHERE computer.id = ?";
 
+  private static final String SQL_SEARCH_COMPUTERS = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name AS company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR company.name LIKE ? ORDER BY computer.id LIMIT ? OFFSET ?";
+
   private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDao.class);
 
   private DaoFactory daoFactory = DaoFactory.INSTANCE;
@@ -144,7 +146,7 @@ public enum ComputerDao {
           int result = preparedStatement.executeUpdate();
 
           if (result == 0) {
-            connexion.rollback();
+            connexion.rollback(beforeMultipleDeletion);
           }
         } catch (SQLException e) {
           LOGGER.error("Something went wrong while deleting a row", e);
@@ -203,24 +205,45 @@ public enum ComputerDao {
     int totalNumberOfElements = 0;
 
     try (Connection connexion = daoFactory.getConnection();
-        PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPUTERS, false,
-            numberOfElementsPerPage, offset);
-        ResultSet result = preparedStatement.executeQuery()) {
+        PreparedStatement preparedSelectStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPUTERS,
+            false, numberOfElementsPerPage, offset);
+        PreparedStatement preparedCountStatement = initializationPreparedStatement(connexion, SQL_SELECT_COUNT, false);
+        ResultSet selectResult = preparedSelectStatement.executeQuery();
+        ResultSet countResult = preparedCountStatement.executeQuery()) {
 
-      while (result.next()) {
-        computers.add(ComputerMapper.fromResultSet(result));
+      while (selectResult.next()) {
+        computers.add(ComputerMapper.fromResultSet(selectResult));
+      }
+
+      if (countResult.next()) {
+        totalNumberOfElements = countResult.getInt(1);
       }
 
     } catch (SQLException e) {
       LOGGER.error("Something went wrong with the ResultSet or while building the statement", e);
     }
 
-    try (Connection connexion = daoFactory.getConnection();
-        PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COUNT, false);
-        ResultSet result = preparedStatement.executeQuery()) {
+    return new Page<>(computers, offset, numberOfElementsPerPage, totalNumberOfElements);
+  }
 
-      if (result.next()) {
-        totalNumberOfElements = result.getInt(1);
+  public Page<Computer> search(String keyword, int offset, int numberOfElementsPerPage) {
+    List<Computer> computers = new ArrayList<>();
+    int totalNumberOfElements = 0;
+    String keywordLike = "%" + keyword + "%";
+
+    try (Connection connexion = daoFactory.getConnection();
+        PreparedStatement preparedSearchStatement = initializationPreparedStatement(connexion, SQL_SEARCH_COMPUTERS,
+            false, keywordLike, keywordLike, numberOfElementsPerPage, offset);
+        PreparedStatement preparedCountStatement = initializationPreparedStatement(connexion, SQL_SELECT_COUNT, false);
+        ResultSet searchResult = preparedSearchStatement.executeQuery();
+        ResultSet countResult = preparedCountStatement.executeQuery()) {
+
+      while (searchResult.next()) {
+        computers.add(ComputerMapper.fromResultSet(searchResult));
+      }
+
+      if (countResult.next()) {
+        totalNumberOfElements = countResult.getInt(1);
       }
 
     } catch (SQLException e) {
@@ -256,6 +279,8 @@ public enum ComputerDao {
     for (int i = 0; i < objets.length; i++) {
       preparedStatement.setObject(i + 1, objets[i]);
     }
+
+    LOGGER.debug("Query string built : " + preparedStatement.toString());
 
     return preparedStatement;
   }

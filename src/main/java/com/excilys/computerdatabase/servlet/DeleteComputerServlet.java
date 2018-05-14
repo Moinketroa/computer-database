@@ -68,16 +68,16 @@ public class DeleteComputerServlet extends HttpServlet {
    */
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     String computerSelection = request.getParameter("selection");
-    
+
     if (computerSelection.isEmpty() || computerSelection == null) {
       request.setAttribute("error", "Cannot delete an empty set of computers, please select at least one computer");
       this.getServletContext().getRequestDispatcher("/WEB-INF/400.jsp").forward(request, response);
     }
-    
-    String computerIdArray[] = computerSelection.split(",");
-    
+
+    String[] computerIdArray = computerSelection.split(",");
+
     List<Integer> computerIdList = new ArrayList<>();
-    
+
     for (String idString : computerIdArray) {
       try {
         int computerId = Integer.parseInt(idString);
@@ -86,14 +86,14 @@ public class DeleteComputerServlet extends HttpServlet {
           request.setAttribute("error", "The ID of a computer cannot be negative");
           this.getServletContext().getRequestDispatcher("/WEB-INF/400.jsp").forward(request, response);
         }
-        
+
         computerIdList.add(computerId);
       } catch (NumberFormatException e) {
         request.setAttribute("error", "The ID of a computer must be numeric");
         this.getServletContext().getRequestDispatcher("/WEB-INF/400.jsp").forward(request, response);
       }
     }
-    
+
     computerService.deteleSeveral(computerIdList.toArray(new Integer[computerIdList.size()]));
 
     request.setAttribute("msg", "Computers deleted !");

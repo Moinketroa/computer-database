@@ -116,14 +116,13 @@ public class ComputerDaoTest {
 
   @Test
   public void testDeleteSeveralFail() {
-    Integer[] idsToBeDeletedWithOneNonExistent = {1, 2, 3, 4, 5678};
+    Integer[] idsToBeDeletedWithOneNonExistent = { 1, 2, 3, 4, 5678 };
 
     for (int i = 0; i < 4; i++) {
       assertNotNull(computerDao.fetchOne(idsToBeDeletedWithOneNonExistent[i]));
     }
     assertNull(computerDao.fetchOne(idsToBeDeletedWithOneNonExistent[4]));
 
-    // should rollback thus not delete the first 4 ones
     computerDao.deleteSeveral(idsToBeDeletedWithOneNonExistent);
 
     for (int i = 0; i < 4; i++) {
@@ -135,7 +134,7 @@ public class ComputerDaoTest {
 
   @Test
   public void testDeleteSeveralOk() {
-    Integer[] idsToBeDeleted = {1, 2, 3, 4, 5};
+    Integer[] idsToBeDeleted = { 1, 2, 3, 4, 5 };
 
     for (int id : idsToBeDeleted) {
       assertNotNull(computerDao.fetchOne(id));
@@ -146,6 +145,16 @@ public class ComputerDaoTest {
     for (int id : idsToBeDeleted) {
       assertNull(computerDao.fetchOne(id));
     }
+  }
+
+  @Test
+  public void testSearch() {
+    List<Computer> appleComputers = computerDao.search("apple", 0, 10).result();
+
+    assertEquals(10, appleComputers.size());
+    
+    assertEquals("MacBook Pro 15.4 inch", getFirstElement(appleComputers).getName());
+    assertEquals("Apple II", getLastElement(appleComputers).getName());
   }
 
   @Test
