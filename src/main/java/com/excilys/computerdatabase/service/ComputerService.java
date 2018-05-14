@@ -125,4 +125,13 @@ public enum ComputerService {
   public void deteleSeveral(Integer... idVarargs) {
     computerDao.deleteSeveral(idVarargs);
   }
+
+  public Page<Computer> search(String keyword, int offset, int numberOfElementsPerPage)
+      throws WrongPageParameterException {
+    if ((offset < 0) || (numberOfElementsPerPage <= 0)) {
+      throw new WrongPageParameterException();
+    }
+
+    return computerDao.search(keyword, offset, numberOfElementsPerPage);
+  }
 }

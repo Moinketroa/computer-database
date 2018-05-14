@@ -23,12 +23,17 @@
 	<c:if test="${ totalNumberOfComputers > 0 }">
 		<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">${ totalNumberOfComputers } Computers found</h1>
+			<h1 id="homeTitle">
+				<c:if test="${ not empty keyword }">
+					Results for "${ keyword }" : 
+				</c:if>
+				${ totalNumberOfComputers } Computers found</h1>
+			</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
-					<form id="searchForm" action="#" method="GET" class="form-inline">
+					<form id="searchForm" action="<cdb:link target="dashboard"/>" method="GET" class="form-inline">
 
-						<input type="search" id="searchbox" name="search"
+						<input type="keyword" id="searchbox" name="keyword"
 							class="form-control" placeholder="Search name" /> <input
 							type="submit" id="searchsubmit" value="Filter by name"
 							class="btn btn-primary" />
@@ -106,7 +111,12 @@
 	<c:if test="${ totalNumberOfComputers <= 0 }">
 		<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">No Computer found</h1>
+			<h1 id="homeTitle">
+				<c:if test="${ not empty keyword }">
+					Results for "${ keyword }" : 
+				</c:if>
+				No Computer found
+			</h1>
 		</div>
 		</section>
 	</c:if>

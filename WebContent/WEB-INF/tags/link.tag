@@ -6,6 +6,7 @@
 <%@attribute name="offset" required="false"%>
 <%@attribute name="entitiesPerPage" required="false"%>
 <%@attribute name="computerId" required="false"%>
+<%@attribute name="keyword" required="false"%>
 
 <c:set var="path" value="/computer-database/" />
 

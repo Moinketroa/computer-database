@@ -36,6 +36,7 @@ public enum ComputerDao {
   private static final String SQL_DELETE_COMPUTER = "DELETE FROM computer WHERE computer.id = ?";
 
   private static final String SQL_SEARCH_COMPUTERS = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name AS company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR company.name LIKE ? ORDER BY computer.id LIMIT ? OFFSET ?";
+  private static final String SQL_SEARCH_COUNT = "SELECT COUNT(*) FROM (SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name AS company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR company.name LIKE ? ORDER BY computer.id)";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDao.class);
 
@@ -234,7 +235,7 @@ public enum ComputerDao {
     try (Connection connexion = daoFactory.getConnection();
         PreparedStatement preparedSearchStatement = initializationPreparedStatement(connexion, SQL_SEARCH_COMPUTERS,
             false, keywordLike, keywordLike, numberOfElementsPerPage, offset);
-        PreparedStatement preparedCountStatement = initializationPreparedStatement(connexion, SQL_SELECT_COUNT, false);
+        PreparedStatement preparedCountStatement = initializationPreparedStatement(connexion, SQL_SEARCH_COUNT, false, keywordLike, keywordLike);
         ResultSet searchResult = preparedSearchStatement.executeQuery();
         ResultSet countResult = preparedCountStatement.executeQuery()) {
 

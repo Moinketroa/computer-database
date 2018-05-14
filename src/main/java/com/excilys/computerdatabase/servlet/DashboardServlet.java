@@ -40,6 +40,7 @@ public class DashboardServlet extends HttpServlet {
     try {
       String offsetParameter = request.getParameter("offset");
       String entitiesPerPageParameter = request.getParameter("entitiesPerPage");
+      String keywordParameter = request.getParameter("keyword");
 
       int offset = 0, entitiesPerPage = 10;
       if (offsetParameter != null) {
@@ -72,22 +73,34 @@ public class DashboardServlet extends HttpServlet {
         }
       }
 
-      Page<Computer> page = computerService.getAll(offset, entitiesPerPage);
+      Page<Computer> pageResult = null;
+
+      System.out.println("ldlellelde");
+
+      if (keywordParameter != null && !keywordParameter.equals("")) {
+        System.out.println(keywordParameter);
+        pageResult = computerService.search(keywordParameter, offset, entitiesPerPage);
+      } else {
+        pageResult = computerService.getAll(offset, entitiesPerPage);
+      }
+
       List<ComputerDto> computers = new ArrayList<>();
 
-      for (Computer computer : page.result()) {
+      for (Computer computer : pageResult.result()) {
         computers.add(new ComputerDto(computer));
       }
 
-      request.setAttribute("totalNumberOfComputers", page.getTotalNumberOfElements());
-      request.setAttribute("isPreviousPageAvailable", page.isPreviousPageAvailable());
-      request.setAttribute("previousPageOffset", page.getPreviousPageOffset());
-      request.setAttribute("isNextPageAvailable", page.isNextPageAvailable());
-      request.setAttribute("nextPageOffset", page.getNextPageOffset());
+      request.setAttribute("totalNumberOfComputers", pageResult.getTotalNumberOfElements());
+      request.setAttribute("isPreviousPageAvailable", pageResult.isPreviousPageAvailable());
+      request.setAttribute("previousPageOffset", pageResult.getPreviousPageOffset());
+      request.setAttribute("isNextPageAvailable", pageResult.isNextPageAvailable());
+      request.setAttribute("nextPageOffset", pageResult.getNextPageOffset());
 
       request.setAttribute("offset", offset);
       request.setAttribute("entitiesPerPage", entitiesPerPage);
-      request.setAttribute("page", page);
+      request.setAttribute("page", pageResult);
+
+      request.setAttribute("keyword", keywordParameter);
 
       request.setAttribute("computers", computers);
     } catch (WrongPageParameterException e) {

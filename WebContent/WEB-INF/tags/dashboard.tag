@@ -5,6 +5,7 @@
 <%@attribute name="path" required="true"%>
 <%@attribute name="offset" required="false"%>
 <%@attribute name="entitiesPerPage" required="false"%>
+<%@attribute name="keyword" required="false"%>
 
 <c:set var="path" value="${ path.concat('dashboard?') }" />
 
@@ -15,6 +16,10 @@
 <c:if test="${ entitiesPerPage != null && entitiesPerPage > 0 }">
 	<c:set var="path"
 		value="${path.concat('&entitiesPerPage=').concat(entitiesPerPage)}" />
+</c:if>
+
+<c:if test="${ keyword != null && not empty keyword }">
+	<c:set var="path" value="${path.concat('&keyword=').concat(keyword)}" />
 </c:if>
 
 <c:out value="${path}" escapeXml="false" />
