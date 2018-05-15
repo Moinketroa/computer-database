@@ -115,25 +115,7 @@ public class ComputerDaoTest {
   }
 
   @Test
-  public void testDeleteSeveralFail() {
-    Integer[] idsToBeDeletedWithOneNonExistent = { 1, 2, 3, 4, 5678 };
-
-    for (int i = 0; i < 4; i++) {
-      assertNotNull(computerDao.fetchOne(idsToBeDeletedWithOneNonExistent[i]));
-    }
-    assertNull(computerDao.fetchOne(idsToBeDeletedWithOneNonExistent[4]));
-
-    computerDao.deleteSeveral(idsToBeDeletedWithOneNonExistent);
-
-    for (int i = 0; i < 4; i++) {
-      assertNotNull("Computer #" + idsToBeDeletedWithOneNonExistent[i] + " is null",
-          computerDao.fetchOne(idsToBeDeletedWithOneNonExistent[i]));
-    }
-    assertNull(computerDao.fetchOne(idsToBeDeletedWithOneNonExistent[4]));
-  }
-
-  @Test
-  public void testDeleteSeveralOk() {
+  public void testDeleteSeveral() {
     Integer[] idsToBeDeleted = { 1, 2, 3, 4, 5 };
 
     for (int id : idsToBeDeleted) {

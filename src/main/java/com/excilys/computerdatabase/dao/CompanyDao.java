@@ -4,9 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.excilys.computerdatabase.mapper.CompanyMapper;
 import com.excilys.computerdatabase.model.pojo.Company;
@@ -25,6 +29,11 @@ public enum CompanyDao {
   private static final String SQL_SELECT_COMPANY = "SELECT id, name FROM company WHERE id = ?";
   private static final String SQL_SELECT_COMPANIES = "SELECT id, name FROM company LIMIT ? OFFSET ?";
   private static final String SQL_SELECT_COUNT = "SELECT COUNT(*) FROM company";
+
+  private static final String SQL_DELETE_COMPANY = "DELETE FROM company WHERE id = ?";
+  private static final String SQL_DELETE_COMPUTERS = "DELETE FROM computer WHERE company_id = ?";
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDao.class);
 
   private DaoFactory daoFactory = DaoFactory.INSTANCE;
 
@@ -96,6 +105,41 @@ public enum CompanyDao {
   }
 
   /**
+   * Deletes a company after deleting all the computers referencing the wanted
+   * company. If one deletion go wrong, all wanted deletions won't occur.
+   *
+   * @param id
+   *          The id of the company to be deleted
+   */
+  public void delete(int id) {
+    try (Connection connexion = daoFactory.getConnection()) {
+      connexion.setAutoCommit(false);
+
+      Savepoint beforeCompanyDeletion = connexion.setSavepoint();
+
+      try (
+          PreparedStatement deleteComputersPreparedStatement = initializationPreparedStatement(connexion,
+              SQL_DELETE_COMPUTERS, false, id);
+          PreparedStatement deleteCompanyPreparedStatement = initializationPreparedStatement(connexion,
+              SQL_DELETE_COMPANY, false, id)) {
+
+        deleteComputersPreparedStatement.executeUpdate();
+        deleteCompanyPreparedStatement.executeUpdate();
+
+        connexion.commit();
+      } catch (SQLException e) {
+        LOGGER.error("Something went wrong while building or executing the company delete query, rolling back");
+        connexion.rollback(beforeCompanyDeletion);
+      } finally {
+        connexion.setAutoCommit(true);
+      }
+
+    } catch (SQLException e) {
+      LOGGER.error("Something went wrong during the company deletion", e);
+    }
+  }
+
+  /**
    * Initialize a {@link PreparedStatement} with a given SQL query. Sets the
    * parameters of the query if any.
    *
@@ -110,7 +154,8 @@ public enum CompanyDao {
    *          the parameters to be set in the SQL query
    * @return A {@link PreparedStatement} representing the wanted SQL query with
    *         the parameters set
-   * @throws SQLException if something went wrong while executing the query
+   * @throws SQLException
+   *           if something went wrong while executing the query
    */
   private static PreparedStatement initializationPreparedStatement(Connection connexion, String sql,
       boolean returnGeneratedKeys, Object... objets) throws SQLException {

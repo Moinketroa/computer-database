@@ -40,7 +40,7 @@ public enum ComputerDao {
 
   private static final String SQL_LIMIT = " LIMIT ? OFFSET ?";
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDao.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDao.class);
 
   private DaoFactory daoFactory = DaoFactory.INSTANCE;
 
@@ -142,28 +142,26 @@ public enum ComputerDao {
 
       Savepoint beforeMultipleDeletion = connexion.setSavepoint();
 
-      for (int id : idVarargs) {
-        try (PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_DELETE_COMPUTER,
-            false, id)) {
+      try {
+        for (int id : idVarargs) {
+          try (PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_DELETE_COMPUTER,
+              false, id)) {
 
-          int result = preparedStatement.executeUpdate();
+            preparedStatement.executeUpdate();
 
-          if (result == 0) {
-            connexion.rollback(beforeMultipleDeletion);
+          } catch (SQLException e) {
+            throw e;
           }
-        } catch (SQLException e) {
-          LOGGER.error("Something went wrong while deleting a row", e);
         }
+
+        connexion.commit();
+      } catch (SQLException e) {
+        connexion.rollback(beforeMultipleDeletion);
+      } finally {
+        connexion.setAutoCommit(true);
       }
-      connexion.commit();
     } catch (SQLException e) {
       LOGGER.error("Something went wrong during the multiple deletion", e);
-    } finally {
-      try (Connection connexion = daoFactory.getConnection()) {
-        connexion.setAutoCommit(true);
-      } catch (SQLException e) {
-        LOGGER.error("Something went wrong while setting the autocommit parameter to true", e);
-      }
     }
   }
 
@@ -195,8 +193,13 @@ public enum ComputerDao {
 
   /**
    * Fetches a given number (or fewer) of computers from the database under the
-   * form of a {@link Page}.
+   * form of a {@link Page}. The computers are ordered by the wanted property and
+   * by the wanted mode
    *
+   * @param orderBy
+   *          The wanted "order by" property
+   * @param mode
+   *          The wanted ordering mode, ascending or descending
    * @param offset
    *          the index of the first entity wanted in the page
    * @param numberOfElementsPerPage
@@ -231,6 +234,23 @@ public enum ComputerDao {
     return new Page<>(computers, offset, numberOfElementsPerPage, totalNumberOfElements);
   }
 
+  /**
+   * Fetches a given number (or fewer) of computers, corresponding to the wanted
+   * keyword, from the database under the form of a {@link Page}. The computers
+   * are ordered by the wanted property and by the wanted mode
+   *
+   * @param keyword
+   *          The wanted keyword for the search
+   * @param orderBy
+   *          The wanted "order by" property
+   * @param mode
+   *          The wanted ordering mode, ascending or descending
+   * @param offset
+   *          the index of the first entity wanted in the page
+   * @param numberOfElementsPerPage
+   *          maximum number of elements in the wanted page
+   * @return A {@link Page} of the found computers
+   */
   public Page<Computer> search(String keyword, OrderByComputer orderBy, OrderByMode mode, int offset,
       int numberOfElementsPerPage) {
     List<Computer> computers = new ArrayList<>();

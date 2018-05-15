@@ -69,6 +69,11 @@ public class CompanyDaoTest {
     assertNull(companyNumberMinus1);
   }
 
+  @Test
+  public void testDelete() {
+    
+  }
+
   /**
    * Return the first element of an iterable.
    * @param <T> the type of the iterable set
