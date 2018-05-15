@@ -28,15 +28,17 @@ public enum ComputerDao {
   INSTANCE;
 
   private static final String SQL_SELECT_COMPUTER = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name AS company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ?";
-  private static final String SQL_SELECT_COMPUTERS = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name AS company_name FROM computer LEFT JOIN company ON computer.company_id = company.id ORDER BY computer.id LIMIT ? OFFSET ?";
+  private static final String SQL_SELECT_COMPUTERS = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name AS company_name FROM computer LEFT JOIN company ON computer.company_id = company.id";
   private static final String SQL_SELECT_COUNT = "SELECT COUNT(*) FROM computer";
 
   private static final String SQL_INSERT_COMPUTER = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
   private static final String SQL_UPDATE_COMPUTER = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE computer.id = ?";
   private static final String SQL_DELETE_COMPUTER = "DELETE FROM computer WHERE computer.id = ?";
 
-  private static final String SQL_SEARCH_COMPUTERS = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name AS company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR company.name LIKE ? ORDER BY computer.id LIMIT ? OFFSET ?";
-  private static final String SQL_SEARCH_COUNT = "SELECT COUNT(*) FROM (SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name AS company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR company.name LIKE ? ORDER BY computer.id)";
+  private static final String SQL_SEARCH_COMPUTERS = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name AS company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR company.name LIKE ?";
+  private static final String SQL_SEARCH_COUNT = "SELECT COUNT(*) FROM (SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name AS company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR company.name LIKE ?)";
+
+  private static final String SQL_LIMIT = " LIMIT ? OFFSET ?";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDao.class);
 
@@ -201,13 +203,15 @@ public enum ComputerDao {
    *          maximum number of elements in the wanted page
    * @return A {@link Page} of the found computers
    */
-  public Page<Computer> fetchAll(int offset, int numberOfElementsPerPage) {
+  public Page<Computer> fetchAll(OrderByComputer orderBy, OrderByMode mode, int offset, int numberOfElementsPerPage) {
     List<Computer> computers = new ArrayList<>();
     int totalNumberOfElements = 0;
 
+    String completeSQLQuery = SQL_SELECT_COMPUTERS + " ORDER BY " + orderBy + " " + mode + SQL_LIMIT;
+
     try (Connection connexion = daoFactory.getConnection();
-        PreparedStatement preparedSelectStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPUTERS,
-            false, numberOfElementsPerPage, offset);
+        PreparedStatement preparedSelectStatement = initializationPreparedStatement(connexion, completeSQLQuery, false,
+            numberOfElementsPerPage, offset);
         PreparedStatement preparedCountStatement = initializationPreparedStatement(connexion, SQL_SELECT_COUNT, false);
         ResultSet selectResult = preparedSelectStatement.executeQuery();
         ResultSet countResult = preparedCountStatement.executeQuery()) {
@@ -227,15 +231,19 @@ public enum ComputerDao {
     return new Page<>(computers, offset, numberOfElementsPerPage, totalNumberOfElements);
   }
 
-  public Page<Computer> search(String keyword, int offset, int numberOfElementsPerPage) {
+  public Page<Computer> search(String keyword, OrderByComputer orderBy, OrderByMode mode, int offset,
+      int numberOfElementsPerPage) {
     List<Computer> computers = new ArrayList<>();
     int totalNumberOfElements = 0;
     String keywordLike = "%" + keyword + "%";
 
+    String completeSQLQuery = SQL_SEARCH_COMPUTERS + " ORDER BY " + orderBy + " " + mode + SQL_LIMIT;
+
     try (Connection connexion = daoFactory.getConnection();
-        PreparedStatement preparedSearchStatement = initializationPreparedStatement(connexion, SQL_SEARCH_COMPUTERS,
-            false, keywordLike, keywordLike, numberOfElementsPerPage, offset);
-        PreparedStatement preparedCountStatement = initializationPreparedStatement(connexion, SQL_SEARCH_COUNT, false, keywordLike, keywordLike);
+        PreparedStatement preparedSearchStatement = initializationPreparedStatement(connexion, completeSQLQuery, false,
+            keywordLike, keywordLike, numberOfElementsPerPage, offset);
+        PreparedStatement preparedCountStatement = initializationPreparedStatement(connexion, SQL_SEARCH_COUNT, false,
+            keywordLike, keywordLike);
         ResultSet searchResult = preparedSearchStatement.executeQuery();
         ResultSet countResult = preparedCountStatement.executeQuery()) {
 

@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import com.excilys.computerdatabase.dao.ComputerDao;
 import com.excilys.computerdatabase.dao.DaoFactory;
+import com.excilys.computerdatabase.dao.OrderByComputer;
+import com.excilys.computerdatabase.dao.OrderByMode;
 import com.excilys.computerdatabase.exceptions.DiscontinuationPriorToIntroductionExpection;
 import com.excilys.computerdatabase.exceptions.WrongPageParameterException;
 import com.excilys.computerdatabase.model.pojo.Computer;
@@ -42,12 +44,28 @@ public enum ComputerService {
    * @throws WrongPageParameterException
    *           if the parameters are incorrect
    */
-  public Page<Computer> getAll(int offset, int numberOfElementsPerPage) throws WrongPageParameterException {
+  public Page<Computer> getAll(OrderByComputer order, OrderByMode mode, int offset, int numberOfElementsPerPage) throws WrongPageParameterException {
     if ((offset < 0) || (numberOfElementsPerPage <= 0)) {
       throw new WrongPageParameterException();
     }
 
-    return computerDao.fetchAll(offset, numberOfElementsPerPage);
+    return computerDao.fetchAll(order, mode, offset, numberOfElementsPerPage);
+  }
+  
+  /**
+   * Fetches a given number (or fewer) of computers from the {@link ComputerDao}
+   * under the form of a {@link Page}.
+   *
+   * @param offset
+   *          the index of the first entity wanted in the page
+   * @param numberOfElementsPerPage
+   *          maximum number of elements in the wanted page
+   * @return A {@link Page} of the found computers
+   * @throws WrongPageParameterException
+   *           if the parameters are incorrect
+   */
+  public Page<Computer> getAll(int offset, int numberOfElementsPerPage) throws WrongPageParameterException {
+    return getAll(OrderByComputer.ID, OrderByMode.ASCENDING, offset, numberOfElementsPerPage);
   }
 
   /**
@@ -126,12 +144,17 @@ public enum ComputerService {
     computerDao.deleteSeveral(idVarargs);
   }
 
-  public Page<Computer> search(String keyword, int offset, int numberOfElementsPerPage)
+  public Page<Computer> search(String keyword, OrderByComputer order, OrderByMode mode, int offset, int numberOfElementsPerPage)
       throws WrongPageParameterException {
     if ((offset < 0) || (numberOfElementsPerPage <= 0)) {
       throw new WrongPageParameterException();
     }
 
-    return computerDao.search(keyword, offset, numberOfElementsPerPage);
+    return computerDao.search(keyword, OrderByComputer.ID, OrderByMode.ASCENDING, offset, numberOfElementsPerPage);
+  }
+
+  public Page<Computer> search(String keyword, int offset, int numberOfElementsPerPage)
+      throws WrongPageParameterException {
+    return search(keyword, OrderByComputer.ID, OrderByMode.ASCENDING, offset, numberOfElementsPerPage);
   }
 }

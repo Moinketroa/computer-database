@@ -6,6 +6,8 @@
 <%@attribute name="offset" required="false"%>
 <%@attribute name="entitiesPerPage" required="false"%>
 <%@attribute name="keyword" required="false"%>
+<%@attribute name="order" required="false"%>
+<%@attribute name="mode" required="false"%>
 
 <c:set var="path" value="${ path.concat('dashboard?') }" />
 
@@ -20,6 +22,14 @@
 
 <c:if test="${ keyword != null && not empty keyword }">
 	<c:set var="path" value="${path.concat('&keyword=').concat(keyword)}" />
+</c:if>
+
+<c:if test="${ order != null && not empty order }">
+	<c:set var="path" value="${path.concat('&order=').concat(order)}" />
+</c:if>
+
+<c:if test="${ mode != null && not empty mode }">
+	<c:set var="path" value="${path.concat('&mode=').concat(mode)}" />
 </c:if>
 
 <c:out value="${path}" escapeXml="false" />

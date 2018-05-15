@@ -53,7 +53,7 @@
 
 		<c:if test="${ not empty computers }">
 			<div class="container" style="margin-top: 10px;">
-				<table class="table table-striped table-bordered">
+				<table id="computerTable" class="table table-striped table-bordered">
 					<thead>
 						<tr>
 							<!-- Variable declarations for passing labels as parameters -->
@@ -65,12 +65,22 @@
 									id="deleteSelected" onclick="$.fn.deleteSelected();"><i class="fas fa-trash-alt"></i>
 								</a></span>
 							</span></th>
-							<th>Computer name</th>
-							<th>Introduced date</th>
-							<!-- Table header for Discontinued Date -->
-							<th>Discontinued date</th>
-							<!-- Table header for Company -->
-							<th>Company</th>
+							<th>
+								<a id="nameHeaderA" href="<cdb:link target="dashboard" order="name" mode="asc"/>" hidden> </a>
+								<a id="nameHeaderD" href="<cdb:link target="dashboard" order="name" mode="desc"/>" hidden> </a>
+							</th>
+							<th>
+								<a id="introducedHeaderA" href="<cdb:link target="dashboard" order="introduced" mode="asc"/>" hidden> </a>
+								<a id="introducedHeaderD" href="<cdb:link target="dashboard" order="introduced" mode="desc"/>" hidden> </a>
+							</th>
+							<th> 
+								<a id="discontinuedHeaderA" href="<cdb:link target="dashboard" order="discontinued" mode="asc"/>" hidden> </a>
+								<a id="discontinuedHeaderD" href="<cdb:link target="dashboard" order="discontinued" mode="desc"/>" hidden> </a>
+							</th>
+							<th> 
+								<a id="companyHeaderA" href="<cdb:link target="dashboard" order="company" mode="asc"/>" hidden> </a>
+								<a id="companyHeaderD" href="<cdb:link target="dashboard" order="company" mode="desc"/>" hidden> </a>
+							</th>
 
 						</tr>
 					</thead>
@@ -124,5 +134,47 @@
 	<script src="static/js/jquery.min.js"></script>
 	<script src="static/js/bootstrap.min.js"></script>
 	<script src="static/js/dashboard.js"></script>
+	
+	<script type="text/javascript">
+	$(function() {
+	    var newMode;
+	    var arrow;
+	    
+	    var nameH;
+	    var introducedH;
+	    var discontinuedH;
+	    var companyH;
+	    
+	    if (${ mode.equals('asc') }) {
+	    	newMode = 'desc';
+	    	arrow = '<i class="fas fa-arrow-up"></i>';
+	    	
+	    	nameH = $('#nameHeaderD');
+	    	introducedH = $('#introducedHeaderD');
+	    	discontinuedH = $('#discontinuedHeaderD');
+	    	companyH = $('#companyHeaderD');
+	    } else {
+	    	newMode = 'asc';
+	    	arrow = '<i class="fas fa-arrow-down"></i>';
+	    	
+	    	nameH = $('#nameHeaderA');
+	    	introducedH = $('#introducedHeaderA');
+	    	discontinuedH = $('#discontinuedHeaderA');
+	    	companyH = $('#companyHeaderA');
+	    }
+	   
+	    nameH.html("Computer Name " + arrow);
+	    nameH.show();
+	    
+	    introducedH.html("Introduced date " + arrow);
+	    introducedH.show();
+	    
+	    discontinuedH.html("Discontinued date " + arrow);
+	    discontinuedH.show();
+	    
+	    companyH.html("Company " + arrow);
+	    companyH.show();
+	});
+	</script>
 </body>
 </html>

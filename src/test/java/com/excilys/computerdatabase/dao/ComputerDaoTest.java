@@ -149,7 +149,7 @@ public class ComputerDaoTest {
 
   @Test
   public void testSearch() {
-    List<Computer> appleComputers = computerDao.search("apple", 0, 10).result();
+    List<Computer> appleComputers = computerDao.search("apple", OrderByComputer.ID, OrderByMode.ASCENDING, 0, 10).result();
 
     assertEquals(10, appleComputers.size());
     
@@ -176,8 +176,11 @@ public class ComputerDaoTest {
 
   @Test
   public void testFetchAll() {
-    List<Computer> computerListNormal = computerDao.fetchAll(0, 12).result();
-    List<Computer> computerListEnd = computerDao.fetchAll(570, 12).result();
+    List<Computer> computerListNormal = computerDao.fetchAll(OrderByComputer.ID, OrderByMode.ASCENDING, 0, 12).result();
+    List<Computer> computerListEnd = computerDao.fetchAll(OrderByComputer.ID, OrderByMode.ASCENDING, 570, 12).result();
+    
+    assertEquals(12,  computerListNormal.size());
+    assertEquals(4, computerListEnd.size());
 
     Computer firstOfListNormal = getFirstElement(computerListNormal);
     Computer lastOfListNormal = getLastElement(computerListNormal);

@@ -7,6 +7,8 @@
 <%@attribute name="entitiesPerPage" required="false"%>
 <%@attribute name="computerId" required="false"%>
 <%@attribute name="keyword" required="false"%>
+<%@attribute name="order" required="false"%>
+<%@attribute name="mode" required="false"%>
 
 <c:set var="path" value="/computer-database/" />
 
@@ -14,7 +16,7 @@
 	<c:choose>
 		<c:when test="${ target.equals('dashboard') }">
 			<cdb:dashboard path="${ path }" offset="${ offset }"
-				entitiesPerPage="${ entitiesPerPage }"/>
+				entitiesPerPage="${ entitiesPerPage }" order="${ order }" mode="${ mode }"/>
 		</c:when>
 
 		<c:when test="${ target.equals('addComputer') }">

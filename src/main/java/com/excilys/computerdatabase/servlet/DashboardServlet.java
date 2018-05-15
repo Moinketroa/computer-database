@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.excilys.computerdatabase.dao.OrderByComputer;
+import com.excilys.computerdatabase.dao.OrderByMode;
 import com.excilys.computerdatabase.dto.ComputerDto;
 import com.excilys.computerdatabase.exceptions.WrongPageParameterException;
 import com.excilys.computerdatabase.model.pojo.Computer;
@@ -41,6 +43,8 @@ public class DashboardServlet extends HttpServlet {
       String offsetParameter = request.getParameter("offset");
       String entitiesPerPageParameter = request.getParameter("entitiesPerPage");
       String keywordParameter = request.getParameter("keyword");
+      String orderParameter = request.getParameter("order");
+      String modeParameter = request.getParameter("mode");
 
       int offset = 0, entitiesPerPage = 10;
       if (offsetParameter != null) {
@@ -72,16 +76,17 @@ public class DashboardServlet extends HttpServlet {
           this.getServletContext().getRequestDispatcher("/WEB-INF/400.jsp").forward(request, response);
         }
       }
+      
+      OrderByComputer order = decideOrderByParameter(orderParameter);
+      OrderByMode mode = decideOrderModeParameter(modeParameter);
 
       Page<Computer> pageResult = null;
 
-      System.out.println("ldlellelde");
-
       if (keywordParameter != null && !keywordParameter.equals("")) {
         System.out.println(keywordParameter);
-        pageResult = computerService.search(keywordParameter, offset, entitiesPerPage);
+        pageResult = computerService.search(keywordParameter, order, mode, offset, entitiesPerPage);
       } else {
-        pageResult = computerService.getAll(offset, entitiesPerPage);
+        pageResult = computerService.getAll(order, mode, offset, entitiesPerPage);
       }
 
       List<ComputerDto> computers = new ArrayList<>();
@@ -101,6 +106,12 @@ public class DashboardServlet extends HttpServlet {
       request.setAttribute("page", pageResult);
 
       request.setAttribute("keyword", keywordParameter);
+      
+      if (modeParameter == null || !modeParameter.equals("desc")) {
+        request.setAttribute("mode", "asc");
+      } else {
+        request.setAttribute("mode", "desc");
+      }
 
       request.setAttribute("computers", computers);
     } catch (WrongPageParameterException e) {
@@ -111,4 +122,37 @@ public class DashboardServlet extends HttpServlet {
     this.getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(request, response);
   }
 
+  private OrderByComputer decideOrderByParameter(String order) {
+    if (order == null) {
+      return OrderByComputer.ID;
+    }
+  
+    switch (order) {
+    case "name" :
+      return OrderByComputer.NAME;
+    case "introduced" :
+      return OrderByComputer.INTRODUCED;
+    case "discontinued" :
+      return OrderByComputer.DISCONTINUED;
+    case "company" :
+      return OrderByComputer.COMPANY;
+    default:
+      return OrderByComputer.ID;
+    }
+  }
+
+  private OrderByMode decideOrderModeParameter(String mode) {
+    if (mode == null) {
+      return OrderByMode.ASCENDING;
+    }
+  
+    switch (mode) {
+    case "asc" :
+      return OrderByMode.ASCENDING;
+    case "desc" :
+      return OrderByMode.DESCENDING;
+    default:
+      return OrderByMode.ASCENDING;
+    }
+  }
 }
