@@ -1,6 +1,7 @@
 package com.excilys.computerdatabase.dao;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.Iterator;
@@ -11,11 +12,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.excilys.computerdatabase.model.pojo.Company;
+import com.excilys.computerdatabase.model.pojo.Computer;
 
 public class CompanyDaoTest {
 
   private HSQLDatabase hsqldb = HSQLDatabase.INSTANCE;
   private CompanyDao companyDao = CompanyDao.INSTANCE;
+  private ComputerDao computerDao = ComputerDao.INSTANCE;
 
   /**
    * Initializes the database before each test.
@@ -71,13 +74,36 @@ public class CompanyDaoTest {
 
   @Test
   public void testDelete() {
-    
+    Computer HTCSnap = computerDao.fetchOne(446);
+    Computer HTCDream = computerDao.fetchOne(530);
+
+    Company HTC = companyDao.fetchOne(41);
+
+    assertNotNull(HTCSnap);
+    assertNotNull(HTCDream);
+
+    assertNotNull(HTC);
+
+    companyDao.delete(41);
+
+    Computer HTCSnapOtherReference = computerDao.fetchOne(446);
+    Computer HTCDreamOtherReference = computerDao.fetchOne(530);
+
+    Company HTCOtherReference = companyDao.fetchOne(41);
+
+    assertNull(HTCSnapOtherReference);
+    assertNull(HTCDreamOtherReference);
+
+    assertNull(HTCOtherReference);
   }
 
   /**
    * Return the first element of an iterable.
-   * @param <T> the type of the iterable set
-   * @param elements iterable set of elements
+   * 
+   * @param <T>
+   *          the type of the iterable set
+   * @param elements
+   *          iterable set of elements
    * @return the first element of the iterable set
    */
   private static <T> T getFirstElement(final Iterable<T> elements) {
@@ -90,8 +116,11 @@ public class CompanyDaoTest {
 
   /**
    * Return the last element of an iterable.
-   * @param <T> the type of the iterable set
-   * @param elements iterable set of elements
+   * 
+   * @param <T>
+   *          the type of the iterable set
+   * @param elements
+   *          iterable set of elements
    * @return the last element of the iterable set
    */
   private static <T> T getLastElement(final Iterable<T> elements) {
