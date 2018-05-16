@@ -1,6 +1,11 @@
 package com.excilys.computerdatabase.ui;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.InputMismatchException;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * The class displays the menu of the CLI and make available different options.
@@ -10,6 +15,8 @@ import java.util.InputMismatchException;
  */
 public class MenuView extends AbstractView {
 
+  private List<MenuOption> options;
+
   /**
    * Constructor that sets the view's viewer.
    *
@@ -18,50 +25,53 @@ public class MenuView extends AbstractView {
    */
   public MenuView(Viewer viewer) {
     super(viewer);
+
+    options = Arrays.asList(MenuOption.values());
+    Collections.sort(options, (a, b) -> a.getOptionNumber() - b.getOptionNumber());
   }
 
   @Override
   public void display() {
     System.out.println("Please select an option : ");
-    System.out.println("\t1 : Display all computers");
-    System.out.println("\t2 : Display all companies");
-    System.out.println("\t3 : Show computer details");
-    System.out.println("\t4 : Add a computer");
-    System.out.println("\t5 : Update a computer");
-    System.out.println("\t6 : Remove a computer");
-    System.out.println("\t7 : Exit");
+
+    for (MenuOption option : options) {
+      System.out.println("\t" + option);
+    }
 
     try {
-      int choosenOption = scanner.nextInt();
+      MenuOption choosenOption = MenuOption.valueOf(scanner.nextInt()).get();
       scanner.nextLine();
 
       switch (choosenOption) {
-      case 1:
+      case DISPLAY_COMPUTERS:
         viewer.setView(new ComputerListView(viewer));
         break;
-      case 2:
+      case DISPLAY_COMPANIES:
         viewer.setView(new CompanyListView(viewer));
         break;
-      case 3:
+      case COMPUTER_DETAILS:
         computerDetails();
         break;
-      case 4:
+      case ADD_COMPUTER:
         viewer.setView(new AddComputerView(viewer));
         break;
-      case 5:
+      case UPDATE_COMPUTER:
         updateComputer();
         break;
-      case 6:
+      case REMOVE_COMPUTER:
         removeComputer();
         break;
-      case 7:
+      case REMOVE_COMPANY:
+        removeCompany();
+        break;
+      case EXIT:
         viewer.setView(new EndView(viewer));
         break;
       default:
         tryAgain();
         break;
       }
-    } catch (InputMismatchException e) {
+    } catch (NoSuchElementException e) {
       scanner.nextLine();
       tryAgain();
     }
@@ -101,18 +111,50 @@ public class MenuView extends AbstractView {
   }
 
   /**
+   * Asks the user to enter a valid company ID and changes the current view to a
+   * {@link DeleteCompanyView} which will direct the user in order to delete the
+   * wanted company.
+   */
+  private void removeCompany() {
+    int companyId = readCompanyId();
+
+    viewer.setView(new DeleteCompanyView(viewer, companyId));
+  }
+
+  /**
    * Asks the user to enter a valid computer ID.
    *
    * @return the ID provided by the user
    */
   private int readComputerId() {
-    int computerId;
+    return readId("computer");
+  }
+
+  /**
+   * Asks the user to enter a valid company ID.
+   *
+   * @return the ID provided by the user
+   */
+  private int readCompanyId() {
+    return readId("company");
+  }
+
+  /**
+   * Asks the user to enter a valid ID.
+   *
+   * @param entity
+   *          the entity name to be displayed in the CLI
+   *
+   * @return the ID provided by the user
+   */
+  private int readId(String entity) {
+    int id;
 
     while (true) {
       try {
-        System.out.println("Please enter the choosen computer's ID");
+        System.out.println("Please enter the choosen " + entity + "'s ID");
 
-        computerId = scanner.nextInt();
+        id = scanner.nextInt();
         scanner.nextLine();
         break;
       } catch (InputMismatchException e) {
@@ -121,7 +163,7 @@ public class MenuView extends AbstractView {
       }
     }
 
-    return computerId;
+    return id;
   }
 
   /**
@@ -129,7 +171,7 @@ public class MenuView extends AbstractView {
    * an option number.
    */
   private void tryAgain() {
-    System.out.println("Please enter a number from 1 to 7\n");
+    System.out.println("Please enter a number corresponding to an option\n");
     viewer.setView(this);
   }
 

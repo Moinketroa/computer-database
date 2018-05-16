@@ -55,5 +55,9 @@ public enum CompanyService {
 
     return companyDao.fetchAll(offset, numberOfElementsPerPage);
   }
+  
+  public void delete(int id) {
+    companyDao.delete(id);
+  }
 
 }
