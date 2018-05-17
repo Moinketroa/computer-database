@@ -9,10 +9,20 @@ import java.sql.SQLException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.excilys.computerdatabase.config.ApplicationConfig;
 import com.excilys.computerdatabase.model.pojo.Company;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = ApplicationConfig.class)
 public class CompanyMapperTest {
+  
+  @Autowired
+  CompanyMapper companyMapper;
 
   @Before
   public void setUp() throws Exception {
@@ -35,7 +45,7 @@ public class CompanyMapperTest {
 
     Company companyFromResultSet;
     try {
-      companyFromResultSet = CompanyMapper.fromResultSet(mockResultSet);
+      companyFromResultSet = companyMapper.fromResultSet(mockResultSet);
       assertEquals("IBM", companyFromResultSet.getName());
       assertEquals(13, companyFromResultSet.getId());
     } catch (SQLException e) {

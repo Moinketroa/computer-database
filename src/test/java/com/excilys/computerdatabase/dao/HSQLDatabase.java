@@ -7,18 +7,26 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.test.context.ContextConfiguration;
 
-public enum HSQLDatabase {
+import com.excilys.computerdatabase.config.ApplicationConfig;
 
-  INSTANCE;
+@Repository
+@ContextConfiguration(classes = ApplicationConfig.class)
+public class HSQLDatabase {
 
   private static final String DROP_CONSTRAINT = "ALTER TABLE computer DROP CONSTRAINT FK_COMPUTER_COMPANY_1";
   private static final String DROP_COMPUTER = "DROP TABLE computer";
   private static final String DROP_COMPANY = "DROP TABLE company";
 
-  private DaoFactory daoFactory = DaoFactory.INSTANCE;
+  @Autowired
+  private DataSource dataSource;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(HSQLDatabase.class);
 
@@ -26,7 +34,7 @@ public enum HSQLDatabase {
    * Initializes the HSQL Database with tables and entries.
    */
   public void init() {
-    try (Connection connexion = daoFactory.getConnection()) {
+    try (Connection connexion = dataSource.getConnection()) {
 
       String[] tablesStrings = transferDataFromFile("db/1-SCHEMA.sql");
       String[] entriesStrings = transferDataFromFile("db/3-ENTRIES.sql");
@@ -47,7 +55,7 @@ public enum HSQLDatabase {
    * Destroys the tables previously added.
    */
   public void destroy() {
-    try (Connection connexion = daoFactory.getConnection()) {
+    try (Connection connexion = dataSource.getConnection()) {
       Statement statement = connexion.createStatement();
 
       LOGGER.info("Dropping HSQLDB tables");

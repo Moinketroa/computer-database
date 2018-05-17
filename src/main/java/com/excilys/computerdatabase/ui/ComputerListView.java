@@ -15,7 +15,7 @@ public class ComputerListView extends AbstractListView<Computer> {
 
   private ComputerService computerService = (ComputerService) context.getBean("computerService");
 
-  private LocalDateMapper localDateMapper;
+  private LocalDateMapper localDateMapper = (LocalDateMapper) context.getBean("localDateMapper");
 
   /**
    * Constructor that sets the view's viewer and fetches the first page of the
@@ -26,8 +26,6 @@ public class ComputerListView extends AbstractListView<Computer> {
    */
   public ComputerListView(Viewer viewer) {
     super(viewer);
-
-    localDateMapper = new LocalDateMapper();
   }
 
   @Override

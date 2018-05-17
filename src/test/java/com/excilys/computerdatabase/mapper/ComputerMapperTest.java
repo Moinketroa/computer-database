@@ -13,12 +13,25 @@ import java.util.Calendar;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.excilys.computerdatabase.config.ApplicationConfig;
 import com.excilys.computerdatabase.dao.HSQLDatabase;
 import com.excilys.computerdatabase.exceptions.CompanyNotFoundException;
 import com.excilys.computerdatabase.model.pojo.Computer;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = ApplicationConfig.class)
 public class ComputerMapperTest {
+
+  @Autowired
+  private HSQLDatabase hsqldb;
+
+  @Autowired
+  private ComputerMapper computerMapper;
 
   @Before
   public void setUp() {
@@ -81,10 +94,10 @@ public class ComputerMapperTest {
         computerFromResultSetWithNoCompany, computerFromResultSetWithOnlyCompany;
 
     try {
-      computerFromResultSetNormal = ComputerMapper.fromResultSet(mockResultSetNormal);
-      computerFromResultSetWithOnlyMandatoryFields = ComputerMapper.fromResultSet(mockResultSetWithOnlyMandatoryFields);
-      computerFromResultSetWithNoCompany = ComputerMapper.fromResultSet(mockResultSetWithNoCompany);
-      computerFromResultSetWithOnlyCompany = ComputerMapper.fromResultSet(mockResultSetWithOnlyCompany);
+      computerFromResultSetNormal = computerMapper.fromResultSet(mockResultSetNormal);
+      computerFromResultSetWithOnlyMandatoryFields = computerMapper.fromResultSet(mockResultSetWithOnlyMandatoryFields);
+      computerFromResultSetWithNoCompany = computerMapper.fromResultSet(mockResultSetWithNoCompany);
+      computerFromResultSetWithOnlyCompany = computerMapper.fromResultSet(mockResultSetWithOnlyCompany);
 
       assertEquals(7, computerFromResultSetNormal.getId());
       assertEquals(7, computerFromResultSetWithOnlyMandatoryFields.getId());
@@ -121,16 +134,16 @@ public class ComputerMapperTest {
 
   @Test
   public void testFromParameters() {
-    HSQLDatabase.INSTANCE.init();
+    hsqldb.init();
 
     String basicName = "TestComputer";
     LocalDate basicIntroductionLocalDate = LocalDate.of(2012, 11, 12);
     LocalDate basicDiscontinuationLocalDate = LocalDate.of(2013, 9, 10);
 
     try {
-      Computer computerNormal = ComputerMapper.fromParameters(basicName, basicIntroductionLocalDate,
+      Computer computerNormal = computerMapper.fromParameters(basicName, basicIntroductionLocalDate,
           basicDiscontinuationLocalDate, 13);
-      Computer computerWithOnlyCompany = ComputerMapper.fromParameters(basicName, null, null, 13);
+      Computer computerWithOnlyCompany = computerMapper.fromParameters(basicName, null, null, 13);
 
       assertEquals(basicName, computerNormal.getName());
       assertEquals(basicName, computerWithOnlyCompany.getName());
@@ -151,7 +164,7 @@ public class ComputerMapperTest {
     }
 
     try {
-      Computer computerWithCompanyNumber122 = ComputerMapper.fromParameters(basicName, basicIntroductionLocalDate,
+      Computer computerWithCompanyNumber122 = computerMapper.fromParameters(basicName, basicIntroductionLocalDate,
           basicDiscontinuationLocalDate, 122);
       fail("computerWithCompanyNumber122 created");
     } catch (CompanyNotFoundException e) {
@@ -159,13 +172,13 @@ public class ComputerMapperTest {
     }
 
     try {
-      Computer computerWithOnlyCompanyNumber122 = ComputerMapper.fromParameters(basicName, null, null, 122);
+      Computer computerWithOnlyCompanyNumber122 = computerMapper.fromParameters(basicName, null, null, 122);
       fail("computerWithOnlyCompanyNumber122 created");
     } catch (CompanyNotFoundException e) {
       assertEquals("Company #122 not found. Unable to add the company into the computer.", e.getMessage());
     }
 
-    HSQLDatabase.INSTANCE.destroy();
+    hsqldb.destroy();
   }
 
 }

@@ -48,7 +48,8 @@ public class ComputerDao {
   @Autowired
   private DataSource dataSource;
 
-  private ComputerMapper computerMapper = new ComputerMapper();
+  @Autowired
+  private ComputerMapper computerMapper;
 
   /**
    * Adds a new computer to the database.

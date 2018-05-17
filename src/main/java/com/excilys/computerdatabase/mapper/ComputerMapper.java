@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.excilys.computerdatabase.exceptions.CompanyNotFoundException;
 import com.excilys.computerdatabase.model.pojo.Company;
@@ -18,6 +19,7 @@ import com.excilys.computerdatabase.service.CompanyService;
  * @author jmdebicki
  *
  */
+@Component
 public class ComputerMapper {
 
   @Autowired

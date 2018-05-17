@@ -25,8 +25,8 @@ public class AddComputerView extends AbstractView {
 
   private ComputerService computerService = (ComputerService) context.getBean("computerService");
 
-  private ComputerMapper computerMapper;
-  private LocalDateMapper localDateMapper;
+  private ComputerMapper computerMapper = (ComputerMapper) context.getBean("computerMapper");
+  private LocalDateMapper localDateMapper = (LocalDateMapper) context.getBean("localDateMapper");
 
   /**
    * Constructor that sets the view's viewer.
@@ -36,9 +36,6 @@ public class AddComputerView extends AbstractView {
    */
   public AddComputerView(Viewer viewer) {
     super(viewer);
-
-    computerMapper = new ComputerMapper();
-    localDateMapper = new LocalDateMapper();
   }
 
   @Override

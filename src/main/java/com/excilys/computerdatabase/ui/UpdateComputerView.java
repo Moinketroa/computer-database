@@ -24,7 +24,7 @@ public class UpdateComputerView extends AbstractView {
 
   private Computer computer;
 
-  private LocalDateMapper localDateMapper;
+  private LocalDateMapper localDateMapper = (LocalDateMapper) context.getBean("localDateMapper");
 
   private ComputerService computerService = (ComputerService) context.getBean("computerService");
 
@@ -41,7 +41,6 @@ public class UpdateComputerView extends AbstractView {
     super(viewer);
 
     computerId = id;
-    localDateMapper = new LocalDateMapper();
   }
 
   @Override

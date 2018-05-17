@@ -3,6 +3,8 @@ package com.excilys.computerdatabase.mapper;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import org.springframework.stereotype.Component;
+
 /**
  * The class helps building a {@link LocalDate} from specific parameters or
  * helps building other objects from a {@link LocalDate}.
@@ -10,6 +12,7 @@ import java.time.format.DateTimeFormatter;
  * @author jmdebicki
  *
  */
+@Component
 public class LocalDateMapper {
 
   private final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");

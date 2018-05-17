@@ -41,7 +41,8 @@ public class CompanyDao {
   @Autowired
   private DataSource dataSource;
 
-  private CompanyMapper companyMapper = new CompanyMapper();
+  @Autowired
+  private CompanyMapper companyMapper;
 
   /**
    * Fetches a given number (or fewer) of companies from the database under the

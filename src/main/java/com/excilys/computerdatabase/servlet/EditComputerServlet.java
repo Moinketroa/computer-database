@@ -40,7 +40,9 @@ public class EditComputerServlet extends HttpServlet {
   @Autowired
   private ComputerService computerService;
   
+  @Autowired
   private LocalDateMapper localDateMapper;
+  @Autowired
   private ComputerMapper computerMapper;
 
   /**
@@ -48,9 +50,6 @@ public class EditComputerServlet extends HttpServlet {
    */
   public EditComputerServlet() {
     super();
-    
-    localDateMapper = new LocalDateMapper();
-    computerMapper = new ComputerMapper();
   }
 
   @Override

@@ -3,6 +3,8 @@ package com.excilys.computerdatabase.mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.springframework.stereotype.Component;
+
 import com.excilys.computerdatabase.model.pojo.Company;
 
 /**
@@ -12,6 +14,7 @@ import com.excilys.computerdatabase.model.pojo.Company;
  * @author jmdebicki
  *
  */
+@Component
 public class CompanyMapper {
 
   /**

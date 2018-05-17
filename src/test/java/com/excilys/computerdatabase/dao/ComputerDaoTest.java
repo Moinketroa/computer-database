@@ -11,14 +11,23 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.excilys.computerdatabase.config.ApplicationConfig;
 import com.excilys.computerdatabase.model.pojo.Company;
 import com.excilys.computerdatabase.model.pojo.Computer;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = ApplicationConfig.class)
 public class ComputerDaoTest {
 
-  private HSQLDatabase hsqldb = HSQLDatabase.INSTANCE;
-  private ComputerDao computerDao = ComputerDao.INSTANCE;
+  @Autowired
+  private HSQLDatabase hsqldb;
+  @Autowired
+  private ComputerDao computerDao;
 
   /**
    * Initializes the database before each test.
