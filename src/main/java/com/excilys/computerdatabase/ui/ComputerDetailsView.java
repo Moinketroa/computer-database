@@ -14,7 +14,10 @@ public class ComputerDetailsView extends AbstractView {
 
   private int computerId;
   private Computer computer;
-  private ComputerService computerService;
+
+  private ComputerService computerService = (ComputerService) context.getBean("computerService");
+
+  private LocalDateMapper localDateMapper;
 
   /**
    * Constructor that sets the view's viewer.
@@ -28,13 +31,14 @@ public class ComputerDetailsView extends AbstractView {
     super(viewer);
 
     computerId = id;
-    computerService = ComputerService.INSTANCE;
-    computer = computerService.getById(id);
+    localDateMapper = new LocalDateMapper();
   }
 
   @Override
   public void display() {
     System.out.println("\nDetails for computer #" + computerId + "\n");
+
+    computer = computerService.getById(computerId);
 
     if (computer == null) {
       System.out.println("Computer #" + computerId + " not found");
@@ -60,8 +64,8 @@ public class ComputerDetailsView extends AbstractView {
       }
 
       System.out.format(format, computer.getId(), computerName,
-          LocalDateMapper.toFormattedString(computer.getIntroduced()),
-          LocalDateMapper.toFormattedString(computer.getDiscontinued()), companyId);
+          localDateMapper.toFormattedString(computer.getIntroduced()),
+          localDateMapper.toFormattedString(computer.getDiscontinued()), companyId);
 
       System.out.println("----------------------------------------------------------------------");
       System.out.println();

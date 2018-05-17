@@ -4,6 +4,10 @@ import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
+
+import com.excilys.computerdatabase.config.ApplicationConfig;
 
 /**
  * The abstract class is to be extended in order to be compatible with a Viewer.
@@ -17,6 +21,8 @@ public abstract class AbstractView {
 
   protected static Scanner scanner = new Scanner(System.in);
   protected Viewer viewer;
+
+  protected AbstractApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
 
   /**
    * Constructor that sets the view's viewer.
@@ -37,7 +43,7 @@ public abstract class AbstractView {
    * Closes the resources associated with the views.
    */
   public static void closeView() {
-    LOGGER.warn("Closing the resources for the views");
+    LOGGER.debug("Closing the resources for the views");
     scanner.close();
   }
 

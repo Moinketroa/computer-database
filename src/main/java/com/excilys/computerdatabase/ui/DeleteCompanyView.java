@@ -7,7 +7,8 @@ public class DeleteCompanyView extends AbstractView {
 
   private Company company;
   private int companyId;
-  private CompanyService companyService;
+
+  private CompanyService companyService = (CompanyService) context.getBean("companyService");
 
   /**
    * Constructor that sets the view's viewer and the id of the company to be
@@ -22,19 +23,19 @@ public class DeleteCompanyView extends AbstractView {
     super(viewer);
 
     companyId = id;
-    companyService = CompanyService.INSTANCE;
-    company = companyService.getById(companyId);
   }
-  
+
   @Override
   public void display() {
     System.out.println("\nDeleting the company #" + companyId + "\n");
 
+    company = companyService.getById(companyId);
+
     if (company == null) {
       System.out.println("Company #" + companyId + " not found");
     } else {
-      System.out.println(
-          "Are you sure you want to delete the company #" + companyId + " named \"" + company.getName() + "\" and all computers retaled to this company");
+      System.out.println("Are you sure you want to delete the company #" + companyId + " named \"" + company.getName()
+          + "\" and all computers retaled to this company");
       System.out.println("(y/n)?");
 
       readResponse();
@@ -50,7 +51,8 @@ public class DeleteCompanyView extends AbstractView {
 
   /**
    * Asks the user if he's certain to delete the specified company. If yes, the
-   * company is deleted and the computers linked to the company are also deleted. If no, the user returns to the main menu.
+   * company is deleted and the computers linked to the company are also deleted.
+   * If no, the user returns to the main menu.
    */
   private void readResponse() {
     while (true) {

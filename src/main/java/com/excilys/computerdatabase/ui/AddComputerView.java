@@ -23,7 +23,10 @@ public class AddComputerView extends AbstractView {
   private LocalDate discontinuation;
   private Integer companyId;
 
-  private ComputerService computerService;
+  private ComputerService computerService = (ComputerService) context.getBean("computerService");
+
+  private ComputerMapper computerMapper;
+  private LocalDateMapper localDateMapper;
 
   /**
    * Constructor that sets the view's viewer.
@@ -34,7 +37,8 @@ public class AddComputerView extends AbstractView {
   public AddComputerView(Viewer viewer) {
     super(viewer);
 
-    computerService = ComputerService.INSTANCE;
+    computerMapper = new ComputerMapper();
+    localDateMapper = new LocalDateMapper();
   }
 
   @Override
@@ -47,7 +51,7 @@ public class AddComputerView extends AbstractView {
     readCompanyId();
 
     try {
-      Computer computer = ComputerMapper.fromParameters(name, introduction, discontinuation, companyId);
+      Computer computer = computerMapper.fromParameters(name, introduction, discontinuation, companyId);
       viewer.setView(new ComputerDetailsView(viewer, computerService.create(computer)));
     } catch (CompanyNotFoundException | DiscontinuationPriorToIntroductionExpection e) {
       viewer.setView(new ErrorView(viewer, e));
@@ -55,8 +59,8 @@ public class AddComputerView extends AbstractView {
   }
 
   /**
-   * Read the name of the computer. If nothing was entered, the view keeps
-   * asking the user for a name.
+   * Read the name of the computer. If nothing was entered, the view keeps asking
+   * the user for a name.
    */
   private void readName() {
     System.out.println("Please enter the name of the computer /!\\ MANDATORY /!\\");
@@ -87,12 +91,12 @@ public class AddComputerView extends AbstractView {
       return;
     }
 
-    introduction = LocalDateMapper.fromString(introductionString);
+    introduction = localDateMapper.fromString(introductionString);
   }
 
   /**
-   * Read the discontinuation date of the computer. If nothing was entered,
-   * the computer will have null as its discontinuation date.
+   * Read the discontinuation date of the computer. If nothing was entered, the
+   * computer will have null as its discontinuation date.
    */
   private void readDiscontinuationDate() {
     System.out.println("Please enter the discontinuation date (DD/MM/YYYY format !)");
@@ -110,7 +114,7 @@ public class AddComputerView extends AbstractView {
         return;
       }
 
-      discontinuation = LocalDateMapper.fromString(discontinuationString);
+      discontinuation = localDateMapper.fromString(discontinuationString);
 
       if (introduction != null) {
         if (discontinuation.isAfter(introduction)) {

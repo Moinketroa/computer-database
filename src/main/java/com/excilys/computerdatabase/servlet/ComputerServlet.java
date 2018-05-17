@@ -2,11 +2,15 @@ package com.excilys.computerdatabase.servlet;
 
 import java.io.IOException;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.excilys.computerdatabase.dto.ComputerDto;
 import com.excilys.computerdatabase.model.pojo.Computer;
@@ -19,13 +23,20 @@ import com.excilys.computerdatabase.service.ComputerService;
 public class ComputerServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
-  private ComputerService computerService = ComputerService.INSTANCE;
+  @Autowired
+  private ComputerService computerService;
 
   /**
    * @see HttpServlet#HttpServlet()
    */
   public ComputerServlet() {
     super();
+  }
+
+  @Override
+  public void init(ServletConfig config) throws ServletException {
+    super.init(config);
+    SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
   }
 
   /**
@@ -63,12 +74,12 @@ public class ComputerServlet extends HttpServlet {
     this.getServletContext().getRequestDispatcher("/WEB-INF/computer.jsp").forward(request, response);
   }
 
-  
   /**
    * @see HttpServlet#doDelete(HttpServletRequest request, HttpServletResponse
    *      response)
    */
-  protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
     String computerIdParameter = request.getParameter("computerId");
 
     int computerId = 0;
@@ -85,9 +96,9 @@ public class ComputerServlet extends HttpServlet {
         this.getServletContext().getRequestDispatcher("/WEB-INF/400.jsp").forward(request, response);
       }
     }
-    
+
     computerService.delete(computerId);
-    
+
     request.setAttribute("msg", "Computer #" + computerId + " deleted !");
     this.getServletContext().getRequestDispatcher("/WEB-INF/204.jsp").forward(request, response);
   }

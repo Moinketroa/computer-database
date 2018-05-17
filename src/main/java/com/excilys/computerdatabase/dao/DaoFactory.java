@@ -12,6 +12,8 @@ import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -23,9 +25,8 @@ import com.zaxxer.hikari.HikariDataSource;
  * @author jmdebicki
  *
  */
-public enum DaoFactory {
-
-  INSTANCE;
+@Repository
+public class DaoFactory {
 
   private String driver;
 
@@ -36,7 +37,8 @@ public enum DaoFactory {
   /**
    * Loads connection informations form the config.properties file.
    */
-  DaoFactory() {
+  @Autowired
+  public DaoFactory() {
     final Properties properties = new Properties();
     final InputStream path = ClassLoader.getSystemClassLoader().getResourceAsStream("config.properties");
     HikariConfig config = new HikariConfig();
@@ -84,24 +86,6 @@ public enum DaoFactory {
     }
 
     return null;
-  }
-
-  /**
-   * Retrieves the DAO for computer entities.
-   *
-   * @return The DAO for computer entities
-   */
-  public ComputerDao getComputerDao() {
-    return ComputerDao.INSTANCE;
-  }
-
-  /**
-   * Retrieves the DAO for company entities.
-   *
-   * @return The DAO for company entities
-   */
-  public CompanyDao getCompanyDao() {
-    return CompanyDao.INSTANCE;
   }
 
   /**

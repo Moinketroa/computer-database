@@ -2,8 +2,10 @@ package com.excilys.computerdatabase.service;
 
 import java.time.LocalDate;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.excilys.computerdatabase.dao.ComputerDao;
-import com.excilys.computerdatabase.dao.DaoFactory;
 import com.excilys.computerdatabase.dao.OrderByComputer;
 import com.excilys.computerdatabase.dao.OrderByMode;
 import com.excilys.computerdatabase.exceptions.DiscontinuationPriorToIntroductionExpection;
@@ -18,19 +20,11 @@ import com.excilys.computerdatabase.page.Page;
  * @author debicki
  *
  */
-public enum ComputerService {
+@Service
+public class ComputerService {
 
-  INSTANCE;
-
+  @Autowired
   private ComputerDao computerDao;
-  private DaoFactory daoFactory = DaoFactory.INSTANCE;
-
-  /**
-   * Constructor that fetches the DAO from the DAOFactory.
-   */
-  ComputerService() {
-    computerDao = daoFactory.getComputerDao();
-  }
 
   /**
    * Fetches a given number (or fewer) of computers from the {@link ComputerDao}
@@ -44,14 +38,15 @@ public enum ComputerService {
    * @throws WrongPageParameterException
    *           if the parameters are incorrect
    */
-  public Page<Computer> getAll(OrderByComputer order, OrderByMode mode, int offset, int numberOfElementsPerPage) throws WrongPageParameterException {
+  public Page<Computer> getAll(OrderByComputer order, OrderByMode mode, int offset, int numberOfElementsPerPage)
+      throws WrongPageParameterException {
     if ((offset < 0) || (numberOfElementsPerPage <= 0)) {
       throw new WrongPageParameterException();
     }
 
     return computerDao.fetchAll(order, mode, offset, numberOfElementsPerPage);
   }
-  
+
   /**
    * Fetches a given number (or fewer) of computers from the {@link ComputerDao}
    * under the form of a {@link Page}.
@@ -144,8 +139,8 @@ public enum ComputerService {
     computerDao.deleteSeveral(idVarargs);
   }
 
-  public Page<Computer> search(String keyword, OrderByComputer order, OrderByMode mode, int offset, int numberOfElementsPerPage)
-      throws WrongPageParameterException {
+  public Page<Computer> search(String keyword, OrderByComputer order, OrderByMode mode, int offset,
+      int numberOfElementsPerPage) throws WrongPageParameterException {
     if ((offset < 0) || (numberOfElementsPerPage <= 0)) {
       throw new WrongPageParameterException();
     }

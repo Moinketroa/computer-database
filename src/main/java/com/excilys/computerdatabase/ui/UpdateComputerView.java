@@ -23,7 +23,10 @@ public class UpdateComputerView extends AbstractView {
   private Integer companyId;
 
   private Computer computer;
-  private ComputerService computerService;
+
+  private LocalDateMapper localDateMapper;
+
+  private ComputerService computerService = (ComputerService) context.getBean("computerService");
 
   /**
    * Constructor that sets the view's viewer and the id of the computer to be
@@ -38,20 +41,14 @@ public class UpdateComputerView extends AbstractView {
     super(viewer);
 
     computerId = id;
-    computerService = ComputerService.INSTANCE;
-    computer = computerService.getById(id);
-
-    if (computer != null) {
-      name = computer.getName();
-      introduction = computer.getIntroduced();
-      discontinuation = computer.getDiscontinued();
-      companyId = computer.getCompany().getId();
-    }
+    localDateMapper = new LocalDateMapper();
   }
 
   @Override
   public void display() {
     System.out.println("\nUpdating the computer #" + computerId + "\n");
+
+    computer = computerService.getById(computerId);
 
     if (computer == null) {
       System.out.println("Computer #" + computerId + " not found");
@@ -63,6 +60,11 @@ public class UpdateComputerView extends AbstractView {
 
       viewer.setView(new MenuView(viewer));
     } else {
+      name = computer.getName();
+      introduction = computer.getIntroduced();
+      discontinuation = computer.getDiscontinued();
+      companyId = computer.getCompany().getId();
+
       readName();
       readIntroductionDate();
       readDiscontinuationDate();
@@ -98,7 +100,7 @@ public class UpdateComputerView extends AbstractView {
   private void readIntroductionDate() {
     System.out.println("Please enter the introduction date (DD/MM/YYYY format !)");
     if (introduction != null) {
-      System.out.println("Default : null\tCurrent : " + LocalDateMapper.toFormattedString(introduction));
+      System.out.println("Default : null\tCurrent : " + localDateMapper.toFormattedString(introduction));
     } else {
       System.out.println("Default : null\tCurrent : null");
     }
@@ -113,7 +115,7 @@ public class UpdateComputerView extends AbstractView {
         System.out.println("Please enter a valid date format");
         introductionString = scanner.nextLine().trim();
       } else {
-        introduction = LocalDateMapper.fromString(introductionString);
+        introduction = localDateMapper.fromString(introductionString);
         return;
       }
     }
@@ -126,7 +128,7 @@ public class UpdateComputerView extends AbstractView {
   private void readDiscontinuationDate() {
     System.out.println("Please enter the discontinuation date (DD/MM/YYYY format !)");
     if (discontinuation != null) {
-      System.out.println("Default : null\tCurrent : " + LocalDateMapper.toFormattedString(discontinuation));
+      System.out.println("Default : null\tCurrent : " + localDateMapper.toFormattedString(discontinuation));
     } else {
       System.out.println("Default : null\tCurrent : null");
     }
@@ -140,7 +142,7 @@ public class UpdateComputerView extends AbstractView {
           return;
         }
 
-        discontinuation = LocalDateMapper.fromString(discontinuationString);
+        discontinuation = localDateMapper.fromString(discontinuationString);
 
         if (introduction != null) {
           if (discontinuation.isAfter(introduction)) {

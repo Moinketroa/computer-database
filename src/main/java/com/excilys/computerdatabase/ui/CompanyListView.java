@@ -12,7 +12,7 @@ import com.excilys.computerdatabase.service.CompanyService;
  */
 public class CompanyListView extends AbstractListView<Company> {
 
-  private CompanyService companyService;
+  private CompanyService companyService = (CompanyService) context.getBean("companyService");
 
   /**
    * Constructor that sets the view's viewer and fetches the first page of the
@@ -23,25 +23,23 @@ public class CompanyListView extends AbstractListView<Company> {
    */
   public CompanyListView(Viewer viewer) {
     super(viewer);
-
-    companyService = CompanyService.INSTANCE;
-
-    try {
-      page = companyService.getAll(0, ENTITIES_PER_PAGE);
-    } catch (WrongPageParameterException e) {
-      viewer.setView(new ErrorView(viewer, e));
-    }
   }
 
   @Override
   public void display() {
     System.out.println("\nComplete list of all the companies\n");
 
-    if (page.isEmpty()) {
-      System.out.println("There is currently no company");
-    } else {
-      displayPage();
-      readResponse();
+    try {
+      page = companyService.getAll(0, ENTITIES_PER_PAGE);
+
+      if (page.isEmpty()) {
+        System.out.println("There is currently no company");
+      } else {
+        displayPage();
+        readResponse();
+      }
+    } catch (WrongPageParameterException e) {
+      viewer.setView(new ErrorView(viewer, e));
     }
   }
 

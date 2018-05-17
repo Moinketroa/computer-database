@@ -5,11 +5,15 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.excilys.computerdatabase.dto.CompanyDto;
 import com.excilys.computerdatabase.dto.ComputerDto;
@@ -31,14 +35,28 @@ import com.excilys.computerdatabase.service.ComputerService;
 public class EditComputerServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
-  private CompanyService companyService = CompanyService.INSTANCE;
-  private ComputerService computerService = ComputerService.INSTANCE;
+  @Autowired
+  private CompanyService companyService;
+  @Autowired
+  private ComputerService computerService;
+  
+  private LocalDateMapper localDateMapper;
+  private ComputerMapper computerMapper;
 
   /**
    * @see HttpServlet#HttpServlet()
    */
   public EditComputerServlet() {
     super();
+    
+    localDateMapper = new LocalDateMapper();
+    computerMapper = new ComputerMapper();
+  }
+
+  @Override
+  public void init(ServletConfig config) throws ServletException {
+    super.init(config);
+    SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
   }
 
   /**
@@ -127,11 +145,11 @@ public class EditComputerServlet extends HttpServlet {
     }
 
     if (introducedParameter != null && !(introducedParameter.trim().equals(""))) {
-      introduced = LocalDateMapper.fromUSFormatString(introducedParameter);
+      introduced = localDateMapper.fromUSFormatString(introducedParameter);
     }
 
     if (discontinuedParameter != null && !(discontinuedParameter.trim().equals(""))) {
-      discontinued = LocalDateMapper.fromUSFormatString(discontinuedParameter);
+      discontinued = localDateMapper.fromUSFormatString(discontinuedParameter);
     }
 
     if (companyIdParameter != null && !(companyIdParameter.trim().equals(""))) {
@@ -146,7 +164,7 @@ public class EditComputerServlet extends HttpServlet {
     Computer computerToUpdate = null;
 
     try {
-      computerToUpdate = ComputerMapper.fromParameters(computerId, nameParameter, introduced, discontinued, companyId);
+      computerToUpdate = computerMapper.fromParameters(computerId, nameParameter, introduced, discontinued, companyId);
     } catch (CompanyNotFoundException e) {
       request.setAttribute("error", "Requested company wasn't found");
       this.getServletContext().getRequestDispatcher("/WEB-INF/404.jsp").forward(request, response);

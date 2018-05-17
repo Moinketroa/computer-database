@@ -22,7 +22,7 @@ public class Viewer {
    *          the new view to be displayed
    */
   public void setView(AbstractView view) {
-    LOGGER.info("Setting a new view for the Viewer");
+    LOGGER.debug("Setting a new view for the Viewer");
     AbstractView.cleanConsole();
     this.view = view;
     this.view.display();
@@ -32,7 +32,7 @@ public class Viewer {
    * Closes the resources linked to the viewer and the views.
    */
   public void close() {
-    LOGGER.info("Closing the Viewer");
+    LOGGER.debug("Closing the Viewer");
     AbstractView.closeView();
   }
 

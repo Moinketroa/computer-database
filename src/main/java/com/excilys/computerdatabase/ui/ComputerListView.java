@@ -13,7 +13,9 @@ import com.excilys.computerdatabase.service.ComputerService;
  */
 public class ComputerListView extends AbstractListView<Computer> {
 
-  private ComputerService computerService;
+  private ComputerService computerService = (ComputerService) context.getBean("computerService");
+
+  private LocalDateMapper localDateMapper;
 
   /**
    * Constructor that sets the view's viewer and fetches the first page of the
@@ -25,24 +27,24 @@ public class ComputerListView extends AbstractListView<Computer> {
   public ComputerListView(Viewer viewer) {
     super(viewer);
 
-    computerService = ComputerService.INSTANCE;
-
-    try {
-      page = computerService.getAll(0, ENTITIES_PER_PAGE);
-    } catch (WrongPageParameterException e) {
-      viewer.setView(new ErrorView(viewer, e));
-    }
+    localDateMapper = new LocalDateMapper();
   }
 
   @Override
   public void display() {
     System.out.println("\nComplete list of all the computers\n");
 
-    if (page.isEmpty()) {
-      System.out.println("There is currently no computer");
-    } else {
-      displayPage();
-      readResponse();
+    try {
+      page = computerService.getAll(0, ENTITIES_PER_PAGE);
+
+      if (page.isEmpty()) {
+        System.out.println("There is currently no computer");
+      } else {
+        displayPage();
+        readResponse();
+      }
+    } catch (WrongPageParameterException e) {
+      viewer.setView(new ErrorView(viewer, e));
     }
   }
 
@@ -70,8 +72,8 @@ public class ComputerListView extends AbstractListView<Computer> {
       }
 
       System.out.format(format, computer.getId(), computerName,
-          LocalDateMapper.toFormattedString(computer.getIntroduced()),
-          LocalDateMapper.toFormattedString(computer.getDiscontinued()), companyId);
+          localDateMapper.toFormattedString(computer.getIntroduced()),
+          localDateMapper.toFormattedString(computer.getDiscontinued()), companyId);
 
     }
 

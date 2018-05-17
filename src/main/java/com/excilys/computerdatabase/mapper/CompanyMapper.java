@@ -24,7 +24,7 @@ public class CompanyMapper {
    * @throws SQLException
    *           if something went wrong while fetching the company's fields
    */
-  public static Company fromResultSet(ResultSet result) throws SQLException {
+  public Company fromResultSet(ResultSet result) throws SQLException {
     int id = result.getInt("id");
     String name = result.getString("name");
 

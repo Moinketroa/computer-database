@@ -10,8 +10,12 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.excilys.computerdatabase.mapper.ComputerMapper;
 import com.excilys.computerdatabase.model.pojo.Computer;
@@ -23,9 +27,8 @@ import com.excilys.computerdatabase.page.Page;
  * @author jmdebicki
  *
  */
-public enum ComputerDao {
-
-  INSTANCE;
+@Repository
+public class ComputerDao {
 
   private static final String SQL_SELECT_COMPUTER = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name AS company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ?";
   private static final String SQL_SELECT_COMPUTERS = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name AS company_name FROM computer LEFT JOIN company ON computer.company_id = company.id";
@@ -42,7 +45,10 @@ public enum ComputerDao {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDao.class);
 
-  private DaoFactory daoFactory = DaoFactory.INSTANCE;
+  @Autowired
+  private DataSource dataSource;
+
+  private ComputerMapper computerMapper = new ComputerMapper();
 
   /**
    * Adds a new computer to the database.
@@ -61,7 +67,7 @@ public enum ComputerDao {
     Date introduced = computer.getIntroduced() == null ? null : Date.valueOf(computer.getIntroduced());
     Date discontinued = computer.getDiscontinued() == null ? null : Date.valueOf(computer.getDiscontinued());
 
-    try (Connection connexion = daoFactory.getConnection();
+    try (Connection connexion = dataSource.getConnection();
         PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_INSERT_COMPUTER, true,
             computer.getName(), introduced, discontinued, companyId)) {
 
@@ -100,7 +106,7 @@ public enum ComputerDao {
     Date introduced = computer.getIntroduced() == null ? null : Date.valueOf(computer.getIntroduced());
     Date discontinued = computer.getDiscontinued() == null ? null : Date.valueOf(computer.getDiscontinued());
 
-    try (Connection connexion = daoFactory.getConnection();
+    try (Connection connexion = dataSource.getConnection();
         PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_UPDATE_COMPUTER, false,
             computer.getName(), introduced, discontinued, companyId, computer.getId())) {
 
@@ -118,7 +124,7 @@ public enum ComputerDao {
    *          The id of the computer to be deleted
    */
   public void delete(int id) {
-    try (Connection connexion = daoFactory.getConnection();
+    try (Connection connexion = dataSource.getConnection();
         PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_DELETE_COMPUTER, false,
             id)) {
 
@@ -137,7 +143,7 @@ public enum ComputerDao {
    *          one or more id of computers wanted to be deleted
    */
   public void deleteSeveral(Integer... idVarargs) {
-    try (Connection connexion = daoFactory.getConnection()) {
+    try (Connection connexion = dataSource.getConnection()) {
       connexion.setAutoCommit(false);
 
       Savepoint beforeMultipleDeletion = connexion.setSavepoint();
@@ -175,13 +181,13 @@ public enum ComputerDao {
   public Computer fetchOne(int computerId) {
     Computer computer = null;
 
-    try (Connection connexion = daoFactory.getConnection();
+    try (Connection connexion = dataSource.getConnection();
         PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPUTER, false,
             computerId);
         ResultSet result = preparedStatement.executeQuery()) {
 
       if (result.next()) {
-        computer = ComputerMapper.fromResultSet(result);
+        computer = computerMapper.fromResultSet(result);
       }
 
     } catch (SQLException e) {
@@ -212,7 +218,7 @@ public enum ComputerDao {
 
     String completeSQLQuery = SQL_SELECT_COMPUTERS + " ORDER BY " + orderBy + " " + mode + SQL_LIMIT;
 
-    try (Connection connexion = daoFactory.getConnection();
+    try (Connection connexion = dataSource.getConnection();
         PreparedStatement preparedSelectStatement = initializationPreparedStatement(connexion, completeSQLQuery, false,
             numberOfElementsPerPage, offset);
         PreparedStatement preparedCountStatement = initializationPreparedStatement(connexion, SQL_SELECT_COUNT, false);
@@ -220,7 +226,7 @@ public enum ComputerDao {
         ResultSet countResult = preparedCountStatement.executeQuery()) {
 
       while (selectResult.next()) {
-        computers.add(ComputerMapper.fromResultSet(selectResult));
+        computers.add(computerMapper.fromResultSet(selectResult));
       }
 
       if (countResult.next()) {
@@ -259,7 +265,7 @@ public enum ComputerDao {
 
     String completeSQLQuery = SQL_SEARCH_COMPUTERS + " ORDER BY " + orderBy + " " + mode + SQL_LIMIT;
 
-    try (Connection connexion = daoFactory.getConnection();
+    try (Connection connexion = dataSource.getConnection();
         PreparedStatement preparedSearchStatement = initializationPreparedStatement(connexion, completeSQLQuery, false,
             keywordLike, keywordLike, numberOfElementsPerPage, offset);
         PreparedStatement preparedCountStatement = initializationPreparedStatement(connexion, SQL_SEARCH_COUNT, false,
@@ -268,7 +274,7 @@ public enum ComputerDao {
         ResultSet countResult = preparedCountStatement.executeQuery()) {
 
       while (searchResult.next()) {
-        computers.add(ComputerMapper.fromResultSet(searchResult));
+        computers.add(computerMapper.fromResultSet(searchResult));
       }
 
       if (countResult.next()) {

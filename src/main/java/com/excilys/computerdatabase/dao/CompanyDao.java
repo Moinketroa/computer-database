@@ -9,8 +9,12 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.excilys.computerdatabase.mapper.CompanyMapper;
 import com.excilys.computerdatabase.model.pojo.Company;
@@ -22,9 +26,8 @@ import com.excilys.computerdatabase.page.Page;
  * @author jmdebicki
  *
  */
-public enum CompanyDao {
-
-  INSTANCE;
+@Repository
+public class CompanyDao {
 
   private static final String SQL_SELECT_COMPANY = "SELECT id, name FROM company WHERE id = ?";
   private static final String SQL_SELECT_COMPANIES = "SELECT id, name FROM company LIMIT ? OFFSET ?";
@@ -35,7 +38,10 @@ public enum CompanyDao {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDao.class);
 
-  private DaoFactory daoFactory = DaoFactory.INSTANCE;
+  @Autowired
+  private DataSource dataSource;
+
+  private CompanyMapper companyMapper = new CompanyMapper();
 
   /**
    * Fetches a given number (or fewer) of companies from the database under the
@@ -51,20 +57,20 @@ public enum CompanyDao {
     List<Company> companies = new ArrayList<>();
     int totalNumberOfElements = 0;
 
-    try (Connection connexion = daoFactory.getConnection();
+    try (Connection connexion = dataSource.getConnection();
         PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPANIES, false,
             numberOfElementsPerPage, offset);
         ResultSet result = preparedStatement.executeQuery()) {
 
       while (result.next()) {
-        companies.add(CompanyMapper.fromResultSet(result));
+        companies.add(companyMapper.fromResultSet(result));
       }
 
     } catch (SQLException e) {
       e.printStackTrace();
     }
 
-    try (Connection connexion = daoFactory.getConnection();
+    try (Connection connexion = dataSource.getConnection();
         PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COUNT, false);
         ResultSet result = preparedStatement.executeQuery()) {
 
@@ -89,12 +95,12 @@ public enum CompanyDao {
   public Company fetchOne(int id) {
     Company company = null;
 
-    try (Connection connexion = daoFactory.getConnection();
+    try (Connection connexion = dataSource.getConnection();
         PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPANY, false, id);
         ResultSet result = preparedStatement.executeQuery()) {
 
       if (result.next()) {
-        company = CompanyMapper.fromResultSet(result);
+        company = companyMapper.fromResultSet(result);
       }
 
     } catch (SQLException e) {
@@ -112,7 +118,7 @@ public enum CompanyDao {
    *          The id of the company to be deleted
    */
   public void delete(int id) {
-    try (Connection connexion = daoFactory.getConnection()) {
+    try (Connection connexion = dataSource.getConnection()) {
       connexion.setAutoCommit(false);
 
       Savepoint beforeCompanyDeletion = connexion.setSavepoint();

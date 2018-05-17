@@ -12,8 +12,8 @@ import java.time.format.DateTimeFormatter;
  */
 public class LocalDateMapper {
 
-  private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-  private static final DateTimeFormatter US_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+  private final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+  private final DateTimeFormatter US_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
   /**
    * Transforms a {@link String} in a valid format to its {@link LocalDate}
@@ -23,7 +23,7 @@ public class LocalDateMapper {
    *          a date in the "dd/mm/yyyy" format
    * @return A {@link LocalDate} representing the date given in parameter
    */
-  public static LocalDate fromString(String date) {
+  public LocalDate fromString(String date) {
     return LocalDate.parse(date, DATE_TIME_FORMATTER);
   }
 
@@ -36,7 +36,7 @@ public class LocalDateMapper {
    * @return A {@link String} representing the {@link LocalDate} given in
    *         parameter
    */
-  public static String toFormattedString(LocalDate date) {
+  public String toFormattedString(LocalDate date) {
     return date == null ? "null" : date.format(DATE_TIME_FORMATTER);
   }
 
@@ -48,7 +48,7 @@ public class LocalDateMapper {
    *          a date in the "yyyy-mm-dd" format
    * @return A {@link LocalDate} representing the date given in parameter
    */
-  public static LocalDate fromUSFormatString(String date) {
+  public LocalDate fromUSFormatString(String date) {
     return LocalDate.parse(date, US_DATE_TIME_FORMATTER);
   }
 }

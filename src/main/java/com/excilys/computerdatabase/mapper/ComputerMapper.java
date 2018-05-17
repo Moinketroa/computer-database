@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.excilys.computerdatabase.exceptions.CompanyNotFoundException;
 import com.excilys.computerdatabase.model.pojo.Company;
 import com.excilys.computerdatabase.model.pojo.Computer;
@@ -18,6 +20,9 @@ import com.excilys.computerdatabase.service.CompanyService;
  */
 public class ComputerMapper {
 
+  @Autowired
+  private CompanyService companyService;
+
   /**
    * Builds a {@link Computer} from a {@link ResultSet}.
    *
@@ -28,7 +33,7 @@ public class ComputerMapper {
    * @throws SQLException
    *           if something went wrong while fetching the computer's fields
    */
-  public static Computer fromResultSet(ResultSet result) throws SQLException {
+  public Computer fromResultSet(ResultSet result) throws SQLException {
     int id = result.getInt("id");
     String name = result.getString("name");
 
@@ -78,14 +83,14 @@ public class ComputerMapper {
    * @throws CompanyNotFoundException
    *           if the company to add to the computer doesn't exist
    */
-  public static Computer fromParameters(String name, LocalDate introduced, LocalDate discontinued, Integer companyId)
+  public Computer fromParameters(String name, LocalDate introduced, LocalDate discontinued, Integer companyId)
       throws CompanyNotFoundException {
     Computer computer = new Computer(name);
     computer.setIntroduced(introduced);
     computer.setDiscontinued(discontinued);
 
     if (companyId != null) {
-      Company company = CompanyService.INSTANCE.getById(companyId);
+      Company company = companyService.getById(companyId);
 
       if (company != null) {
         computer.setCompany(company);
@@ -116,7 +121,7 @@ public class ComputerMapper {
    * @throws CompanyNotFoundException
    *           if the company to add to the computer doesn't exist
    */
-  public static Computer fromParameters(int computerId, String name, LocalDate introduced, LocalDate discontinued,
+  public Computer fromParameters(int computerId, String name, LocalDate introduced, LocalDate discontinued,
       Integer companyId) throws CompanyNotFoundException {
     Computer computer = new Computer(name);
     computer.setId(computerId);
@@ -124,7 +129,7 @@ public class ComputerMapper {
     computer.setDiscontinued(discontinued);
 
     if (companyId != null) {
-      Company company = CompanyService.INSTANCE.getById(companyId);
+      Company company = companyService.getById(companyId);
 
       if (company != null) {
         computer.setCompany(company);

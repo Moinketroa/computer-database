@@ -13,7 +13,8 @@ public class DeleteComputerView extends AbstractView {
 
   private Computer computer;
   private int computerId;
-  private ComputerService computerService;
+
+  private ComputerService computerService = (ComputerService) context.getBean("computerService");
 
   /**
    * Constructor that sets the view's viewer and the id of the computer to be
@@ -28,13 +29,13 @@ public class DeleteComputerView extends AbstractView {
     super(viewer);
 
     computerId = id;
-    computerService = ComputerService.INSTANCE;
-    computer = computerService.getById(computerId);
   }
 
   @Override
   public void display() {
     System.out.println("\nDeleting the computer #" + computerId + "\n");
+
+    computer = computerService.getById(computerId);
 
     if (computer == null) {
       System.out.println("Computer #" + computerId + " not found");
