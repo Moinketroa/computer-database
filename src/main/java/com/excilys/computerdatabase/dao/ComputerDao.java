@@ -3,7 +3,6 @@ package com.excilys.computerdatabase.dao;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Statement;
@@ -17,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.computerdatabase.mapper.ComputerMapper;
@@ -64,36 +65,19 @@ public class ComputerDao {
    * @return The id of the added computer
    */
   public int add(Computer computer) {
-    Integer companyId = null;
-
-    if (computer.getCompany() != null) {
-      companyId = computer.getCompany().getId();
-    }
-
+    Integer companyId = computer.getCompany() == null ? null : computer.getCompany().getId();
     Date introduced = computer.getIntroduced() == null ? null : Date.valueOf(computer.getIntroduced());
     Date discontinued = computer.getDiscontinued() == null ? null : Date.valueOf(computer.getDiscontinued());
 
-    try (Connection connexion = dataSource.getConnection();
-        PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_INSERT_COMPUTER, true,
-            computer.getName(), introduced, discontinued, companyId)) {
+    KeyHolder keyHolder = new GeneratedKeyHolder();
+    jdbcTemplate.update((Connection connection) -> {
+      return initializationPreparedStatement(connection, SQL_INSERT_COMPUTER, true, computer.getName(), introduced,
+          discontinued, companyId);
+    }, keyHolder);
 
-      preparedStatement.executeUpdate();
+    computer.setId(keyHolder.getKey().intValue());
 
-      try (ResultSet result = preparedStatement.getGeneratedKeys()) {
-
-        if (result.next()) {
-          computer.setId(result.getInt(1));
-        }
-
-      } catch (SQLException e) {
-        LOGGER.error("Something went wrong with the ResultSet", e);
-      }
-
-    } catch (SQLException e) {
-      LOGGER.error("Something went wrong while building the statement", e);
-    }
-
-    return computer.getId();
+    return keyHolder.getKey().intValue();
   }
 
   /**
@@ -103,9 +87,9 @@ public class ComputerDao {
    *          The computer to be updated in the database with its fields changed
    */
   public void update(Computer computer) {
-    Integer companyId = computer.getCompany() == null ?       null : computer.getCompany().getId();
-    Date introduced   = computer.getIntroduced() == null ?    null : Date.valueOf(computer.getIntroduced());
-    Date discontinued = computer.getDiscontinued() == null ?  null : Date.valueOf(computer.getDiscontinued());
+    Integer companyId = computer.getCompany() == null ? null : computer.getCompany().getId();
+    Date introduced = computer.getIntroduced() == null ? null : Date.valueOf(computer.getIntroduced());
+    Date discontinued = computer.getDiscontinued() == null ? null : Date.valueOf(computer.getDiscontinued());
 
     jdbcTemplate.update(SQL_UPDATE_COMPUTER, computer.getName(), introduced, discontinued, companyId, computer.getId());
   }
