@@ -4,12 +4,9 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Savepoint;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +16,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.computerdatabase.mapper.ComputerMapper;
 import com.excilys.computerdatabase.model.pojo.Computer;
@@ -47,9 +45,6 @@ public class ComputerDao {
   private static final String SQL_LIMIT = " LIMIT ? OFFSET ?";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDao.class);
-
-  @Autowired
-  private DataSource dataSource;
 
   @Autowired
   private ComputerMapper computerMapper;
@@ -111,32 +106,10 @@ public class ComputerDao {
    * @param idVarargs
    *          one or more id of computers wanted to be deleted
    */
+  @Transactional(rollbackFor = Throwable.class)
   public void deleteSeveral(Integer... idVarargs) {
-    try (Connection connexion = dataSource.getConnection()) {
-      connexion.setAutoCommit(false);
-
-      Savepoint beforeMultipleDeletion = connexion.setSavepoint();
-
-      try {
-        for (int id : idVarargs) {
-          try (PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_DELETE_COMPUTER,
-              false, id)) {
-
-            preparedStatement.executeUpdate();
-
-          } catch (SQLException e) {
-            throw e;
-          }
-        }
-
-        connexion.commit();
-      } catch (SQLException e) {
-        connexion.rollback(beforeMultipleDeletion);
-      } finally {
-        connexion.setAutoCommit(true);
-      }
-    } catch (SQLException e) {
-      LOGGER.error("Something went wrong during the multiple deletion", e);
+    for (int id : idVarargs) {
+      jdbcTemplate.update(SQL_DELETE_COMPUTER, id);
     }
   }
 

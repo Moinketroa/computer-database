@@ -1,22 +1,15 @@
 package com.excilys.computerdatabase.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Savepoint;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.computerdatabase.mapper.CompanyMapper;
 import com.excilys.computerdatabase.model.pojo.Company;
@@ -39,9 +32,6 @@ public class CompanyDao {
   private static final String SQL_DELETE_COMPUTERS = "DELETE FROM computer WHERE company_id = ?";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDao.class);
-
-  @Autowired
-  private DataSource dataSource;
 
   @Autowired
   private CompanyMapper companyMapper;
@@ -95,61 +85,9 @@ public class CompanyDao {
    * @param id
    *          The id of the company to be deleted
    */
+  @Transactional(rollbackFor = Throwable.class)
   public void delete(int id) {
-    try (Connection connexion = dataSource.getConnection()) {
-      connexion.setAutoCommit(false);
-
-      Savepoint beforeCompanyDeletion = connexion.setSavepoint();
-
-      try (
-          PreparedStatement deleteComputersPreparedStatement = initializationPreparedStatement(connexion,
-              SQL_DELETE_COMPUTERS, false, id);
-          PreparedStatement deleteCompanyPreparedStatement = initializationPreparedStatement(connexion,
-              SQL_DELETE_COMPANY, false, id)) {
-
-        deleteComputersPreparedStatement.executeUpdate();
-        deleteCompanyPreparedStatement.executeUpdate();
-
-        connexion.commit();
-      } catch (SQLException e) {
-        LOGGER.error("Something went wrong while building or executing the company delete query, rolling back");
-        connexion.rollback(beforeCompanyDeletion);
-      } finally {
-        connexion.setAutoCommit(true);
-      }
-
-    } catch (SQLException e) {
-      LOGGER.error("Something went wrong during the company deletion", e);
-    }
-  }
-
-  /**
-   * Initialize a {@link PreparedStatement} with a given SQL query. Sets the
-   * parameters of the query if any.
-   *
-   * @param connexion
-   *          the connection to the database
-   * @param sql
-   *          the SQL query to be represented
-   * @param returnGeneratedKeys
-   *          to be set to true if generated keys due to the query are wanted to
-   *          be retrieved
-   * @param objets
-   *          the parameters to be set in the SQL query
-   * @return A {@link PreparedStatement} representing the wanted SQL query with
-   *         the parameters set
-   * @throws SQLException
-   *           if something went wrong while executing the query
-   */
-  private static PreparedStatement initializationPreparedStatement(Connection connexion, String sql,
-      boolean returnGeneratedKeys, Object... objets) throws SQLException {
-    PreparedStatement preparedStatement = connexion.prepareStatement(sql,
-        returnGeneratedKeys ? Statement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS);
-
-    for (int i = 0; i < objets.length; i++) {
-      preparedStatement.setObject(i + 1, objets[i]);
-    }
-
-    return preparedStatement;
+    jdbcTemplate.update(SQL_DELETE_COMPUTERS, id);
+    jdbcTemplate.update(SQL_DELETE_COMPANY, id);
   }
 }
