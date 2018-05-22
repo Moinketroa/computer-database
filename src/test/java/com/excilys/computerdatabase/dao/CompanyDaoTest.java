@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.excilys.computerdatabase.config.ApplicationConfig;
 import com.excilys.computerdatabase.model.pojo.Company;
 import com.excilys.computerdatabase.model.pojo.Computer;
+import com.excilys.computerdatabase.page.Page;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ApplicationConfig.class)
@@ -51,8 +52,14 @@ public class CompanyDaoTest {
    */
   @Test
   public void testFetchAll() {
-    List<Company> companyListNormal = companyDao.fetchAll(0, 12).result();
-    List<Company> companyListEnd = companyDao.fetchAll(40, 12).result();
+    Page<Company> companyPageNormal = companyDao.fetchAll(0, 12);
+    Page<Company> companyPageEnd = companyDao.fetchAll(40, 12);
+  
+    List<Company> companyListNormal = companyPageNormal.result();
+    List<Company> companyListEnd = companyPageEnd.result();
+
+    assertEquals(42, companyPageNormal.getTotalNumberOfElements());
+    assertEquals(42, companyPageEnd.getTotalNumberOfElements());
 
     Company firstOfListNormal = getFirstElement(companyListNormal);
     Company lastOfListNormal = getLastElement(companyListNormal);

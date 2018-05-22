@@ -3,6 +3,7 @@ package com.excilys.computerdatabase.mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import com.excilys.computerdatabase.model.pojo.Company;
@@ -15,19 +16,10 @@ import com.excilys.computerdatabase.model.pojo.Company;
  *
  */
 @Component
-public class CompanyMapper {
+public class CompanyMapper implements RowMapper<Company> {
 
-  /**
-   * Builds a {@link Company} from a {@link ResultSet}.
-   *
-   * @param result
-   *          the {@link ResultSet} describing the company entry in the database
-   * @return A {@link Company} which represents the wanted company entry in the
-   *         database
-   * @throws SQLException
-   *           if something went wrong while fetching the company's fields
-   */
-  public Company fromResultSet(ResultSet result) throws SQLException {
+  @Override
+  public Company mapRow(ResultSet result, int arg1) throws SQLException {
     int id = result.getInt("id");
     String name = result.getString("name");
 

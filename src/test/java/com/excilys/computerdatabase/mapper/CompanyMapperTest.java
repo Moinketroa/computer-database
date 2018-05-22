@@ -20,7 +20,7 @@ import com.excilys.computerdatabase.model.pojo.Company;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ApplicationConfig.class)
 public class CompanyMapperTest {
-  
+
   @Autowired
   CompanyMapper companyMapper;
 
@@ -33,8 +33,9 @@ public class CompanyMapperTest {
   }
 
   @Test
-  public void testFromResultSet() {
+  public void testMapRow() {
     ResultSet mockResultSet = mock(ResultSet.class);
+    Integer rowNum = 0;
 
     try {
       when(mockResultSet.getInt("id")).thenReturn(13);
@@ -45,7 +46,7 @@ public class CompanyMapperTest {
 
     Company companyFromResultSet;
     try {
-      companyFromResultSet = companyMapper.fromResultSet(mockResultSet);
+      companyFromResultSet = companyMapper.mapRow(mockResultSet, rowNum);
       assertEquals("IBM", companyFromResultSet.getName());
       assertEquals(13, companyFromResultSet.getId());
     } catch (SQLException e) {

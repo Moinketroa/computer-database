@@ -42,11 +42,13 @@ public class ComputerMapperTest {
   }
 
   @Test
-  public void testFromResultSet() {
+  public void testMapRow() {
     ResultSet mockResultSetNormal = mock(ResultSet.class);
     ResultSet mockResultSetWithOnlyMandatoryFields = mock(ResultSet.class);
     ResultSet mockResultSetWithNoCompany = mock(ResultSet.class);
     ResultSet mockResultSetWithOnlyCompany = mock(ResultSet.class);
+
+    Integer rowNum = 0;
 
     Calendar calendar = Calendar.getInstance();
 
@@ -94,10 +96,10 @@ public class ComputerMapperTest {
         computerFromResultSetWithNoCompany, computerFromResultSetWithOnlyCompany;
 
     try {
-      computerFromResultSetNormal = computerMapper.fromResultSet(mockResultSetNormal);
-      computerFromResultSetWithOnlyMandatoryFields = computerMapper.fromResultSet(mockResultSetWithOnlyMandatoryFields);
-      computerFromResultSetWithNoCompany = computerMapper.fromResultSet(mockResultSetWithNoCompany);
-      computerFromResultSetWithOnlyCompany = computerMapper.fromResultSet(mockResultSetWithOnlyCompany);
+      computerFromResultSetNormal = computerMapper.mapRow(mockResultSetNormal, rowNum);
+      computerFromResultSetWithOnlyMandatoryFields = computerMapper.mapRow(mockResultSetWithOnlyMandatoryFields, rowNum);
+      computerFromResultSetWithNoCompany = computerMapper.mapRow(mockResultSetWithNoCompany, rowNum);
+      computerFromResultSetWithOnlyCompany = computerMapper.mapRow(mockResultSetWithOnlyCompany, rowNum);
 
       assertEquals(7, computerFromResultSetNormal.getId());
       assertEquals(7, computerFromResultSetWithOnlyMandatoryFields.getId());

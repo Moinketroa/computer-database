@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import com.excilys.computerdatabase.exceptions.CompanyNotFoundException;
@@ -20,22 +21,13 @@ import com.excilys.computerdatabase.service.CompanyService;
  *
  */
 @Component
-public class ComputerMapper {
+public class ComputerMapper implements RowMapper<Computer> {
 
   @Autowired
   private CompanyService companyService;
 
-  /**
-   * Builds a {@link Computer} from a {@link ResultSet}.
-   *
-   * @param result
-   *          the {@link ResultSet} describing the computer entry in the database
-   * @return A {@link Computer} which represents the wanted computer entry in the
-   *         database
-   * @throws SQLException
-   *           if something went wrong while fetching the computer's fields
-   */
-  public Computer fromResultSet(ResultSet result) throws SQLException {
+  @Override
+  public Computer mapRow(ResultSet result, int rowNum) throws SQLException {
     int id = result.getInt("id");
     String name = result.getString("name");
 

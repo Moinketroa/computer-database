@@ -15,6 +15,8 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.computerdatabase.mapper.ComputerMapper;
@@ -50,6 +52,9 @@ public class ComputerDao {
 
   @Autowired
   private ComputerMapper computerMapper;
+
+  @Autowired
+  private JdbcTemplate jdbcTemplate;
 
   /**
    * Adds a new computer to the database.
@@ -98,24 +103,11 @@ public class ComputerDao {
    *          The computer to be updated in the database with its fields changed
    */
   public void update(Computer computer) {
-    Integer companyId = null;
+    Integer companyId = computer.getCompany() == null ?       null : computer.getCompany().getId();
+    Date introduced   = computer.getIntroduced() == null ?    null : Date.valueOf(computer.getIntroduced());
+    Date discontinued = computer.getDiscontinued() == null ?  null : Date.valueOf(computer.getDiscontinued());
 
-    if (computer.getCompany() != null) {
-      companyId = computer.getCompany().getId();
-    }
-
-    Date introduced = computer.getIntroduced() == null ? null : Date.valueOf(computer.getIntroduced());
-    Date discontinued = computer.getDiscontinued() == null ? null : Date.valueOf(computer.getDiscontinued());
-
-    try (Connection connexion = dataSource.getConnection();
-        PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_UPDATE_COMPUTER, false,
-            computer.getName(), introduced, discontinued, companyId, computer.getId())) {
-
-      preparedStatement.executeUpdate();
-
-    } catch (SQLException e) {
-      LOGGER.error("Something went wrong while building the statement", e);
-    }
+    jdbcTemplate.update(SQL_UPDATE_COMPUTER, computer.getName(), introduced, discontinued, companyId, computer.getId());
   }
 
   /**
@@ -125,15 +117,7 @@ public class ComputerDao {
    *          The id of the computer to be deleted
    */
   public void delete(int id) {
-    try (Connection connexion = dataSource.getConnection();
-        PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_DELETE_COMPUTER, false,
-            id)) {
-
-      preparedStatement.executeUpdate();
-
-    } catch (SQLException e) {
-      LOGGER.error("Something went wrong while building the statement", e);
-    }
+    jdbcTemplate.update(SQL_DELETE_COMPUTER, id);
   }
 
   /**
@@ -182,17 +166,10 @@ public class ComputerDao {
   public Computer fetchOne(int computerId) {
     Computer computer = null;
 
-    try (Connection connexion = dataSource.getConnection();
-        PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPUTER, false,
-            computerId);
-        ResultSet result = preparedStatement.executeQuery()) {
-
-      if (result.next()) {
-        computer = computerMapper.fromResultSet(result);
-      }
-
-    } catch (SQLException e) {
-      LOGGER.error("Something went wrong with the ResultSet or while building the statement", e);
+    try {
+      computer = (Computer) jdbcTemplate.queryForObject(SQL_SELECT_COMPUTER, computerMapper, computerId);
+    } catch (EmptyResultDataAccessException e) {
+      LOGGER.debug("No computer found with ID #" + computerId);
     }
 
     return computer;
@@ -219,24 +196,8 @@ public class ComputerDao {
 
     String completeSQLQuery = SQL_SELECT_COMPUTERS + " ORDER BY " + orderBy + " " + mode + SQL_LIMIT;
 
-    try (Connection connexion = dataSource.getConnection();
-        PreparedStatement preparedSelectStatement = initializationPreparedStatement(connexion, completeSQLQuery, false,
-            numberOfElementsPerPage, offset);
-        PreparedStatement preparedCountStatement = initializationPreparedStatement(connexion, SQL_SELECT_COUNT, false);
-        ResultSet selectResult = preparedSelectStatement.executeQuery();
-        ResultSet countResult = preparedCountStatement.executeQuery()) {
-
-      while (selectResult.next()) {
-        computers.add(computerMapper.fromResultSet(selectResult));
-      }
-
-      if (countResult.next()) {
-        totalNumberOfElements = countResult.getInt(1);
-      }
-
-    } catch (SQLException e) {
-      LOGGER.error("Something went wrong with the ResultSet or while building the statement", e);
-    }
+    computers = jdbcTemplate.query(completeSQLQuery, computerMapper, numberOfElementsPerPage, offset);
+    totalNumberOfElements = jdbcTemplate.queryForObject(SQL_SELECT_COUNT, Integer.class);
 
     return new Page<>(computers, offset, numberOfElementsPerPage, totalNumberOfElements);
   }
@@ -266,25 +227,9 @@ public class ComputerDao {
 
     String completeSQLQuery = SQL_SEARCH_COMPUTERS + " ORDER BY " + orderBy + " " + mode + SQL_LIMIT;
 
-    try (Connection connexion = dataSource.getConnection();
-        PreparedStatement preparedSearchStatement = initializationPreparedStatement(connexion, completeSQLQuery, false,
-            keywordLike, keywordLike, numberOfElementsPerPage, offset);
-        PreparedStatement preparedCountStatement = initializationPreparedStatement(connexion, SQL_SEARCH_COUNT, false,
-            keywordLike, keywordLike);
-        ResultSet searchResult = preparedSearchStatement.executeQuery();
-        ResultSet countResult = preparedCountStatement.executeQuery()) {
-
-      while (searchResult.next()) {
-        computers.add(computerMapper.fromResultSet(searchResult));
-      }
-
-      if (countResult.next()) {
-        totalNumberOfElements = countResult.getInt(1);
-      }
-
-    } catch (SQLException e) {
-      LOGGER.error("Something went wrong with the ResultSet or while building the statement", e);
-    }
+    computers = jdbcTemplate.query(completeSQLQuery, computerMapper, keywordLike, keywordLike, numberOfElementsPerPage,
+        offset);
+    totalNumberOfElements = jdbcTemplate.queryForObject(SQL_SEARCH_COUNT, Integer.class, keywordLike, keywordLike);
 
     return new Page<>(computers, offset, numberOfElementsPerPage, totalNumberOfElements);
   }

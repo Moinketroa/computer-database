@@ -2,7 +2,6 @@ package com.excilys.computerdatabase.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Statement;
@@ -14,6 +13,9 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.computerdatabase.mapper.CompanyMapper;
@@ -44,6 +46,9 @@ public class CompanyDao {
   @Autowired
   private CompanyMapper companyMapper;
 
+  @Autowired
+  private JdbcTemplate jdbcTemplate;
+
   /**
    * Fetches a given number (or fewer) of companies from the database under the
    * form of a {@link Page}.
@@ -58,30 +63,8 @@ public class CompanyDao {
     List<Company> companies = new ArrayList<>();
     int totalNumberOfElements = 0;
 
-    try (Connection connexion = dataSource.getConnection();
-        PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPANIES, false,
-            numberOfElementsPerPage, offset);
-        ResultSet result = preparedStatement.executeQuery()) {
-
-      while (result.next()) {
-        companies.add(companyMapper.fromResultSet(result));
-      }
-
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-
-    try (Connection connexion = dataSource.getConnection();
-        PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COUNT, false);
-        ResultSet result = preparedStatement.executeQuery()) {
-
-      if (result.next()) {
-        totalNumberOfElements = result.getInt(1);
-      }
-
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
+    companies = jdbcTemplate.query(SQL_SELECT_COMPANIES, companyMapper, numberOfElementsPerPage, offset);
+    totalNumberOfElements = jdbcTemplate.queryForObject(SQL_SELECT_COUNT, Integer.class);
 
     return new Page<>(companies, offset, numberOfElementsPerPage, totalNumberOfElements);
   }
@@ -96,16 +79,10 @@ public class CompanyDao {
   public Company fetchOne(int id) {
     Company company = null;
 
-    try (Connection connexion = dataSource.getConnection();
-        PreparedStatement preparedStatement = initializationPreparedStatement(connexion, SQL_SELECT_COMPANY, false, id);
-        ResultSet result = preparedStatement.executeQuery()) {
-
-      if (result.next()) {
-        company = companyMapper.fromResultSet(result);
-      }
-
-    } catch (SQLException e) {
-      e.printStackTrace();
+    try {
+      company = (Company) jdbcTemplate.queryForObject(SQL_SELECT_COMPANY, companyMapper, id);
+    } catch (EmptyResultDataAccessException e) {
+      LOGGER.debug("No company found with ID #" + id);
     }
 
     return company;
