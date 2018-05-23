@@ -17,7 +17,12 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import com.excilys.computerdatabase.dao.OrderByComputer;
 import com.excilys.computerdatabase.dao.OrderByMode;
 import com.excilys.computerdatabase.dto.ComputerDto;
+import com.excilys.computerdatabase.exceptions.BadRequestException;
 import com.excilys.computerdatabase.exceptions.WrongPageParameterException;
+import com.excilys.computerdatabase.mapper.ComputerDtoMapper;
+import com.excilys.computerdatabase.mapper.IntegerMapper;
+import com.excilys.computerdatabase.mapper.OrderByComputerMapper;
+import com.excilys.computerdatabase.mapper.OrderByModeMapper;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.page.Page;
 import com.excilys.computerdatabase.service.ComputerService;
@@ -31,6 +36,15 @@ public class DashboardServlet extends HttpServlet {
 
   @Autowired
   private ComputerService computerService;
+  
+  @Autowired
+  private IntegerMapper integerMapper;
+  @Autowired
+  private OrderByComputerMapper orderByComputerMapper;
+  @Autowired
+  private OrderByModeMapper orderByModeMapper;
+  @Autowired
+  private ComputerDtoMapper computerDtoMapper;
 
   /**
    * @see HttpServlet#HttpServlet()
@@ -56,55 +70,22 @@ public class DashboardServlet extends HttpServlet {
       String keywordParameter = request.getParameter("keyword");
       String orderParameter = request.getParameter("order");
       String modeParameter = request.getParameter("mode");
+      
+      int offset = integerMapper.fromStringOnlyPositive(offsetParameter, "Offset");
+      int entitiesPerPage = integerMapper.fromStringOnlyPositive(entitiesPerPageParameter, "Number of entities per page");
 
-      int offset = 0, entitiesPerPage = 10;
-      if (offsetParameter != null) {
-        try {
-          offset = Integer.parseInt(offsetParameter);
-
-          if (offset < 0) {
-            request.setAttribute("error", "Offset cannot be negative");
-            this.getServletContext().getRequestDispatcher("/WEB-INF/400.jsp").forward(request, response);
-          }
-        } catch (NumberFormatException e) {
-          request.setAttribute("error", "Offset must be numeric");
-          this.getServletContext().getRequestDispatcher("/WEB-INF/400.jsp").forward(request, response);
-        }
-      }
-
-      if (entitiesPerPageParameter != null) {
-        try {
-          entitiesPerPage = Integer.parseInt(entitiesPerPageParameter);
-
-          if (entitiesPerPage < 0) {
-            request.setAttribute("error", "The number of entities per page cannot be negative");
-            this.getServletContext().getRequestDispatcher("/WEB-INF/400.jsp").forward(request, response);
-          } else if (entitiesPerPage != 10 && entitiesPerPage != 50 && entitiesPerPage != 100) {
-            entitiesPerPage = 10;
-          }
-        } catch (NumberFormatException e) {
-          request.setAttribute("error", "The number of entities per page must be numeric");
-          this.getServletContext().getRequestDispatcher("/WEB-INF/400.jsp").forward(request, response);
-        }
-      }
-
-      OrderByComputer order = decideOrderByParameter(orderParameter);
-      OrderByMode mode = decideOrderModeParameter(modeParameter);
+      OrderByComputer order = orderByComputerMapper.fromString(orderParameter);
+      OrderByMode mode = orderByModeMapper.fromString(modeParameter);
 
       Page<Computer> pageResult = null;
 
       if (keywordParameter != null && !keywordParameter.equals("")) {
-        System.out.println(keywordParameter);
         pageResult = computerService.search(keywordParameter, order, mode, offset, entitiesPerPage);
       } else {
         pageResult = computerService.getAll(order, mode, offset, entitiesPerPage);
       }
 
-      List<ComputerDto> computers = new ArrayList<>();
-
-      for (Computer computer : pageResult.result()) {
-        computers.add(new ComputerDto(computer));
-      }
+      List<ComputerDto> computers = computerDtoMapper.listFromPage(pageResult);
 
       request.setAttribute("totalNumberOfComputers", pageResult.getTotalNumberOfElements());
       request.setAttribute("isPreviousPageAvailable", pageResult.isPreviousPageAvailable());
@@ -125,45 +106,11 @@ public class DashboardServlet extends HttpServlet {
       }
 
       request.setAttribute("computers", computers);
-    } catch (WrongPageParameterException e) {
+    } catch (BadRequestException e) {
       request.setAttribute("error", e.getMessage());
       this.getServletContext().getRequestDispatcher("/WEB-INF/400.jsp").forward(request, response);
     }
 
     this.getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(request, response);
-  }
-
-  private OrderByComputer decideOrderByParameter(String order) {
-    if (order == null) {
-      return OrderByComputer.ID;
-    }
-
-    switch (order) {
-    case "name":
-      return OrderByComputer.NAME;
-    case "introduced":
-      return OrderByComputer.INTRODUCED;
-    case "discontinued":
-      return OrderByComputer.DISCONTINUED;
-    case "company":
-      return OrderByComputer.COMPANY;
-    default:
-      return OrderByComputer.ID;
-    }
-  }
-
-  private OrderByMode decideOrderModeParameter(String mode) {
-    if (mode == null) {
-      return OrderByMode.ASCENDING;
-    }
-
-    switch (mode) {
-    case "asc":
-      return OrderByMode.ASCENDING;
-    case "desc":
-      return OrderByMode.DESCENDING;
-    default:
-      return OrderByMode.ASCENDING;
-    }
   }
 }

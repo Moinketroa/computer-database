@@ -7,7 +7,7 @@ package com.excilys.computerdatabase.exceptions;
  * @author jmdebicki
  *
  */
-public class DiscontinuationPriorToIntroductionExpection extends CDBException {
+public class DiscontinuationPriorToIntroductionExpection extends BadRequestException {
 
   /**
    * Constructor which initialize the exception with the following message : "The

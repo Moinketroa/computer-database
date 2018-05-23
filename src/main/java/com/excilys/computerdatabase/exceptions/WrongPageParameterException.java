@@ -7,7 +7,7 @@ package com.excilys.computerdatabase.exceptions;
  * @author debicki
  *
  */
-public class WrongPageParameterException extends CDBException {
+public class WrongPageParameterException extends BadRequestException {
 
   /**
    * Constructor which initialize the exception with the following message :

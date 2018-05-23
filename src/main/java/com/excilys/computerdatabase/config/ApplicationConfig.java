@@ -23,16 +23,17 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
-@ComponentScan(basePackages = "com.excilys.computerdatabase")
+@ComponentScan(basePackages = { "com.excilys.computerdatabase.dao", "com.excilys.computerdatabase.service",
+    "com.excilys.computerdatabase.mapper", "com.excilys.computerdatabase.servlet" })
 public class ApplicationConfig {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationConfig.class);
+  private final Logger LOGGER = LoggerFactory.getLogger(ApplicationConfig.class);
 
-  private static String driver;
+  private String driver;
 
-  private static HikariDataSource dataSource;
+  private HikariDataSource dataSource;
 
-  static {
+  {
     final Properties properties = new Properties();
     final InputStream path = ClassLoader.getSystemClassLoader().getResourceAsStream("config.properties");
     HikariConfig config = new HikariConfig();
@@ -80,7 +81,7 @@ public class ApplicationConfig {
   /**
    * Initializes the HSQL Database with tables and entries. Used only for ITs.
    */
-  private static void initHSQLDB() {
+  private void initHSQLDB() {
     try (Connection connexion = dataSource.getConnection()) {
 
       String[] tablesStrings = transferDataFromFile("db/1-SCHEMA.sql");
@@ -106,7 +107,7 @@ public class ApplicationConfig {
    * @return String array representing a SQL file
    * @throws IOException
    */
-  private static String[] transferDataFromFile(String filename) {
+  private String[] transferDataFromFile(String filename) {
     try (
         FileReader fileReader = new FileReader(
             ApplicationConfig.class.getClassLoader().getResource(filename).getFile());
@@ -139,7 +140,7 @@ public class ApplicationConfig {
    * @throws SQLException
    *           if something went wrong while executing the script
    */
-  private static void executeScript(String[] sqlLines, Statement statement) throws SQLException {
+  private void executeScript(String[] sqlLines, Statement statement) throws SQLException {
     for (int i = 0; i < sqlLines.length; i++) {
       if (!sqlLines[i].trim().equals("")) {
         statement.executeUpdate(sqlLines[i] + ";");
