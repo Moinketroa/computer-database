@@ -145,7 +145,7 @@ public class ComputerService {
       throw new WrongPageParameterException();
     }
 
-    return computerDao.search(keyword, OrderByComputer.ID, OrderByMode.ASCENDING, offset, numberOfElementsPerPage);
+    return computerDao.search(keyword, order, mode, offset, numberOfElementsPerPage);
   }
 
   public Page<Computer> search(String keyword, int offset, int numberOfElementsPerPage)

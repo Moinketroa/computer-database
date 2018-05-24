@@ -17,9 +17,9 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import com.excilys.computerdatabase.dao.OrderByComputer;
 import com.excilys.computerdatabase.dao.OrderByMode;
 import com.excilys.computerdatabase.dto.ComputerDto;
+import com.excilys.computerdatabase.dto.PageComputerDto;
 import com.excilys.computerdatabase.exceptions.BadRequestException;
 import com.excilys.computerdatabase.exceptions.WrongPageParameterException;
-import com.excilys.computerdatabase.mapper.ComputerDtoMapper;
 import com.excilys.computerdatabase.mapper.IntegerMapper;
 import com.excilys.computerdatabase.mapper.OrderByComputerMapper;
 import com.excilys.computerdatabase.mapper.OrderByModeMapper;
@@ -30,7 +30,7 @@ import com.excilys.computerdatabase.service.ComputerService;
 /**
  * Servlet implementation class DashboardServlet.
  */
-@WebServlet("/dashboard")
+@WebServlet("/dashboard2")
 public class DashboardServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
@@ -43,8 +43,6 @@ public class DashboardServlet extends HttpServlet {
   private OrderByComputerMapper orderByComputerMapper;
   @Autowired
   private OrderByModeMapper orderByModeMapper;
-  @Autowired
-  private ComputerDtoMapper computerDtoMapper;
 
   /**
    * @see HttpServlet#HttpServlet()
@@ -85,17 +83,9 @@ public class DashboardServlet extends HttpServlet {
         pageResult = computerService.getAll(order, mode, offset, entitiesPerPage);
       }
 
-      List<ComputerDto> computers = computerDtoMapper.listFromPage(pageResult);
-
-      request.setAttribute("totalNumberOfComputers", pageResult.getTotalNumberOfElements());
-      request.setAttribute("isPreviousPageAvailable", pageResult.isPreviousPageAvailable());
-      request.setAttribute("previousPageOffset", pageResult.getPreviousPageOffset());
-      request.setAttribute("isNextPageAvailable", pageResult.isNextPageAvailable());
-      request.setAttribute("nextPageOffset", pageResult.getNextPageOffset());
-
       request.setAttribute("offset", offset);
       request.setAttribute("entitiesPerPage", entitiesPerPage);
-      request.setAttribute("page", pageResult);
+      request.setAttribute("page", new PageComputerDto(pageResult));
 
       request.setAttribute("keyword", keywordParameter);
 
@@ -105,7 +95,6 @@ public class DashboardServlet extends HttpServlet {
         request.setAttribute("mode", "desc");
       }
 
-      request.setAttribute("computers", computers);
     } catch (BadRequestException e) {
       request.setAttribute("error", e.getMessage());
       this.getServletContext().getRequestDispatcher("/WEB-INF/400.jsp").forward(request, response);

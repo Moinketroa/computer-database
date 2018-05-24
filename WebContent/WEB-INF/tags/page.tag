@@ -3,16 +3,16 @@
 <%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
 
 <ul class="pagination">
-	<c:if test="${ isPreviousPageAvailable }">
+	<c:if test="${ page.isPreviousPageAvailable }">
 		<li><a id="previousPageLink"
-			href="<cdb:link target="dashboard" offset="${ previousPageOffset }" entitiesPerPage="${ entitiesPerPage }"/>"
+			href="<cdb:link target="dashboard" offset="${ page.previousPageOffset }" entitiesPerPage="${ entitiesPerPage }"/>"
 			aria-label="Previous"> <span aria-hidden="true">&laquo;
 					Previous Page</span>
 		</a></li>
 	</c:if>
-	<c:if test="${ isNextPageAvailable }">
+	<c:if test="${ page.isNextPageAvailable }">
 		<li><a id="nextPageLink"
-			href="<cdb:link target="dashboard" offset="${ nextPageOffset }" entitiesPerPage="${ entitiesPerPage }"/>"
+			href="<cdb:link target="dashboard" offset="${ page.nextPageOffset }" entitiesPerPage="${ entitiesPerPage }"/>"
 			aria-label="Next"> <span aria-hidden="true">Next Page
 					&raquo;</span>
 		</a></li>

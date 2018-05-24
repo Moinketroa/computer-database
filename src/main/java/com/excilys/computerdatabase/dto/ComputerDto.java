@@ -6,8 +6,11 @@ import com.excilys.computerdatabase.model.pojo.Computer;
 
 public class ComputerDto {
 
-  private CompanyBasicView company;
-  private ComputerBasicView computer;
+  private int id;
+  private String name;
+  private LocalDate introduced;
+  private LocalDate discontinued;
+  private CompanyDto company;
 
   /**
    * Turns a computer to a ComputerDto.
@@ -15,32 +18,35 @@ public class ComputerDto {
    *          the computer to be transformed
    */
   public ComputerDto(Computer computer) {
-    this.computer = new ComputerBasicView(computer);
+    this.id = computer.getId();
+    this.name = computer.getName();
+    this.introduced = computer.getIntroduced();
+    this.discontinued = computer.getDiscontinued();
 
     this.company = null;
 
     if (computer.getCompany() != null) {
-      this.company = new CompanyBasicView(computer.getCompany());
+      this.company = new CompanyDto(computer.getCompany());
     }
   }
 
-  public CompanyBasicView getCompany() {
+  public CompanyDto getCompany() {
     return company;
   }
 
   public int getId() {
-    return computer.getId();
+    return id;
   }
 
   public String getName() {
-    return computer.getName();
+    return name;
   }
 
   public LocalDate getIntroduced() {
-    return computer.getIntroduced();
+    return introduced;
   }
 
   public LocalDate getDiscontinued() {
-    return computer.getDiscontinued();
+    return discontinued;
   }
 }

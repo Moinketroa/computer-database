@@ -40,7 +40,7 @@ public class ComputerDao {
   private static final String SQL_DELETE_COMPUTER = "DELETE FROM computer WHERE computer.id = ?";
 
   private static final String SQL_SEARCH_COMPUTERS = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name AS company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR company.name LIKE ?";
-  private static final String SQL_SEARCH_COUNT = "SELECT COUNT(*) FROM (SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name AS company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR company.name LIKE ?)";
+  private static final String SQL_SEARCH_COUNT = "SELECT COUNT(*) FROM (SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name AS company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR company.name LIKE ?) AS search";
 
   private static final String SQL_LIMIT = " LIMIT ? OFFSET ?";
 

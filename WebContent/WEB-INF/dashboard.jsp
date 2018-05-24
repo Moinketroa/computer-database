@@ -20,14 +20,14 @@
 <body>
 	<jsp:include page="header.jsp" />
 
-	<c:if test="${ totalNumberOfComputers > 0 }">
+	<c:if test="${ page.totalNumberOfComputers > 0 }">
 		<section id="main">
 		<div class="container">
 			<h1 id="homeTitle">
 				<c:if test="${ not empty keyword }">
 					Results for "${ keyword }" : 
 				</c:if>
-				${ totalNumberOfComputers } Computers found</h1>
+				${ page.totalNumberOfComputers } Computers found</h1>
 			</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
@@ -51,7 +51,7 @@
 			<input type="hidden" name="selection" value="">
 		</form>
 
-		<c:if test="${ not empty computers }">
+		<c:if test="${ not empty page.computers }">
 			<div class="container" style="margin-top: 10px;">
 				<table id="computerTable" class="table table-striped table-bordered">
 					<thead>
@@ -86,7 +86,7 @@
 					</thead>
 					<!-- Browse attribute computers -->
 					<tbody id="results">
-						<c:forEach var="computer" items="${ computers }">
+						<c:forEach var="computer" items="${ page.computers }">
 							<tr id="computerRow">
 								<td class="editMode"><input type="checkbox" name="cb"
 									class="cb" value="${ computer.id }"></td>
@@ -118,7 +118,7 @@
 		</footer>
 	</c:if>
 
-	<c:if test="${ totalNumberOfComputers <= 0 }">
+	<c:if test="${ page.totalNumberOfComputers <= 0 }">
 		<section id="main">
 		<div class="container">
 			<h1 id="homeTitle">

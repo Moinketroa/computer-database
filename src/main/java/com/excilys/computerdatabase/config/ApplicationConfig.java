@@ -24,7 +24,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 @ComponentScan(basePackages = { "com.excilys.computerdatabase.dao", "com.excilys.computerdatabase.service",
-    "com.excilys.computerdatabase.mapper", "com.excilys.computerdatabase.servlet" })
+    "com.excilys.computerdatabase.mapper", "com.excilys.computerdatabase.servlet", "com.excilys.computerdatabase.validator" })
 public class ApplicationConfig {
 
   private final Logger LOGGER = LoggerFactory.getLogger(ApplicationConfig.class);
