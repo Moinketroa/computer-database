@@ -67,7 +67,7 @@ public class AddComputerServlet extends HttpServlet {
       Page<Company> page = companyService.getAll(0, 100);
       List<CompanyDto> companies = new ArrayList<>();
 
-      for (Company company : page.result()) {
+      for (Company company : page.getElements()) {
         companies.add(new CompanyDto(company));
       }
 

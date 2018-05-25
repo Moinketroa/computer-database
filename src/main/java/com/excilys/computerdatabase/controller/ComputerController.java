@@ -13,13 +13,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.excilys.computerdatabase.dao.OrderByComputer;
 import com.excilys.computerdatabase.dao.OrderByMode;
-import com.excilys.computerdatabase.dto.PageComputerDto;
+import com.excilys.computerdatabase.dto.ComputerDto;
 import com.excilys.computerdatabase.exceptions.BadRequestException;
 import com.excilys.computerdatabase.mapper.OrderByComputerMapper;
 import com.excilys.computerdatabase.mapper.OrderByModeMapper;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.page.Page;
 import com.excilys.computerdatabase.service.ComputerService;
+import com.excilys.computerdatabase.validator.ComputerValidator;
 import com.excilys.computerdatabase.validator.IntegerValidator;
 
 @Controller
@@ -35,6 +36,8 @@ public class ComputerController extends AbstractController {
 
   @Autowired
   private IntegerValidator integerValidator;
+  @Autowired
+  private ComputerValidator computerValidator;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ComputerController.class);
 
@@ -63,7 +66,7 @@ public class ComputerController extends AbstractController {
       }
 
       modelAndView.addAllObjects(allParams);
-      modelAndView.addObject("page", new PageComputerDto(page));
+      modelAndView.addObject("page", page.convertToAnotherType(computer -> new ComputerDto(computer)));
       modelAndView.addObject("mode", modeParameter.equals("desc") ? "desc" : "asc");
       modelAndView.setViewName(View.DASHBOARD.toString());
     } catch (BadRequestException e) {
@@ -77,4 +80,56 @@ public class ComputerController extends AbstractController {
     return modelAndView;
   }
 
+  @RequestMapping(value = "/computer", method = RequestMethod.GET)
+  public ModelAndView displayComputer(@RequestParam(value = "computerId", defaultValue = "0") int computerId,
+      @RequestParam Map<String, Object> allParams) {
+    ModelAndView modelAndView = new ModelAndView();
+
+    try {
+      integerValidator.mustBePositive(computerId, "Computer Id");
+      computerValidator.mustHaveValidId(computerId);
+
+      Computer computer = computerService.getById(computerId);
+
+      if (computer != null) {
+        modelAndView.addObject("computer", new ComputerDto(computer));
+      }
+
+      modelAndView.addAllObjects(allParams);
+      modelAndView.setViewName(View.COMPUTER.toString());
+    } catch (BadRequestException e) {
+      LOGGER.error("Bad Request", e);
+      handleError(modelAndView, View.BAD_REQUEST, e.getMessage());
+    } catch (Throwable t) {
+      LOGGER.error("Internal Server Error", t);
+      handleError(modelAndView, View.INTERNAL_SERVER_ERROR, "Something went wrong : " + t.getMessage());
+    }
+
+    return modelAndView;
+  }
+
+  @RequestMapping(value = "/deleteComputer", method = RequestMethod.POST)
+  public ModelAndView deleteOneComputer(@RequestParam(value = "computerId", defaultValue = "0") int computerId,
+      @RequestParam Map<String, Object> allParams) {
+    ModelAndView modelAndView = new ModelAndView();
+
+    try {
+      integerValidator.mustBePositive(computerId, "Computer Id");
+      computerValidator.mustHaveValidId(computerId);
+
+      computerService.delete(computerId);
+
+      modelAndView.addAllObjects(allParams);
+      modelAndView.addObject("msg", "Computer #" + computerId + " deleted !");
+      modelAndView.setViewName(View.NO_CONTENT.toString());
+    } catch (BadRequestException e) {
+      LOGGER.error("Bad Request", e);
+      handleError(modelAndView, View.BAD_REQUEST, e.getMessage());
+    } catch (Throwable t) {
+      LOGGER.error("Internal Server Error", t);
+      handleError(modelAndView, View.INTERNAL_SERVER_ERROR, "Something went wrong : " + t.getMessage());
+    }
+
+    return modelAndView;
+  }
 }

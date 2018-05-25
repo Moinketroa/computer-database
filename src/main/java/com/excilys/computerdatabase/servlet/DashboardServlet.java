@@ -1,8 +1,6 @@
 package com.excilys.computerdatabase.servlet;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -16,10 +14,8 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.excilys.computerdatabase.dao.OrderByComputer;
 import com.excilys.computerdatabase.dao.OrderByMode;
-import com.excilys.computerdatabase.dto.ComputerDto;
 import com.excilys.computerdatabase.dto.PageComputerDto;
 import com.excilys.computerdatabase.exceptions.BadRequestException;
-import com.excilys.computerdatabase.exceptions.WrongPageParameterException;
 import com.excilys.computerdatabase.mapper.IntegerMapper;
 import com.excilys.computerdatabase.mapper.OrderByComputerMapper;
 import com.excilys.computerdatabase.mapper.OrderByModeMapper;
@@ -36,7 +32,7 @@ public class DashboardServlet extends HttpServlet {
 
   @Autowired
   private ComputerService computerService;
-  
+
   @Autowired
   private IntegerMapper integerMapper;
   @Autowired
@@ -68,9 +64,10 @@ public class DashboardServlet extends HttpServlet {
       String keywordParameter = request.getParameter("keyword");
       String orderParameter = request.getParameter("order");
       String modeParameter = request.getParameter("mode");
-      
+
       int offset = integerMapper.fromStringOnlyPositive(offsetParameter, "Offset");
-      int entitiesPerPage = integerMapper.fromStringOnlyPositive(entitiesPerPageParameter, "Number of entities per page");
+      int entitiesPerPage = integerMapper.fromStringOnlyPositive(entitiesPerPageParameter,
+          "Number of entities per page");
 
       OrderByComputer order = orderByComputerMapper.fromString(orderParameter);
       OrderByMode mode = orderByModeMapper.fromString(modeParameter);

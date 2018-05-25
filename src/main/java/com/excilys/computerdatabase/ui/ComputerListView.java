@@ -55,7 +55,7 @@ public class ComputerListView extends AbstractListView<Computer> {
     System.out.format(format, "ID", "NAME", "INTRODUCED", "DISCONTINUED", "COMPANY ID");
     System.out.println("----------------------------------------------------------------------");
 
-    for (Computer computer : page.result()) {
+    for (Computer computer : page.getElements()) {
       String companyId;
       String computerName = computer.getName();
 

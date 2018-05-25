@@ -19,7 +19,7 @@ import com.excilys.computerdatabase.service.ComputerService;
 /**
  * Servlet implementation class DeleteComputer
  */
-@WebServlet("/deleteComputer")
+@WebServlet("/deleteComputer2")
 public class DeleteComputerServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
@@ -37,39 +37,6 @@ public class DeleteComputerServlet extends HttpServlet {
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
     SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
-  }
-
-  /**
-   * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-   *      response)
-   */
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    String computerIdParameter = request.getParameter("computerId");
-
-    int computerId = 0;
-    if (computerIdParameter != null) {
-      try {
-        computerId = Integer.parseInt(computerIdParameter);
-
-        if (computerId < 0) {
-          request.setAttribute("error", "The ID of the computer cannot be negative");
-          this.getServletContext().getRequestDispatcher("/WEB-INF/400.jsp").forward(request, response);
-        }
-      } catch (NumberFormatException e) {
-        request.setAttribute("error", "The ID of the computer must be numeric");
-        this.getServletContext().getRequestDispatcher("/WEB-INF/400.jsp").forward(request, response);
-      }
-    }
-
-    if (computerId == 0) {
-      request.setAttribute("error", "Please enter a valid ID");
-      this.getServletContext().getRequestDispatcher("/WEB-INF/400.jsp").forward(request, response);
-    }
-
-    computerService.delete(computerId);
-
-    request.setAttribute("msg", "Computer #" + computerId + " deleted !");
-    this.getServletContext().getRequestDispatcher("/WEB-INF/204.jsp").forward(request, response);
   }
 
   /**

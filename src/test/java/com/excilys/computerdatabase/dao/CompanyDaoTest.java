@@ -55,8 +55,8 @@ public class CompanyDaoTest {
     Page<Company> companyPageNormal = companyDao.fetchAll(0, 12);
     Page<Company> companyPageEnd = companyDao.fetchAll(40, 12);
   
-    List<Company> companyListNormal = companyPageNormal.result();
-    List<Company> companyListEnd = companyPageEnd.result();
+    List<Company> companyListNormal = companyPageNormal.getElements();
+    List<Company> companyListEnd = companyPageEnd.getElements();
 
     assertEquals(42, companyPageNormal.getTotalNumberOfElements());
     assertEquals(42, companyPageEnd.getTotalNumberOfElements());

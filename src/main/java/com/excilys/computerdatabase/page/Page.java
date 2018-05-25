@@ -1,6 +1,8 @@
 package com.excilys.computerdatabase.page;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * The class encapsulates a List in order to represent a relatively small number
@@ -113,7 +115,19 @@ public class Page<E> {
    * @return the (number of elements per page) elements available in the current
    *         page
    */
-  public List<E> result() {
+  public List<E> getElements() {
     return elements;
+  }
+
+  /**
+   * Converts the current page to a page with the same properties but carrying a collection of elements with a different type.
+   *
+   * @param <T> the wanted type
+   * @param mapper The mapper that will map the base type to the wanted type
+   * @return the converted page
+   */
+  public <T> Page<T> convertToAnotherType(Function<E, T> mapper) {
+    List<T> convertedList = elements.stream().map(mapper).collect(Collectors.toList());
+    return new Page<>(convertedList, currentPageOffset, numberOfElementsPerPage, totalNumberOfElements);
   }
 }

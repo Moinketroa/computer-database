@@ -52,7 +52,7 @@ public class CompanyListView extends AbstractListView<Company> {
     System.out.format(format, "ID", "NAME");
     System.out.println("-----------------------------------");
 
-    for (Company company : page.result()) {
+    for (Company company : page.getElements()) {
       String companyName = company.getName();
 
       if (companyName.length() >= 25) {
