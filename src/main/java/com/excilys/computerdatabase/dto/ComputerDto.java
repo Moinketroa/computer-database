@@ -7,6 +7,7 @@ import com.excilys.computerdatabase.model.pojo.Computer;
 public class ComputerDto {
 
   private int id;
+  
   private String name;
   private LocalDate introduced;
   private LocalDate discontinued;

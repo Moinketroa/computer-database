@@ -17,9 +17,9 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.excilys.computerdatabase.dto.CompanyDto;
 import com.excilys.computerdatabase.dto.ComputerDto;
-import com.excilys.computerdatabase.exceptions.CompanyNotFoundException;
-import com.excilys.computerdatabase.exceptions.DiscontinuationPriorToIntroductionExpection;
-import com.excilys.computerdatabase.exceptions.WrongPageParameterException;
+import com.excilys.computerdatabase.exceptions.badrequest.DiscontinuationPriorToIntroductionExpection;
+import com.excilys.computerdatabase.exceptions.badrequest.WrongPageParameterException;
+import com.excilys.computerdatabase.exceptions.notfound.CompanyNotFoundException;
 import com.excilys.computerdatabase.mapper.ComputerMapper;
 import com.excilys.computerdatabase.mapper.LocalDateMapper;
 import com.excilys.computerdatabase.model.pojo.Company;
@@ -31,7 +31,7 @@ import com.excilys.computerdatabase.service.ComputerService;
 /**
  * Servlet implementation class EditComputerServlet.
  */
-@WebServlet("/editComputer")
+@WebServlet("/editComputer2")
 public class EditComputerServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
@@ -56,55 +56,6 @@ public class EditComputerServlet extends HttpServlet {
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
     SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
-  }
-
-  /**
-   * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-   *      response)
-   */
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    String computerIdParameter = request.getParameter("computerId");
-
-    int computerId = 0;
-    if (computerIdParameter != null) {
-      try {
-        computerId = Integer.parseInt(computerIdParameter);
-
-        if (computerId < 0) {
-          request.setAttribute("error", "The ID of the computer cannot be negative");
-          this.getServletContext().getRequestDispatcher("/WEB-INF/400.jsp").forward(request, response);
-        }
-      } catch (NumberFormatException e) {
-        request.setAttribute("error", "The ID of the computer must be numeric");
-        this.getServletContext().getRequestDispatcher("/WEB-INF/400.jsp").forward(request, response);
-      }
-    }
-
-    request.setAttribute("computerId", computerId);
-
-    Computer computer = computerService.getById(computerId);
-
-    if (computer != null) {
-      ComputerDto computerDto = new ComputerDto(computer);
-
-      request.setAttribute("computer", computerDto);
-    }
-
-    try {
-      Page<Company> page = companyService.getAll(0, 100);
-      List<CompanyDto> companies = new ArrayList<>();
-
-      for (Company company : page.getElements()) {
-        companies.add(new CompanyDto(company));
-      }
-
-      request.setAttribute("companies", companies);
-    } catch (WrongPageParameterException e) {
-      request.setAttribute("error", e.getMessage());
-      this.getServletContext().getRequestDispatcher("/WEB-INF/400.jsp").forward(request, response);
-    }
-
-    this.getServletContext().getRequestDispatcher("/WEB-INF/editComputer.jsp").forward(request, response);
   }
 
   /**

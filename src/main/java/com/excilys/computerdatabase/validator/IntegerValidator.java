@@ -2,7 +2,7 @@ package com.excilys.computerdatabase.validator;
 
 import org.springframework.stereotype.Component;
 
-import com.excilys.computerdatabase.exceptions.NegativeNumberException;
+import com.excilys.computerdatabase.exceptions.badrequest.NegativeNumberException;
 
 @Component
 public class IntegerValidator {

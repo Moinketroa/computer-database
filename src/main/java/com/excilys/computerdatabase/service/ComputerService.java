@@ -9,8 +9,9 @@ import org.springframework.stereotype.Service;
 import com.excilys.computerdatabase.dao.ComputerDao;
 import com.excilys.computerdatabase.dao.OrderByComputer;
 import com.excilys.computerdatabase.dao.OrderByMode;
-import com.excilys.computerdatabase.exceptions.DiscontinuationPriorToIntroductionExpection;
-import com.excilys.computerdatabase.exceptions.WrongPageParameterException;
+import com.excilys.computerdatabase.exceptions.badrequest.DiscontinuationPriorToIntroductionExpection;
+import com.excilys.computerdatabase.exceptions.badrequest.WrongPageParameterException;
+import com.excilys.computerdatabase.exceptions.notfound.ComputerNotFoundException;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.page.Page;
 
@@ -70,10 +71,18 @@ public class ComputerService {
    *
    * @param id
    *          The id of the wanted computer
-   * @return The found computer or null if no computer were found
+   * @return The found computer
+   * @throws ComputerNotFoundException
+   *           if no computer were found
    */
-  public Computer getById(int id) {
-    return computerDao.fetchOne(id);
+  public Computer getById(int id) throws ComputerNotFoundException {
+    Computer computer = computerDao.fetchOne(id);
+
+    if (computer == null) {
+      throw new ComputerNotFoundException(id);
+    }
+
+    return computer;
   }
 
   /**
@@ -133,7 +142,7 @@ public class ComputerService {
    * Deletes several computer in one call, if one deletion go wrong then all
    * wanted deletions won't occur.
    *
-   * @param idVarargs
+   * @param ids
    *          one or more id of computers wanted to be deleted
    */
   public void deleteSeveral(List<Integer> ids) {

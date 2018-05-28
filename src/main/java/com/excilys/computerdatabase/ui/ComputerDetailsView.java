@@ -1,5 +1,6 @@
 package com.excilys.computerdatabase.ui;
 
+import com.excilys.computerdatabase.exceptions.notfound.ComputerNotFoundException;
 import com.excilys.computerdatabase.mapper.LocalDateMapper;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.service.ComputerService;
@@ -37,11 +38,9 @@ public class ComputerDetailsView extends AbstractView {
   public void display() {
     System.out.println("\nDetails for computer #" + computerId + "\n");
 
-    computer = computerService.getById(computerId);
+    try {
+      computer = computerService.getById(computerId);
 
-    if (computer == null) {
-      System.out.println("Computer #" + computerId + " not found");
-    } else {
       System.out.println();
       String format = "|%1$-7s|%2$-25s|%3$-10s|%4$-12s|%5$-10s|\n";
 
@@ -68,6 +67,8 @@ public class ComputerDetailsView extends AbstractView {
 
       System.out.println("----------------------------------------------------------------------");
       System.out.println();
+    } catch (ComputerNotFoundException e) {
+      System.out.println("Computer #" + computerId + " not found");
     }
 
     System.out.println();

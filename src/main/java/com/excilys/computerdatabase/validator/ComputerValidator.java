@@ -2,7 +2,7 @@ package com.excilys.computerdatabase.validator;
 
 import org.springframework.stereotype.Component;
 
-import com.excilys.computerdatabase.exceptions.InvalidIdException;
+import com.excilys.computerdatabase.exceptions.badrequest.InvalidIdException;
 
 @Component
 public class ComputerValidator {

@@ -20,7 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.excilys.computerdatabase.config.ApplicationConfig;
 import com.excilys.computerdatabase.dao.HSQLDatabase;
-import com.excilys.computerdatabase.exceptions.CompanyNotFoundException;
+import com.excilys.computerdatabase.exceptions.notfound.CompanyNotFoundException;
 import com.excilys.computerdatabase.model.pojo.Computer;
 
 @RunWith(SpringJUnit4ClassRunner.class)

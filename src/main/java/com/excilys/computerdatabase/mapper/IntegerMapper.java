@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.excilys.computerdatabase.exceptions.NegativeNumberException;
-import com.excilys.computerdatabase.exceptions.NotANumberException;
+import com.excilys.computerdatabase.exceptions.badrequest.NegativeNumberException;
+import com.excilys.computerdatabase.exceptions.badrequest.NotANumberException;
 
 @Component
 public class IntegerMapper {

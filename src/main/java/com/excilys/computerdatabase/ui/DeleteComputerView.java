@@ -1,5 +1,6 @@
 package com.excilys.computerdatabase.ui;
 
+import com.excilys.computerdatabase.exceptions.notfound.ComputerNotFoundException;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.service.ComputerService;
 
@@ -35,16 +36,16 @@ public class DeleteComputerView extends AbstractView {
   public void display() {
     System.out.println("\nDeleting the computer #" + computerId + "\n");
 
-    computer = computerService.getById(computerId);
+    try {
+      computer = computerService.getById(computerId);
 
-    if (computer == null) {
-      System.out.println("Computer #" + computerId + " not found");
-    } else {
       System.out.println(
           "Are you sure you want to delete the computer #" + computerId + " named \"" + computer.getName() + "\"");
       System.out.println("(y/n)?");
 
       readResponse();
+    } catch (ComputerNotFoundException e) {
+      System.out.println("Computer #" + computerId + " not found");
     }
 
     System.out.println();

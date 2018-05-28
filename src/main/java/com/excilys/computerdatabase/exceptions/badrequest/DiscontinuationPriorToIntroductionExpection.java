@@ -1,4 +1,4 @@
-package com.excilys.computerdatabase.exceptions;
+package com.excilys.computerdatabase.exceptions.badrequest;
 
 /**
  * The exception is used to inform that the discontinuation date of a computer

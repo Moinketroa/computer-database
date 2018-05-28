@@ -2,7 +2,7 @@ package com.excilys.computerdatabase.validator;
 
 import org.springframework.stereotype.Component;
 
-import com.excilys.computerdatabase.exceptions.WrongFormatOfSelectionException;
+import com.excilys.computerdatabase.exceptions.badrequest.WrongFormatOfSelectionException;
 
 @Component
 public class SelectionValidator {

@@ -1,6 +1,6 @@
 package com.excilys.computerdatabase.ui;
 
-import com.excilys.computerdatabase.exceptions.WrongPageParameterException;
+import com.excilys.computerdatabase.exceptions.badrequest.WrongPageParameterException;
 import com.excilys.computerdatabase.mapper.LocalDateMapper;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.service.ComputerService;

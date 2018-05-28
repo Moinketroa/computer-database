@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.excilys.computerdatabase.dao.CompanyDao;
-import com.excilys.computerdatabase.exceptions.WrongPageParameterException;
+import com.excilys.computerdatabase.exceptions.badrequest.WrongPageParameterException;
 import com.excilys.computerdatabase.model.pojo.Company;
 import com.excilys.computerdatabase.page.Page;
 

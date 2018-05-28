@@ -1,4 +1,4 @@
-package com.excilys.computerdatabase.exceptions;
+package com.excilys.computerdatabase.exceptions.badrequest;
 
 public class InvalidIdException extends BadRequestException {
 

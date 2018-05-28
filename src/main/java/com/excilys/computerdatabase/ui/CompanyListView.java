@@ -1,6 +1,6 @@
 package com.excilys.computerdatabase.ui;
 
-import com.excilys.computerdatabase.exceptions.WrongPageParameterException;
+import com.excilys.computerdatabase.exceptions.badrequest.WrongPageParameterException;
 import com.excilys.computerdatabase.model.pojo.Company;
 import com.excilys.computerdatabase.service.CompanyService;
 

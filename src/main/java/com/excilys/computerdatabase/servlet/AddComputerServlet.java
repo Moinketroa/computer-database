@@ -17,9 +17,9 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.excilys.computerdatabase.dto.CompanyDto;
 import com.excilys.computerdatabase.dto.ComputerDto;
-import com.excilys.computerdatabase.exceptions.CompanyNotFoundException;
-import com.excilys.computerdatabase.exceptions.DiscontinuationPriorToIntroductionExpection;
-import com.excilys.computerdatabase.exceptions.WrongPageParameterException;
+import com.excilys.computerdatabase.exceptions.badrequest.DiscontinuationPriorToIntroductionExpection;
+import com.excilys.computerdatabase.exceptions.badrequest.WrongPageParameterException;
+import com.excilys.computerdatabase.exceptions.notfound.CompanyNotFoundException;
 import com.excilys.computerdatabase.mapper.ComputerMapper;
 import com.excilys.computerdatabase.mapper.LocalDateMapper;
 import com.excilys.computerdatabase.model.pojo.Company;
@@ -31,7 +31,7 @@ import com.excilys.computerdatabase.service.ComputerService;
 /**
  * Servlet implementation class AddComputerServlet.
  */
-@WebServlet("/addComputer")
+@WebServlet("/addComputer2")
 public class AddComputerServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 

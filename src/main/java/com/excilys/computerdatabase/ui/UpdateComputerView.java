@@ -2,7 +2,8 @@ package com.excilys.computerdatabase.ui;
 
 import java.time.LocalDate;
 
-import com.excilys.computerdatabase.exceptions.DiscontinuationPriorToIntroductionExpection;
+import com.excilys.computerdatabase.exceptions.badrequest.DiscontinuationPriorToIntroductionExpection;
+import com.excilys.computerdatabase.exceptions.notfound.ComputerNotFoundException;
 import com.excilys.computerdatabase.mapper.LocalDateMapper;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.service.ComputerService;
@@ -47,18 +48,9 @@ public class UpdateComputerView extends AbstractView {
   public void display() {
     System.out.println("\nUpdating the computer #" + computerId + "\n");
 
-    computer = computerService.getById(computerId);
+    try {
+      computer = computerService.getById(computerId);
 
-    if (computer == null) {
-      System.out.println("Computer #" + computerId + " not found");
-
-      System.out.println();
-
-      System.out.println("Press Enter to return to main menu...");
-      scanner.nextLine();
-
-      viewer.setView(new MenuView(viewer));
-    } else {
       name = computer.getName();
       introduction = computer.getIntroduced();
       discontinuation = computer.getDiscontinued();
@@ -75,6 +67,15 @@ public class UpdateComputerView extends AbstractView {
       } catch (DiscontinuationPriorToIntroductionExpection e) {
         viewer.setView(new ErrorView(viewer, e));
       }
+    } catch (ComputerNotFoundException e) {
+      System.out.println("Computer #" + computerId + " not found");
+
+      System.out.println();
+
+      System.out.println("Press Enter to return to main menu...");
+      scanner.nextLine();
+
+      viewer.setView(new MenuView(viewer));
     }
   }
 

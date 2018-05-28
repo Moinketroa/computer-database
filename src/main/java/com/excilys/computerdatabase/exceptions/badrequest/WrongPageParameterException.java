@@ -1,4 +1,4 @@
-package com.excilys.computerdatabase.exceptions;
+package com.excilys.computerdatabase.exceptions.badrequest;
 
 /**
  * The exception inform that the parameters given in order to get a page are

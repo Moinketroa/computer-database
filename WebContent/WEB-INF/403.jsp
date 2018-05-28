@@ -15,7 +15,7 @@
 	<section id="main">
 		<div class="container">
 			<div class="alert alert-danger">
-				Error 403: Access denied! <br /> <span>${ error }</span>
+				Error 403: Access denied ! <br /> <span>${ error }</span>
 			</div>
 		</div>
 	</section>

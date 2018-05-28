@@ -1,5 +1,6 @@
 package com.excilys.computerdatabase.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,23 +15,32 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.excilys.computerdatabase.dao.OrderByComputer;
 import com.excilys.computerdatabase.dao.OrderByMode;
+import com.excilys.computerdatabase.dto.CompanyDto;
 import com.excilys.computerdatabase.dto.ComputerDto;
-import com.excilys.computerdatabase.exceptions.BadRequestException;
+import com.excilys.computerdatabase.exceptions.CDBException;
+import com.excilys.computerdatabase.exceptions.badrequest.BadRequestException;
+import com.excilys.computerdatabase.exceptions.badrequest.NegativeNumberException;
+import com.excilys.computerdatabase.exceptions.badrequest.WrongFormatOfSelectionException;
+import com.excilys.computerdatabase.exceptions.badrequest.WrongPageParameterException;
 import com.excilys.computerdatabase.mapper.IntegerMapper;
 import com.excilys.computerdatabase.mapper.OrderByComputerMapper;
 import com.excilys.computerdatabase.mapper.OrderByModeMapper;
+import com.excilys.computerdatabase.model.pojo.Company;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.page.Page;
+import com.excilys.computerdatabase.service.CompanyService;
 import com.excilys.computerdatabase.service.ComputerService;
 import com.excilys.computerdatabase.validator.ComputerValidator;
 import com.excilys.computerdatabase.validator.IntegerValidator;
 import com.excilys.computerdatabase.validator.SelectionValidator;
 
 @Controller
-public class ComputerController extends AbstractController {
+public class ComputerController {
 
   @Autowired
   private ComputerService computerService;
+  @Autowired
+  private CompanyService companyService;
 
   @Autowired
   private OrderByComputerMapper orderByComputerMapper;
@@ -54,114 +64,120 @@ public class ComputerController extends AbstractController {
       @RequestParam(value = "keyword", defaultValue = "") String keyword,
       @RequestParam(value = "order", defaultValue = "id") String orderParameter,
       @RequestParam(value = "mode", defaultValue = "asc") String modeParameter,
-      @RequestParam Map<String, Object> allParams) {
+      @RequestParam Map<String, Object> allParams) throws BadRequestException {
     ModelAndView modelAndView = new ModelAndView();
 
-    try {
-      integerValidator.mustBePositive(offset, "Offset");
-      integerValidator.mustBePositive(entitiesPerPage, "Number of entities per page");
+    integerValidator.mustBePositive(offset, "Offset");
+    integerValidator.mustBePositive(entitiesPerPage, "Number of entities per page");
 
-      OrderByComputer order = orderByComputerMapper.fromString(orderParameter);
-      OrderByMode mode = orderByModeMapper.fromString(modeParameter);
+    OrderByComputer order = orderByComputerMapper.fromString(orderParameter);
+    OrderByMode mode = orderByModeMapper.fromString(modeParameter);
 
-      Page<Computer> page = null;
+    Page<Computer> page = null;
 
-      if (keyword.equals("")) {
-        page = computerService.getAll(order, mode, offset, entitiesPerPage);
-      } else {
-        page = computerService.search(keyword, order, mode, offset, entitiesPerPage);
-      }
-
-      modelAndView.addAllObjects(allParams);
-      modelAndView.addObject("page", page.convertToAnotherType(computer -> new ComputerDto(computer)));
-      modelAndView.addObject("mode", modeParameter.equals("desc") ? "desc" : "asc");
-      modelAndView.setViewName(View.DASHBOARD.toString());
-    } catch (BadRequestException e) {
-      LOGGER.error("Bad Request", e);
-      handleError(modelAndView, View.BAD_REQUEST, e.getMessage());
-    } catch (Throwable t) {
-      LOGGER.error("Internal Server Error", t);
-      handleError(modelAndView, View.INTERNAL_SERVER_ERROR, "Something went wrong : " + t.getMessage());
+    if (keyword.equals("")) {
+      page = computerService.getAll(order, mode, offset, entitiesPerPage);
+    } else {
+      page = computerService.search(keyword, order, mode, offset, entitiesPerPage);
     }
+
+    modelAndView.addAllObjects(allParams);
+    modelAndView.addObject("page", page.convertToAnotherType(computer -> new ComputerDto(computer)));
+    modelAndView.addObject("mode", modeParameter.equals("desc") ? "desc" : "asc");
+    modelAndView.setViewName(View.DASHBOARD.toString());
 
     return modelAndView;
   }
 
   @RequestMapping(value = "/computer", method = RequestMethod.GET)
   public ModelAndView displayComputer(@RequestParam(value = "computerId", defaultValue = "0") int computerId,
-      @RequestParam Map<String, Object> allParams) {
+      @RequestParam Map<String, Object> allParams) throws CDBException {
     ModelAndView modelAndView = new ModelAndView();
 
-    try {
-      integerValidator.mustBePositive(computerId, "Computer Id");
-      computerValidator.mustHaveValidId(computerId);
+    integerValidator.mustBePositive(computerId, "Computer Id");
+    computerValidator.mustHaveValidId(computerId);
 
-      Computer computer = computerService.getById(computerId);
+    Computer computer = computerService.getById(computerId);
 
-      if (computer != null) {
-        modelAndView.addObject("computer", new ComputerDto(computer));
-      }
-
-      modelAndView.addAllObjects(allParams);
-      modelAndView.setViewName(View.COMPUTER.toString());
-    } catch (BadRequestException e) {
-      LOGGER.error("Bad Request", e);
-      handleError(modelAndView, View.BAD_REQUEST, e.getMessage());
-    } catch (Throwable t) {
-      LOGGER.error("Internal Server Error", t);
-      handleError(modelAndView, View.INTERNAL_SERVER_ERROR, "Something went wrong : " + t.getMessage());
+    if (computer != null) {
+      modelAndView.addObject("computer", new ComputerDto(computer));
     }
+
+    modelAndView.addAllObjects(allParams);
+    modelAndView.setViewName(View.COMPUTER.toString());
 
     return modelAndView;
   }
 
   @RequestMapping(value = "/deleteComputer", method = RequestMethod.GET)
   public ModelAndView deleteOneComputer(@RequestParam(value = "computerId", defaultValue = "0") int computerId,
-      @RequestParam Map<String, Object> allParams) {
+      @RequestParam Map<String, Object> allParams) throws BadRequestException {
     ModelAndView modelAndView = new ModelAndView();
 
-    try {
-      integerValidator.mustBePositive(computerId, "Computer Id");
-      computerValidator.mustHaveValidId(computerId);
+    integerValidator.mustBePositive(computerId, "Computer Id");
+    computerValidator.mustHaveValidId(computerId);
 
-      computerService.delete(computerId);
+    computerService.delete(computerId);
 
-      modelAndView.addAllObjects(allParams);
-      modelAndView.addObject("msg", "Computer #" + computerId + " deleted !");
-      modelAndView.setViewName(View.NO_CONTENT.toString());
-    } catch (BadRequestException e) {
-      LOGGER.error("Bad Request", e);
-      handleError(modelAndView, View.BAD_REQUEST, e.getMessage());
-    } catch (Throwable t) {
-      LOGGER.error("Internal Server Error", t);
-      handleError(modelAndView, View.INTERNAL_SERVER_ERROR, "Something went wrong : " + t.getMessage());
-    }
+    modelAndView.addAllObjects(allParams);
+    modelAndView.addObject("msg", "Computer #" + computerId + " deleted !");
+    modelAndView.setViewName(View.NO_CONTENT.toString());
+
+    return modelAndView;
+  }
+
+  @RequestMapping(value = "/deleteComputer", method = RequestMethod.POST)
+  public ModelAndView deleteSeveralComputers(@RequestParam(value = "selection", defaultValue = "") String selection,
+      @RequestParam Map<String, Object> allParams) throws BadRequestException {
+    ModelAndView modelAndView = new ModelAndView();
+
+    selectionValidator.mustBeAValidFormat(selection);
+    List<Integer> selectedIdList = integerMapper.listFromSelection(selection);
+
+    computerService.deleteSeveral(selectedIdList);
+
+    modelAndView.addAllObjects(allParams);
+    modelAndView.addObject("msg", "Computers deleted !");
+    modelAndView.setViewName(View.NO_CONTENT.toString());
+
+    return modelAndView;
+  }
+
+  @RequestMapping(value = "/addComputer", method = RequestMethod.GET)
+  public ModelAndView displayAddComputer() throws BadRequestException {
+    ModelAndView modelAndView = new ModelAndView();
+
+    setCompaniesToMAV(modelAndView);
+
+    return modelAndView;
+  }
+
+  @RequestMapping(value = "/editComputer", method = RequestMethod.GET)
+  public ModelAndView displayEditComputer(@RequestParam(value = "computerId", defaultValue = "0") int computerId,
+      @RequestParam Map<String, Object> allParams) throws CDBException {
+    ModelAndView modelAndView = new ModelAndView();
+    
+    integerValidator.mustBePositive(computerId, "Computer Id");
+    computerValidator.mustHaveValidId(computerId);
+    
+    ComputerDto computerDto = new ComputerDto(computerService.getById(computerId));
+    
+    modelAndView.addAllObjects(allParams);
+    modelAndView.addObject("computer", computerDto);
+    setCompaniesToMAV(modelAndView);
+    modelAndView.setViewName(View.EDIT_COMPUTER.toString());
 
     return modelAndView;
   }
   
-  @RequestMapping(value = "/deleteComputer", method = RequestMethod.POST)
-  public ModelAndView deleteSeveralComputers(@RequestParam(value = "selection", defaultValue = "") String selection,
-      @RequestParam Map<String, Object> allParams) {
-    ModelAndView modelAndView = new ModelAndView();
-    
-    try {
-      selectionValidator.mustBeAValidFormat(selection);
-      List<Integer> selectedIdList = integerMapper.listFromSelection(selection);
-      
-      computerService.deleteSeveral(selectedIdList);
-      
-      modelAndView.addAllObjects(allParams);
-      modelAndView.addObject("msg", "Computers deleted !");
-      modelAndView.setViewName(View.NO_CONTENT.toString());
-    } catch (BadRequestException e) {
-      LOGGER.error("Bad Request", e);
-      handleError(modelAndView, View.BAD_REQUEST, e.getMessage());
-    } catch (Throwable t) {
-      LOGGER.error("Internal Server Error", t);
-      handleError(modelAndView, View.INTERNAL_SERVER_ERROR, "Something went wrong : " + t.getMessage());
+  private void setCompaniesToMAV(ModelAndView modelAndView) throws WrongPageParameterException {
+    Page<Company> page = companyService.getAll(0, 100);
+    List<CompanyDto> companies = new ArrayList<>();
+
+    for (Company company : page.getElements()) {
+      companies.add(new CompanyDto(company));
     }
-    
-    return modelAndView;
+
+    modelAndView.addObject("companies", companies);
   }
 }
