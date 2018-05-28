@@ -6,7 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.computerdatabase.mapper.ComputerMapper;
+import com.excilys.computerdatabase.mapper.IntegerMapper;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.page.Page;
 
@@ -37,7 +40,9 @@ public class ComputerDao {
 
   private static final String SQL_INSERT_COMPUTER = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
   private static final String SQL_UPDATE_COMPUTER = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE computer.id = ?";
+
   private static final String SQL_DELETE_COMPUTER = "DELETE FROM computer WHERE computer.id = ?";
+  private static final String SQL_DELETE_COMPUTERS_IN = "DELETE FROM computer WHERE computer.id IN ";
 
   private static final String SQL_SEARCH_COMPUTERS = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name AS company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR company.name LIKE ?";
   private static final String SQL_SEARCH_COUNT = "SELECT COUNT(*) FROM (SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name AS company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR company.name LIKE ?) AS search";
@@ -48,6 +53,8 @@ public class ComputerDao {
 
   @Autowired
   private ComputerMapper computerMapper;
+  @Autowired
+  private IntegerMapper integerMapper;
 
   @Autowired
   private JdbcTemplate jdbcTemplate;
@@ -107,10 +114,12 @@ public class ComputerDao {
    *          one or more id of computers wanted to be deleted
    */
   @Transactional(rollbackFor = Throwable.class)
-  public void deleteSeveral(Integer... idVarargs) {
-    for (int id : idVarargs) {
-      jdbcTemplate.update(SQL_DELETE_COMPUTER, id);
-    }
+  public void deleteSeveral(List<Integer> ids) {
+    String completeSql = SQL_DELETE_COMPUTERS_IN + integerMapper.listToInString(ids);
+    
+    System.out.println(completeSql);
+  
+    jdbcTemplate.update(completeSql);
   }
 
   /**
@@ -164,7 +173,7 @@ public class ComputerDao {
    * keyword, from the database under the form of a {@link Page}. The computers
    * are ordered by the wanted property and by the wanted mode
    *
-   * @param keyword
+   * @param keywords
    *          The wanted keyword for the search
    * @param orderBy
    *          The wanted "order by" property

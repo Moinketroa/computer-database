@@ -29,7 +29,7 @@
 			</div>
 		</div>
 
-		<form id="deleteForm" action='<cdb:link target="deleteComputer"/>' method="POST">
+		<form id="deleteForm" action='<cdb:link target="deleteComputer"/>' method="GET">
 			<input type="hidden" name="computerId" value="">
 		</form>
 

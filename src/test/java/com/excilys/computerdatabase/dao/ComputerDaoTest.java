@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -131,7 +132,7 @@ public class ComputerDaoTest {
       assertNotNull(computerDao.fetchOne(id));
     }
 
-    computerDao.deleteSeveral(idsToBeDeleted);
+    computerDao.deleteSeveral(Arrays.asList(idsToBeDeleted));
 
     for (int id : idsToBeDeleted) {
       assertNull(computerDao.fetchOne(id));

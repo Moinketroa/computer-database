@@ -1,6 +1,7 @@
 package com.excilys.computerdatabase.service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -135,8 +136,8 @@ public class ComputerService {
    * @param idVarargs
    *          one or more id of computers wanted to be deleted
    */
-  public void deteleSeveral(Integer... idVarargs) {
-    computerDao.deleteSeveral(idVarargs);
+  public void deleteSeveral(List<Integer> ids) {
+    computerDao.deleteSeveral(ids);
   }
 
   public Page<Computer> search(String keyword, OrderByComputer order, OrderByMode mode, int offset,

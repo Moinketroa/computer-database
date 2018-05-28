@@ -47,7 +47,7 @@
 			</div>
 		</div>
 
-		<form id="deleteForm" action="<cdb:link target="deleteComputer"/>" method="DELETE">
+		<form id="deleteForm" action="<cdb:link target="deleteComputer"/>" method=POST>
 			<input type="hidden" name="selection" value="">
 		</form>
 

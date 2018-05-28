@@ -6,6 +6,11 @@ $(function() {
     // Click on "selectall" box
     $("#selectall").click(function () {
         $('.cb').prop('checked', this.checked);
+        if (this.checked) {
+        	$("#trashCan").show();
+        } else {
+        	$("#trashCan").hide();
+        }
     });
 
     // Click on a checkbox
