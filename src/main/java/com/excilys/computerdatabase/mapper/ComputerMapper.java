@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
+import com.excilys.computerdatabase.dto.CompanyDto;
+import com.excilys.computerdatabase.dto.ComputerDto;
 import com.excilys.computerdatabase.exceptions.notfound.CompanyNotFoundException;
 import com.excilys.computerdatabase.model.pojo.Company;
 import com.excilys.computerdatabase.model.pojo.Computer;
@@ -129,6 +131,26 @@ public class ComputerMapper implements RowMapper<Computer> {
         computer.setCompany(company);
       } else {
         throw new CompanyNotFoundException(companyId);
+      }
+    }
+
+    return computer;
+  }
+
+  public Computer fromComputerDto(ComputerDto computerDto) throws CompanyNotFoundException {
+    Computer computer = new Computer(computerDto.getName());
+
+    computer.setId(computerDto.getId());
+    computer.setIntroduced(computerDto.getIntroduced());
+    computer.setDiscontinued(computerDto.getDiscontinued());
+
+    if (computerDto.getCompany() != null) {
+      Company company = companyService.getById(computerDto.getCompany().getId());
+
+      if (company != null) {
+        computer.setCompany(company);
+      } else {
+        throw new CompanyNotFoundException(computerDto.getCompany().getId());
       }
     }
 

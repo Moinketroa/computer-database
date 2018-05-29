@@ -4,10 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +27,7 @@ import com.excilys.computerdatabase.exceptions.badrequest.BadRequestException;
 import com.excilys.computerdatabase.exceptions.badrequest.NegativeNumberException;
 import com.excilys.computerdatabase.exceptions.badrequest.WrongFormatOfSelectionException;
 import com.excilys.computerdatabase.exceptions.badrequest.WrongPageParameterException;
+import com.excilys.computerdatabase.mapper.ComputerMapper;
 import com.excilys.computerdatabase.mapper.IntegerMapper;
 import com.excilys.computerdatabase.mapper.OrderByComputerMapper;
 import com.excilys.computerdatabase.mapper.OrderByModeMapper;
@@ -42,6 +48,8 @@ public class ComputerController {
   @Autowired
   private CompanyService companyService;
 
+  @Autowired
+  private ComputerMapper computerMapper;
   @Autowired
   private OrderByComputerMapper orderByComputerMapper;
   @Autowired
@@ -65,7 +73,7 @@ public class ComputerController {
       @RequestParam(value = "order", defaultValue = "id") String orderParameter,
       @RequestParam(value = "mode", defaultValue = "asc") String modeParameter,
       @RequestParam Map<String, Object> allParams) throws BadRequestException {
-    ModelAndView modelAndView = new ModelAndView();
+    ModelAndView modelAndView = new ModelAndView(View.DASHBOARD.toString());
 
     integerValidator.mustBePositive(offset, "Offset");
     integerValidator.mustBePositive(entitiesPerPage, "Number of entities per page");
@@ -84,7 +92,6 @@ public class ComputerController {
     modelAndView.addAllObjects(allParams);
     modelAndView.addObject("page", page.convertToAnotherType(computer -> new ComputerDto(computer)));
     modelAndView.addObject("mode", modeParameter.equals("desc") ? "desc" : "asc");
-    modelAndView.setViewName(View.DASHBOARD.toString());
 
     return modelAndView;
   }
@@ -92,7 +99,7 @@ public class ComputerController {
   @RequestMapping(value = "/computer", method = RequestMethod.GET)
   public ModelAndView displayComputer(@RequestParam(value = "computerId", defaultValue = "0") int computerId,
       @RequestParam Map<String, Object> allParams) throws CDBException {
-    ModelAndView modelAndView = new ModelAndView();
+    ModelAndView modelAndView = new ModelAndView(View.COMPUTER.toString());
 
     integerValidator.mustBePositive(computerId, "Computer Id");
     computerValidator.mustHaveValidId(computerId);
@@ -104,7 +111,6 @@ public class ComputerController {
     }
 
     modelAndView.addAllObjects(allParams);
-    modelAndView.setViewName(View.COMPUTER.toString());
 
     return modelAndView;
   }
@@ -112,7 +118,7 @@ public class ComputerController {
   @RequestMapping(value = "/deleteComputer", method = RequestMethod.GET)
   public ModelAndView deleteOneComputer(@RequestParam(value = "computerId", defaultValue = "0") int computerId,
       @RequestParam Map<String, Object> allParams) throws BadRequestException {
-    ModelAndView modelAndView = new ModelAndView();
+    ModelAndView modelAndView = new ModelAndView(View.NO_CONTENT.toString());
 
     integerValidator.mustBePositive(computerId, "Computer Id");
     computerValidator.mustHaveValidId(computerId);
@@ -121,7 +127,6 @@ public class ComputerController {
 
     modelAndView.addAllObjects(allParams);
     modelAndView.addObject("msg", "Computer #" + computerId + " deleted !");
-    modelAndView.setViewName(View.NO_CONTENT.toString());
 
     return modelAndView;
   }
@@ -129,7 +134,7 @@ public class ComputerController {
   @RequestMapping(value = "/deleteComputer", method = RequestMethod.POST)
   public ModelAndView deleteSeveralComputers(@RequestParam(value = "selection", defaultValue = "") String selection,
       @RequestParam Map<String, Object> allParams) throws BadRequestException {
-    ModelAndView modelAndView = new ModelAndView();
+    ModelAndView modelAndView = new ModelAndView(View.NO_CONTENT.toString());
 
     selectionValidator.mustBeAValidFormat(selection);
     List<Integer> selectedIdList = integerMapper.listFromSelection(selection);
@@ -138,16 +143,36 @@ public class ComputerController {
 
     modelAndView.addAllObjects(allParams);
     modelAndView.addObject("msg", "Computers deleted !");
-    modelAndView.setViewName(View.NO_CONTENT.toString());
 
     return modelAndView;
   }
 
   @RequestMapping(value = "/addComputer", method = RequestMethod.GET)
   public ModelAndView displayAddComputer() throws BadRequestException {
-    ModelAndView modelAndView = new ModelAndView();
+    ModelAndView modelAndView = new ModelAndView(View.ADD_COMPUTER.toString());
 
+    modelAndView.addObject("computerDto", new ComputerDto());
     setCompaniesToMAV(modelAndView);
+
+    return modelAndView;
+  }
+
+  @RequestMapping(value = "/addComputer", method = RequestMethod.POST)
+  public ModelAndView addComputer(@Valid @ModelAttribute("computerDto") ComputerDto computerDto, BindingResult result,
+      ModelMap model) throws CDBException {
+    ModelAndView modelAndView = new ModelAndView(View.COMPUTER.toString());
+
+    if (result.hasErrors()) {
+      ModelAndView returnToAddPage = new ModelAndView();
+      setCompaniesToMAV(returnToAddPage);
+      return returnToAddPage;
+    }
+    
+    Computer computerToAdd = computerMapper.fromComputerDto(computerDto);
+    int computerId = computerService.create(computerToAdd);
+    
+    modelAndView.addObject("computerId", computerId);
+    modelAndView.addObject("computer", new ComputerDto(computerToAdd));
 
     return modelAndView;
   }
@@ -155,21 +180,20 @@ public class ComputerController {
   @RequestMapping(value = "/editComputer", method = RequestMethod.GET)
   public ModelAndView displayEditComputer(@RequestParam(value = "computerId", defaultValue = "0") int computerId,
       @RequestParam Map<String, Object> allParams) throws CDBException {
-    ModelAndView modelAndView = new ModelAndView();
-    
+    ModelAndView modelAndView = new ModelAndView(View.EDIT_COMPUTER.toString());
+
     integerValidator.mustBePositive(computerId, "Computer Id");
     computerValidator.mustHaveValidId(computerId);
-    
+
     ComputerDto computerDto = new ComputerDto(computerService.getById(computerId));
-    
+
     modelAndView.addAllObjects(allParams);
     modelAndView.addObject("computer", computerDto);
     setCompaniesToMAV(modelAndView);
-    modelAndView.setViewName(View.EDIT_COMPUTER.toString());
 
     return modelAndView;
   }
-  
+
   private void setCompaniesToMAV(ModelAndView modelAndView) throws WrongPageParameterException {
     Page<Company> page = companyService.getAll(0, 100);
     List<CompanyDto> companies = new ArrayList<>();
