@@ -50,7 +50,7 @@ public abstract class AbstractIntegrationTest {
 
   @AfterClass
   public static void quit() {
-    driver.close();
-    driver.quit();
+    //driver.close();
+    //driver.quit();
   }
 }

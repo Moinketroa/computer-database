@@ -48,6 +48,10 @@ public class ComputerDto {
     return company;
   }
 
+  public void setCompany(CompanyDto company) {
+    this.company = company;
+  }
+
   public int getId() {
     return id;
   }

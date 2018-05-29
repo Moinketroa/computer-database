@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <html>
@@ -24,83 +25,97 @@
 			<div class="col-xs-8 col-xs-offset-2 box">
 				<h1 id="title">Edit Computer #${ computerId }</h1>
 				<div id="errorMsg" hidden="true" class="alert alert-danger"></div>
-				<form id="editComputerForm" action='<cdb:link target="editComputer" computerId="${ computerId }"/>' method="POST">
+				<form:form
+					method="POST" modelAttribute="computerDto">
 					<fieldset>
 						<div class="form-group">
-							<label for="name">Computer name</label> <input type="text"
-								class="form-control" id="name" name="name"
-								placeholder="Computer name" value="${ computer.name }" onkeyup="verify()">
+							<form:label path="name">Computer name *</form:label>
+							<form:input type="text" class="form-control" id="name"
+								path="name" placeholder="Computer name" onkeyup="verify()" />
+							<form:errors style="color : red;" path="name" />
 						</div>
 						<div class="form-group">
-							<label for="introduced">Introduced date</label> <input
-								type="date" class="form-control" id="introduced"
-								name="introduced" placeholder="Introduced date" value="${ computer.introduced }" onchange="verify()">
+							<form:label for="introduced" path="introduced">Introduced date</form:label>
+							<form:input type="date" class="form-control" id="introduced"
+								path="introduced" placeholder="Introduced date"
+								onchange="verify()" />
+							<form:errors style="color : red;" path="introduced" />
 						</div>
 						<div class="form-group">
-							<label for="discontinued">Discontinued date</label> <input
-								type="date" class="form-control" id="discontinued"
-								name="discontinued" placeholder="Discontinued date" value="${ computer.discontinued }" onchange="verify()">
+							<form:label for="discontinued" path="discontinued">Discontinued date</form:label>
+							<form:input type="date" class="form-control" id="discontinued"
+								path="discontinued" placeholder="Discontinued date"
+								onchange="verify()" />
+							<form:errors style="color : red;" path="discontinued" />
 						</div>
 						<div class="form-group">
-							<label for="companyId">Company</label> <select
-								class="form-control" id="companyId" name="companyId">
-								<option value="0">No company</option>
+							<form:label path="company.id" for="companyId">Company</form:label>
+							<form:select class="form-control" id="companyId"
+								path="company.id">
+								<form:option value="0">No company</form:option>
 								<c:forEach var="company" items="${ companies }">
 									<c:choose>
 										<c:when test="${ company.id == computer.company.id }">
-											<option value="${ company.id }" selected>${ company.name }</option>
+											<form:option value="${ company.id }" selected="true">${ company.name }</form:option>
 										</c:when>
 										<c:otherwise>
-											<option value="${ company.id }">${ company.name }</option>
+											<form:option value="${ company.id }">${ company.name }</form:option>
 										</c:otherwise>
 									</c:choose>
 								</c:forEach>
-							</select>
+							</form:select>
 						</div>
 					</fieldset>
 					<div class="actions pull-right">
-						<input type="submit" value="Edit" id="editComputerButton" class="btn btn-primary">
-						or <a href='<cdb:link target="computer" computerId="${ computerId }"/>' class="btn btn-default">Cancel</a>
+						<input type="submit" value="Edit" id="editComputerButton"
+							class="btn btn-primary"> or <a
+							href='<cdb:link target="computer" computerId="${ computerId }"/>'
+							class="btn btn-default">Cancel</a>
 					</div>
-				</form>
+				</form:form>
 			</div>
 		</div>
 	</div>
 	</section>
-	
-	
+
+
 	<script src="static/js/jquery.min.js"></script>
 	<script src="static/js/bootstrap.min.js"></script>
 	<script type="text/javascript">
-	function verify() {
-		var isCorrect = true;
-		
-		if (!$('#name').val().trim()) {
-			isCorrect = false;
-			$('#errorMsg').show();
-			$('#errorMsg').text("Please enter a non-empty name for the computer.");
-		}
-		
-		if ($('#introduced').val().trim() && $('#discontinued').val().trim()) {
-			if (toDate($('#introduced').val()) > toDate($('#discontinued').val())) {
+		function verify() {
+			var isCorrect = true;
+
+			if (!$('#name').val().trim()) {
 				isCorrect = false;
 				$('#errorMsg').show();
-				$('#errorMsg').text("The introduction date is greater than the discontinuation date. Please enter valid dates.");
+				$('#errorMsg').text(
+						"Please enter a non-empty name for the computer.");
+			}
+
+			if ($('#introduced').val().trim()
+					&& $('#discontinued').val().trim()) {
+				if (toDate($('#introduced').val()) > toDate($('#discontinued')
+						.val())) {
+					isCorrect = false;
+					$('#errorMsg').show();
+					$('#errorMsg')
+							.text(
+									"The introduction date is greater than the discontinuation date. Please enter valid dates.");
+				}
+			}
+
+			if (isCorrect) {
+				$('#errorMsg').hide();
+				$('#editComputerButton').removeAttr('disabled');
+			} else {
+				$('#editComputerButton').attr('disabled', 'true');
 			}
 		}
-		
-		if (isCorrect) {
-			$('#errorMsg').hide();
-			$('#editComputerButton').removeAttr('disabled');
-		} else {
-			$('#editComputerButton').attr('disabled', 'true');
+
+		function toDate(formDate) {
+			var dateArray = formDate.split('-');
+			return new Date(dateArray[0], dateArray[1], dateArray[2]);
 		}
-	}
-	
-	function toDate(formDate) {
-		var dateArray = formDate.split('-');
-		return new Date(dateArray[0], dateArray[1], dateArray[2]);
-	}
 	</script>
 </body>
 </html>

@@ -145,12 +145,14 @@ public class ComputerMapper implements RowMapper<Computer> {
     computer.setDiscontinued(computerDto.getDiscontinued());
 
     if (computerDto.getCompany() != null) {
-      Company company = companyService.getById(computerDto.getCompany().getId());
-
-      if (company != null) {
-        computer.setCompany(company);
-      } else {
-        throw new CompanyNotFoundException(computerDto.getCompany().getId());
+      if (computerDto.getCompany().getId() != 0) {
+        Company company = companyService.getById(computerDto.getCompany().getId());
+  
+        if (company != null) {
+          computer.setCompany(company);
+        } else {
+          throw new CompanyNotFoundException(computerDto.getCompany().getId());
+        }
       }
     }
 

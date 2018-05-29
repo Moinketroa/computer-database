@@ -163,14 +163,14 @@ public class ComputerController {
     ModelAndView modelAndView = new ModelAndView(View.COMPUTER.toString());
 
     if (result.hasErrors()) {
-      ModelAndView returnToAddPage = new ModelAndView();
+      ModelAndView returnToAddPage = new ModelAndView(View.ADD_COMPUTER.toString());
       setCompaniesToMAV(returnToAddPage);
       return returnToAddPage;
     }
-    
+
     Computer computerToAdd = computerMapper.fromComputerDto(computerDto);
     int computerId = computerService.create(computerToAdd);
-    
+
     modelAndView.addObject("computerId", computerId);
     modelAndView.addObject("computer", new ComputerDto(computerToAdd));
 
@@ -188,8 +188,34 @@ public class ComputerController {
     ComputerDto computerDto = new ComputerDto(computerService.getById(computerId));
 
     modelAndView.addAllObjects(allParams);
-    modelAndView.addObject("computer", computerDto);
+    modelAndView.addObject("computerDto", computerDto);
     setCompaniesToMAV(modelAndView);
+
+    return modelAndView;
+  }
+
+  @RequestMapping(value = "/editComputer", method = RequestMethod.POST)
+  public ModelAndView editComputer(@RequestParam(value = "computerId", defaultValue = "0") int computerId,
+      @Valid @ModelAttribute("computerDto") ComputerDto computerDto, BindingResult result, ModelMap model)
+      throws CDBException {
+    ModelAndView modelAndView = new ModelAndView(View.COMPUTER.toString());
+
+    if (result.hasErrors()) {
+      ModelAndView returnToEditPage = new ModelAndView(View.EDIT_COMPUTER.toString());
+      setCompaniesToMAV(returnToEditPage);
+      return returnToEditPage;
+    }
+
+    integerValidator.mustBePositive(computerId, "Computer Id");
+    computerValidator.mustHaveValidId(computerId);
+
+    Computer computerToUpdate = computerMapper.fromComputerDto(computerDto);
+    computerToUpdate.setId(computerId);
+
+    computerService.update(computerToUpdate);
+
+    modelAndView.addObject("computerId", computerId);
+    modelAndView.addObject("computer", new ComputerDto(computerToUpdate));
 
     return modelAndView;
   }

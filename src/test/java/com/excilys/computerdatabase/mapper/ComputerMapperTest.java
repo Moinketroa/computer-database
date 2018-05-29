@@ -170,14 +170,14 @@ public class ComputerMapperTest {
           basicDiscontinuationLocalDate, 122);
       fail("computerWithCompanyNumber122 created");
     } catch (CompanyNotFoundException e) {
-      assertEquals("Company #122 not found. Unable to add the company into the computer.", e.getMessage());
+      assertEquals("Company #122 not found", e.getMessage());
     }
 
     try {
       Computer computerWithOnlyCompanyNumber122 = computerMapper.fromParameters(basicName, null, null, 122);
       fail("computerWithOnlyCompanyNumber122 created");
     } catch (CompanyNotFoundException e) {
-      assertEquals("Company #122 not found. Unable to add the company into the computer.", e.getMessage());
+      assertEquals("Company #122 not found", e.getMessage());
     }
 
     hsqldb.destroy();
