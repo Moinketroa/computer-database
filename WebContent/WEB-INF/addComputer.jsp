@@ -37,13 +37,12 @@
 							<form:label for="introduced" path="introduced">Introduced date</form:label> 
 							<form:input type="date" class="form-control" id="introduced"
 								path="introduced" placeholder="Introduced date" onchange="verify()"/>
-							<form:errors style="color : red;" path="introduced"/>
 						</div>
 						<div class="form-group">
 							<form:label for="discontinued" path="discontinued">Discontinued date</form:label> 
 							<form:input type="date" class="form-control" id="discontinued"
 								path="discontinued" placeholder="Discontinued date" onchange="verify()"/>
-							<form:errors style="color : red;" path="discontinued"/>
+							<form:errors style="color : red;" path=""/>
 						</div>
 						<div class="form-group">
 							<form:label path="company.id" for="companyId">Company</form:label> 

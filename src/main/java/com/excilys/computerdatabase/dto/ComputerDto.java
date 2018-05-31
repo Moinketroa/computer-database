@@ -8,7 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.validator.annotation.DateIntegrity;
 
-@DateIntegrity(introduction = "introduced", discontinuation = "discontinued", message = "eefjfkjfdj")
+@DateIntegrity(introduction = "introduced", discontinuation = "discontinued")
 public class ComputerDto {
 
   private int id;

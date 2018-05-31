@@ -1,14 +1,30 @@
 package com.excilys.computerdatabase.model.pojo;
 
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 /**
  * The class represents companies like those in the database.
  *
  * @author jmdebicki
  *
  */
-public class Company {
+@Entity
+@Table(name = "company")
+public class Company implements Serializable {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
   private int id;
+  
+  @Column(name = "name")
   private String name;
 
   /**
@@ -20,6 +36,10 @@ public class Company {
    */
   public Company(String name) {
     this.name = name;
+  }
+
+  Company() {
+
   }
 
   public int getId() {
@@ -35,9 +55,11 @@ public class Company {
   }
 
   /**
-   * Sets the company name. If the parameter is null the company keeps its previous name.
+   * Sets the company name. If the parameter is null the company keeps its
+   * previous name.
    *
-   * @param name the new name to give to the company
+   * @param name
+   *          the new name to give to the company
    */
   public void setName(String name) {
     if (name != null) {

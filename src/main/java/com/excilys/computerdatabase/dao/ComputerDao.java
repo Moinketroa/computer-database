@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.excilys.computerdatabase.mapper.ComputerMapper;
 import com.excilys.computerdatabase.mapper.IntegerMapper;
 import com.excilys.computerdatabase.model.pojo.Computer;
+import com.excilys.computerdatabase.model.pojo.QComputer;
 import com.excilys.computerdatabase.page.Page;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.jpa.hibernate.HibernateQueryFactory;
 
 /**
  * The class helps accessing Computer entries of the database.
@@ -50,14 +55,19 @@ public class ComputerDao {
   private static final String SQL_LIMIT = " LIMIT ? OFFSET ?";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDao.class);
+  
+  private static final QComputer MODEL = QComputer.computer;
 
   @Autowired
   private ComputerMapper computerMapper;
   @Autowired
   private IntegerMapper integerMapper;
 
-  @Autowired
+  @Autowired 
   private JdbcTemplate jdbcTemplate;
+  
+  @Autowired
+  private SessionFactory sessionFactory;
 
   /**
    * Adds a new computer to the database.
@@ -130,15 +140,7 @@ public class ComputerDao {
    * @return The found computer or null if no computer were found
    */
   public Computer fetchOne(int computerId) {
-    Computer computer = null;
-
-    try {
-      computer = (Computer) jdbcTemplate.queryForObject(SQL_SELECT_COMPUTER, computerMapper, computerId);
-    } catch (EmptyResultDataAccessException e) {
-      LOGGER.debug("No computer found with ID #" + computerId);
-    }
-
-    return computer;
+    return createQueryFactory().selectFrom(MODEL).where(MODEL.id.eq(computerId)).fetchOne();
   }
 
   /**
@@ -161,6 +163,8 @@ public class ComputerDao {
     int totalNumberOfElements = 0;
 
     String completeSQLQuery = SQL_SELECT_COMPUTERS + " ORDER BY " + orderBy + " " + mode + SQL_LIMIT;
+
+    createQueryFactory().selectFrom(MODEL).orderBy(new OrderSpecifier<>(mode.getOrder(), orderBy.getColumn()));
 
     computers = jdbcTemplate.query(completeSQLQuery, computerMapper, numberOfElementsPerPage, offset);
     totalNumberOfElements = jdbcTemplate.queryForObject(SQL_SELECT_COUNT, Integer.class);
@@ -232,4 +236,8 @@ public class ComputerDao {
     return preparedStatement;
   }
 
+  private HibernateQueryFactory createQueryFactory() {
+    Session session = sessionFactory.openSession();
+    return new HibernateQueryFactory(session);
+  }
 }

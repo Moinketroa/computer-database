@@ -14,7 +14,7 @@ import com.excilys.computerdatabase.validator.DateIntegrityValidator;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = DateIntegrityValidator.class)
 public @interface DateIntegrity {
-  String message() default "{com.excilys.computerdatabase.GreaterThanIntroduction.message}";
+  String message() default "The discontinuation date is prior to the introduction date";
 
   String introduction();
 

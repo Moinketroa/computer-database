@@ -1,6 +1,17 @@
 package com.excilys.computerdatabase.model.pojo;
 
+import java.io.Serializable;
 import java.time.LocalDate;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * The class represents computers like those in the database.
@@ -8,12 +19,22 @@ import java.time.LocalDate;
  * @author jmdebicki
  *
  */
-public class Computer {
+@Entity
+@Table(name = "computer")
+public class Computer implements Serializable {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
   private int id;
+  @Column(name = "name")
   private String name;
+  @Column(name = "introduced")
   private LocalDate introduced;
+  @Column(name = "discontinued")
   private LocalDate discontinued;
+  @ManyToOne(optional = true)
+  @JoinColumn(name = "company_id", foreignKey=@ForeignKey(name="fk_computer_company_1"))
   private Company company;
 
   /**
@@ -25,6 +46,10 @@ public class Computer {
    */
   public Computer(String name) {
     this.name = name;
+  }
+
+  Computer() {
+
   }
 
   public int getId() {

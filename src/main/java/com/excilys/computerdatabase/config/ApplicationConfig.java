@@ -18,7 +18,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
+import com.excilys.computerdatabase.model.pojo.Company;
+import com.excilys.computerdatabase.model.pojo.Computer;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -31,11 +34,12 @@ public class ApplicationConfig {
 
   private String driver;
 
+  private final Properties properties = new Properties();
+  private final InputStream path = ClassLoader.getSystemClassLoader().getResourceAsStream("config.properties");
+
   private HikariDataSource dataSource;
 
   {
-    final Properties properties = new Properties();
-    final InputStream path = ClassLoader.getSystemClassLoader().getResourceAsStream("config.properties");
     HikariConfig config = new HikariConfig();
 
     try {
@@ -58,6 +62,27 @@ public class ApplicationConfig {
     } catch (IOException e) {
       LOGGER.error(e.getMessage());
     }
+    
+    try {
+      /*op
+      sessionFactory = ne
+      StandardServiceRegistry standardRegistry = new StandardServiceRegistryBuilder()
+          .configure("hibernate.cfg.xml").build();
+      Metadata metaData = new MetadataSources(standardRegistry).getMetadataBuilder().build();
+      sessionFactory = metaData.getSessionFactoryBuilder().build();
+      */
+      /*
+      org.hibernate.cfg.Configuration configuration = new org.hibernate.cfg.Configuration();
+      configuration.configure("hibernate.cfg.xml");
+
+      ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
+      
+      sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+      */
+    } catch (Throwable t) {
+      LOGGER.error("Initial SessionFactory creation failed", t);
+      throw new ExceptionInInitializerError(t);
+    }
   }
 
   @Bean
@@ -76,6 +101,29 @@ public class ApplicationConfig {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     jdbcTemplate.setResultsMapCaseInsensitive(true);
     return jdbcTemplate;
+  }
+
+  @Bean
+  public LocalSessionFactoryBean sessionFactory() {
+    LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+    sessionFactory.setDataSource(dataSource);
+    sessionFactory.setAnnotatedClasses(Computer.class, Company.class);
+    sessionFactory.setPackagesToScan("com.excilys.computerdatabase.model.pojo");
+    sessionFactory.setHibernateProperties(hibernateProperties());
+    return sessionFactory;
+  }
+  
+  private Properties hibernateProperties() {
+    return new Properties() {
+      private static final long serialVersionUID = -6659937884292195075L;
+      {
+          setProperty("hibernate.hbm2ddl.auto", properties.getProperty("hibernate.hbm2ddl.auto"));
+          setProperty("hibernate.dialect", properties.getProperty("hibernate.dialect"));
+          setProperty("hibernate.show_sql", properties.getProperty("hibernate.show_sql"));
+          setProperty("hibernate.current_session_context_class", properties.getProperty("hibernate.current_session_context_class"));
+          setProperty("hibernate.globally_quoted_identifiers", properties.getProperty("hibernate.globally_quoted_identifiers"));
+      }
+    };
   }
 
   /**
