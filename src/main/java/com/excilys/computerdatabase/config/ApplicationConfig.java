@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
 import com.excilys.computerdatabase.model.pojo.Company;
@@ -38,11 +39,9 @@ public class ApplicationConfig {
   private final Properties properties = new Properties();
   private final InputStream path = ClassLoader.getSystemClassLoader().getResourceAsStream("config.properties");
 
-  private HikariDataSource dataSource;
+  private DriverManagerDataSource dataSource;
 
   {
-    HikariConfig config = new HikariConfig();
-
     try {
       properties.load(path);
 
@@ -53,15 +52,13 @@ public class ApplicationConfig {
       } catch (ClassNotFoundException e) {
         LOGGER.error("Driver not found", e);
       }
-
-      /*
-      config.setJdbcUrl(properties.getProperty("jdbcUrl"));
-      config.setUsername(properties.getProperty("username"));
-      config.setPassword(properties.getProperty("password"));
-      config.setDriverClassName(driver);
-      */
-
-      //dataSource = new HikariDataSource(config);
+      
+      dataSource = new DriverManagerDataSource();
+      
+      dataSource.setUrl(properties.getProperty("jdbcUrl"));
+      dataSource.setUsername(properties.getProperty("username"));
+      dataSource.setPassword(properties.getProperty("password"));
+      dataSource.setDriverClassName(driver);
 
       if (properties.getProperty("hsql.initDB").equals("true")) {
         initHSQLDB();
@@ -71,33 +68,8 @@ public class ApplicationConfig {
     } catch (IOException e) {
       LOGGER.error(e.getMessage());
     }
-
-    try {
-      /*
-       * op sessionFactory = ne StandardServiceRegistry standardRegistry = new
-       * StandardServiceRegistryBuilder() .configure("hibernate.cfg.xml").build();
-       * Metadata metaData = new
-       * MetadataSources(standardRegistry).getMetadataBuilder().build();
-       * sessionFactory = metaData.getSessionFactoryBuilder().build();
-       */
-      /*
-       * org.hibernate.cfg.Configuration configuration = new
-       * org.hibernate.cfg.Configuration();
-       * configuration.configure("hibernate.cfg.xml");
-       * 
-       * ServiceRegistry serviceRegistry = new
-       * StandardServiceRegistryBuilder().applySettings(configuration.getProperties())
-       * .build();
-       * 
-       * sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-       */
-    } catch (Throwable t) {
-      LOGGER.error("Initial SessionFactory creation failed", t);
-      throw new ExceptionInInitializerError(t);
-    }
   }
 
-  /*
   @Bean
   public DataSource dataSource() {
     try {
@@ -105,26 +77,17 @@ public class ApplicationConfig {
     } catch (ClassNotFoundException e) {
       LOGGER.error("Driver not found", e);
     }
-
     return dataSource;
   }
 
   @Bean
-  public JdbcTemplate jdbcTemplate(DataSource dataSource) {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-    jdbcTemplate.setResultsMapCaseInsensitive(true);
-    return jdbcTemplate;
-  }
-  */
-  
-  @Bean
   public LocalSessionFactoryBean sessionFactory() {
     LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-    //sessionFactory.setDataSource(dataSource);
+    sessionFactory.setDataSource(dataSource);
     sessionFactory.setHibernateProperties(hibernateProperties());
     sessionFactory.setAnnotatedClasses(Computer.class, Company.class);
     sessionFactory.setPackagesToScan("com.excilys.computerdatabase.model.pojo");
-    
+
     return sessionFactory;
   }
 
@@ -132,11 +95,15 @@ public class ApplicationConfig {
     return new Properties() {
       private static final long serialVersionUID = -6659937884292195075L;
       {
-        setProperty("hibernate.connection.driver", driver);
-        setProperty("hibernate.connection.url", properties.getProperty("jdbcUrl"));
-        setProperty("hibernate.connection.username", properties.getProperty("username"));
-        setProperty("hibernate.connection.password", properties.getProperty("password"));
-        
+        /*
+         * setProperty("hibernate.connection.driver", driver);
+         * setProperty("hibernate.connection.url", properties.getProperty("jdbcUrl"));
+         * setProperty("hibernate.connection.username",
+         * properties.getProperty("username"));
+         * setProperty("hibernate.connection.password",
+         * properties.getProperty("password"));
+         */
+
         setProperty("hibernate.hbm2ddl.auto", properties.getProperty("hibernate.hbm2ddl.auto"));
         setProperty("hibernate.dialect", properties.getProperty("hibernate.dialect"));
         setProperty("hibernate.show_sql", properties.getProperty("hibernate.show_sql"));

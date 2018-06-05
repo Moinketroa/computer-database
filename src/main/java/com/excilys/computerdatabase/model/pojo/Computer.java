@@ -34,7 +34,7 @@ public class Computer implements Serializable {
   @Column(name = "discontinued")
   private LocalDate discontinued;
   @ManyToOne(optional = true)
-  @JoinColumn(name = "company_id", foreignKey=@ForeignKey(name="fk_computer_company_1"))
+  @JoinColumn(name = "company_id")
   private Company company;
 
   /**

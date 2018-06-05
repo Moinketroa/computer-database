@@ -16,4 +16,5 @@
     company_id                INT default NULL)
   ;
   	
+  alter table computer add constraint fk_computer_company_1 foreign key (company_id) references company (id) on delete restrict on update      restrict;
   create index ix_computer_company_1 on computer (company_id);
