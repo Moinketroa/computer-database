@@ -1,5 +1,7 @@
   drop table if exists computer;
   drop table if exists company;
+  drop table if exists COMPUTER;
+  drop table if exists COMPANY;
   
   SET IGNORECASE TRUE;
   
