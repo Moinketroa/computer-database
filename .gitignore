@@ -81,3 +81,7 @@ buildNumber.properties
 
 config.properties
 
+### Documentation
+
+doc/
+
