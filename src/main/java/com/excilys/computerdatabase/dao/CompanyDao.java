@@ -5,14 +5,10 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.excilys.computerdatabase.mapper.CompanyMapper;
 import com.excilys.computerdatabase.model.pojo.Company;
 import com.excilys.computerdatabase.model.pojo.QCompany;
 import com.excilys.computerdatabase.model.pojo.QComputer;

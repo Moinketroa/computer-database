@@ -14,7 +14,7 @@ public enum OrderByMode {
     this.order = order;
   }
   
-  public Order getOrder() {
+  public Order getOrderMode() {
     return order;
   }
   
