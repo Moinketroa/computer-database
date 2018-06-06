@@ -23,8 +23,6 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
 import com.excilys.computerdatabase.model.pojo.Company;
 import com.excilys.computerdatabase.model.pojo.Computer;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 @ComponentScan(basePackages = { "com.excilys.computerdatabase.dao", "com.excilys.computerdatabase.service",

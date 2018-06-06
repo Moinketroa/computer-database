@@ -25,9 +25,8 @@ import com.excilys.computerdatabase.config.ApplicationConfig;
 @ContextConfiguration(classes = ApplicationConfig.class)
 public class HSQLDatabase {
 
-  private static final String DROP_CONSTRAINT = "ALTER TABLE computer DROP CONSTRAINT FK_COMPUTER_COMPANY_1";
-  private static final String DROP_COMPUTER = "DROP TABLE computer";
-  private static final String DROP_COMPANY = "DROP TABLE company";
+  private static final String DROP_COMPUTER = "DROP TABLE \"computer\"";
+  private static final String DROP_COMPANY = "DROP TABLE \"company\"";
 
   @Autowired
   private DataSource dataSource;
@@ -49,7 +48,7 @@ public class HSQLDatabase {
       executeScript(tablesStrings, statement);
       LOGGER.info("Inserting entries in the HSQLDB tables");
       executeScript(entriesStrings, statement);
-
+      
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -63,9 +62,8 @@ public class HSQLDatabase {
       Statement statement = connexion.createStatement();
 
       LOGGER.info("Dropping HSQLDB tables");
-      statement.executeUpdate(DROP_CONSTRAINT);
-      statement.executeUpdate(DROP_COMPANY);
       statement.executeUpdate(DROP_COMPUTER);
+      statement.executeUpdate(DROP_COMPANY);
     } catch (SQLException e) {
       e.printStackTrace();
     }
