@@ -6,6 +6,8 @@
 
 	<artifactId>computer-database-persistence</artifactId>
 
+	<name>persistence</name>
+
 	<parent>
 		<groupId>com.excilys.computer-database</groupId>
 		<artifactId>computer-database</artifactId>

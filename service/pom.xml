@@ -6,6 +6,8 @@
 
 	<artifactId>computer-database-service</artifactId>
 
+	<name>service</name>
+
 	<parent>
 		<groupId>com.excilys.computer-database</groupId>
 		<artifactId>computer-database</artifactId>

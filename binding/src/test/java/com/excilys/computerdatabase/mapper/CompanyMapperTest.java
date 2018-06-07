@@ -1,7 +1,9 @@
 package com.excilys.computerdatabase.mapper;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,11 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.excilys.computerdatabase.config.ApplicationConfig;
+import com.excilys.computerdatabase.config.BindingConfig;
+import com.excilys.computerdatabase.config.ServiceConfig;
 import com.excilys.computerdatabase.model.pojo.Company;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = ApplicationConfig.class)
+@ContextConfiguration(classes = {ServiceConfig.class, BindingConfig.class})
 public class CompanyMapperTest {
 
   @Autowired

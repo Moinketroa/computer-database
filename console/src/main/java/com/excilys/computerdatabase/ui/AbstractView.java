@@ -7,7 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.excilys.computerdatabase.config.ApplicationConfig;
+import com.excilys.computerdatabase.config.BindingConfig;
+import com.excilys.computerdatabase.config.CoreConfig;
 
 /**
  * The abstract class is to be extended in order to be compatible with a Viewer.
@@ -22,7 +23,7 @@ public abstract class AbstractView {
   protected static Scanner scanner = new Scanner(System.in);
   protected Viewer viewer;
 
-  protected AbstractApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
+  protected AbstractApplicationContext context = new AnnotationConfigApplicationContext(CoreConfig.class, BindingConfig.class);
 
   /**
    * Constructor that sets the view's viewer.

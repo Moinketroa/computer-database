@@ -2,8 +2,9 @@ package com.excilys.computerdatabase.ui;
 
 import java.time.LocalDate;
 
-import com.excilys.computerdatabase.exceptions.badrequest.DiscontinuationPriorToIntroductionExpection;
+import com.excilys.computerdatabase.exceptions.CDBException;
 import com.excilys.computerdatabase.exceptions.notfound.ComputerNotFoundException;
+import com.excilys.computerdatabase.mapper.ComputerMapper;
 import com.excilys.computerdatabase.mapper.LocalDateMapper;
 import com.excilys.computerdatabase.model.pojo.Computer;
 import com.excilys.computerdatabase.service.ComputerService;
@@ -26,6 +27,7 @@ public class UpdateComputerView extends AbstractView {
   private Computer computer;
 
   private LocalDateMapper localDateMapper = (LocalDateMapper) context.getBean("localDateMapper");
+  private ComputerMapper computerMapper = (ComputerMapper) context.getBean("computerMapper");
 
   private ComputerService computerService = (ComputerService) context.getBean("computerService");
 
@@ -54,17 +56,19 @@ public class UpdateComputerView extends AbstractView {
       name = computer.getName();
       introduction = computer.getIntroduced();
       discontinuation = computer.getDiscontinued();
-      companyId = computer.getCompany().getId();
-
+      if (computer.getCompany() != null) {
+        companyId = computer.getCompany().getId();
+      }
+      
       readName();
       readIntroductionDate();
       readDiscontinuationDate();
       readCompanyId();
 
       try {
-        computerService.update(computer);
+        computerService.update(computerMapper.fromParameters(computerId, name, introduction, discontinuation, companyId));
         viewer.setView(new ComputerDetailsView(viewer, computer.getId()));
-      } catch (DiscontinuationPriorToIntroductionExpection e) {
+      } catch (CDBException e) {
         viewer.setView(new ErrorView(viewer, e));
       }
     } catch (ComputerNotFoundException e) {

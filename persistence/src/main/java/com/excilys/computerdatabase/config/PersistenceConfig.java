@@ -23,16 +23,12 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
 import com.excilys.computerdatabase.model.pojo.Company;
 import com.excilys.computerdatabase.model.pojo.Computer;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
-@ComponentScan(basePackages = { "com.excilys.computerdatabase.dao", "com.excilys.computerdatabase.service",
-    "com.excilys.computerdatabase.mapper", "com.excilys.computerdatabase.servlet",
-    "com.excilys.computerdatabase.validator" })
-public class ApplicationConfig {
+@ComponentScan(basePackages = { "com.excilys.computerdatabase.dao" })
+public class PersistenceConfig {
 
-  private final Logger LOGGER = LoggerFactory.getLogger(ApplicationConfig.class);
+  private final Logger LOGGER = LoggerFactory.getLogger(PersistenceConfig.class);
 
   private String driver;
 
@@ -147,7 +143,7 @@ public class ApplicationConfig {
   private String[] transferDataFromFile(String filename) {
     try (
         FileReader fileReader = new FileReader(
-            ApplicationConfig.class.getClassLoader().getResource(filename).getFile());
+            PersistenceConfig.class.getClassLoader().getResource(filename).getFile());
         BufferedReader bufferedReader = new BufferedReader(fileReader)) {
 
       String tempString = new String();
