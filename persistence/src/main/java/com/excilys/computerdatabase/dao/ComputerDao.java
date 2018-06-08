@@ -26,14 +26,16 @@ import com.querydsl.jpa.hibernate.HibernateQueryFactory;
  *
  */
 @Repository
-public class ComputerDao {
+public class ComputerDao extends AbstractDao {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDao.class);
 
   private static final QComputer MODEL = QComputer.computer;
 
   @Autowired
-  private SessionFactory sessionFactory;
+  private ComputerDao(SessionFactory sessionFactory) {
+    super(sessionFactory);
+  }
 
   /**
    * Adds a new computer to the database.
@@ -183,23 +185,5 @@ public class ComputerDao {
         .where(computerNameContains.or(companyNameContains)).fetchCount();
 
     return new Page<>(computers, offset, numberOfElementsPerPage, totalNumberOfElements);
-  }
-
-  private HibernateQueryFactory createQueryFactory() {
-    Session session = sessionFactory.openSession();
-    session.getTransaction().begin();
-    return new HibernateQueryFactory(session);
-  }
-
-  private HibernateQueryFactory queryFactoryFromSession(Session session) {
-    return new HibernateQueryFactory(session);
-  }
-
-  private void decideForRollbackOrCommit(boolean condition, Transaction transaction) {
-    if (condition) {
-      transaction.commit();
-    } else {
-      transaction.rollback();
-    }
   }
 }

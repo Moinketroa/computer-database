@@ -22,12 +22,14 @@ import com.querydsl.jpa.hibernate.HibernateQueryFactory;
  *
  */
 @Repository
-public class CompanyDao {
+public class CompanyDao extends AbstractDao {
 
   private static final QCompany MODEL = QCompany.company;
   
   @Autowired
-  private SessionFactory sessionFactory;
+  private CompanyDao(SessionFactory sessionFactory) {
+    super(sessionFactory);
+  }
 
   /**
    * Fetches a given number (or fewer) of companies from the database under the
@@ -75,8 +77,4 @@ public class CompanyDao {
     createQueryFactory().delete(MODEL).where(MODEL.id.eq(id)).execute();
   }
 
-  private HibernateQueryFactory createQueryFactory() {
-    Session session = sessionFactory.openSession();
-    return new HibernateQueryFactory(session);
-  }
 }
