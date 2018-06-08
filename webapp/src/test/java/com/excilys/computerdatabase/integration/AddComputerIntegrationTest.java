@@ -12,7 +12,7 @@ public class AddComputerIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   public void addComputerTest() {
-    driver.navigate().to("http://localhost:8086/computer-database/addComputer");
+    driver.navigate().to("http://localhost:8086/computer-database-webapp/addComputer");
 
     assertEquals("Computer Database", driver.getTitle());
 

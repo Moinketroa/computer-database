@@ -14,7 +14,7 @@ public class DashboardIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   public void checkElementsTest() {
-    driver.navigate().to("http://localhost:8086/computer-database/dashboard");
+    driver.navigate().to("http://localhost:8086/computer-database-webapp/dashboard");
 
     assertEquals("Computer Database", driver.getTitle());
 
@@ -60,7 +60,7 @@ public class DashboardIntegrationTest extends AbstractIntegrationTest {
     computerRows = driver.findElements(By.id("computerRow"));
     assertEquals(100, computerRows.size());
 
-    driver.navigate().to("http://localhost:8086/computer-database/dashboard?&offset=570&entitiesPerPage=10");
+    driver.navigate().to("http://localhost:8086/computer-database-webapp/dashboard?&offset=570&entitiesPerPage=10");
 
     isNextPageLinkPresent = driver.findElements(By.id("nextPageLink")).size() == 1;
     isPreviousPageLinkPresent = driver.findElements(By.id("previousPageLink")).size() == 1;
@@ -89,7 +89,7 @@ public class DashboardIntegrationTest extends AbstractIntegrationTest {
     computerRows = driver.findElements(By.id("computerRow"));
     assertEquals(4, computerRows.size());
 
-    driver.navigate().to("http://localhost:8086/computer-database/dashboard");
+    driver.navigate().to("http://localhost:8086/computer-database-webapp/dashboard");
 
     computerRows = driver.findElements(By.id("computerRow"));
     WebElement macBookPro = computerRows.get(5);
@@ -97,7 +97,7 @@ public class DashboardIntegrationTest extends AbstractIntegrationTest {
     WebElement macBookProName = macBookPro.findElement(By.id("computerName"));
     assertEquals("MacBook Pro", macBookProName.getText());
     WebElement macBookProLink = macBookProName.findElement(By.xpath("./a"));
-    assertEquals("http://localhost:8086/computer-database/computer?&computerId=6", macBookProLink.getAttribute("href"));
+    assertEquals("http://localhost:8086/computer-database-webapp/computer?&computerId=6", macBookProLink.getAttribute("href"));
 
     WebElement macBookProIntroduced = macBookPro.findElement(By.id("computerIntroduced"));
     assertEquals("10/01/2006", macBookProIntroduced.getText());

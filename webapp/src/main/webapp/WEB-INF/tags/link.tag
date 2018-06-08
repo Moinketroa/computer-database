@@ -10,7 +10,7 @@
 <%@attribute name="order" required="false"%>
 <%@attribute name="mode" required="false"%>
 
-<c:set var="path" value="/computer-database/" />
+<c:set var="path" value="/computer-database-webapp/" />
 
 <c:if test="${ not empty target }">
 	<c:choose>

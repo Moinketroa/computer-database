@@ -80,9 +80,4 @@ public class ComputerDto {
     this.discontinued = discontinued;
   }
 
-  @Override
-  public String toString() {
-    return "Id : " + id + " - name : " + name + " - intro : " + introduced.toString() + " - disco : "
-        + discontinued.toString() + " - company : " + company.toString();
-  }
 }

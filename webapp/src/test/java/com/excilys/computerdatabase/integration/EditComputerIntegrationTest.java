@@ -15,7 +15,7 @@ public class EditComputerIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   public void test() {
-    driver.navigate().to("http://localhost:8086/computer-database/computer?&computerId=8");
+    driver.navigate().to("http://localhost:8086/computer-database-webapp/computer?&computerId=8");
 
     WebElement editComputerButton = driver.findElement(By.id("editComputer"));
 

@@ -27,7 +27,7 @@ public class Computer implements Serializable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private int id;
-  @Column(name = "name")
+  @Column(name = "name", nullable = false)
   private String name;
   @Column(name = "introduced")
   private LocalDate introduced;

@@ -26,6 +26,7 @@
 		<maven-checkstyle.version>3.0.0</maven-checkstyle.version>
 		<selenium.version>2.53.1</selenium.version>
 		<spring.version>5.0.6.RELEASE</spring.version>
+		<spring.security.version>5.0.5.RELEASE</spring.security.version>
 		<junit.version>4.12</junit.version>
 		<mysql.version>5.1.6</mysql.version>
 		<hikari.version>2.6.1</hikari.version>
@@ -228,6 +229,18 @@
 				<groupId>com.querydsl</groupId>
 				<artifactId>querydsl-jpa</artifactId>
 				<version>${querydsl.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-web</artifactId>
+				<version>${spring.security.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-config</artifactId>
+				<version>${spring.security.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
