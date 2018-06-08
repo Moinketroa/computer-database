@@ -13,7 +13,7 @@ public class UserDao extends AbstractDao {
   private final static QUser MODEL = QUser.user;
 
   @Autowired
-  private UserDao(SessionFactory sessionFactory) {
+  public UserDao(SessionFactory sessionFactory) {
     super(sessionFactory);
   }
 

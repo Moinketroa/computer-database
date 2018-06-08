@@ -8,7 +8,7 @@ public class AppInitializer extends AbstractAnnotationConfigDispatcherServletIni
 
   @Override
   protected Class<?>[] getRootConfigClasses() {
-    return new Class[] { ControllerConfig.class };
+    return new Class[] { ControllerConfig.class, WebSecurityConfig.class };
   }
 
   @Override

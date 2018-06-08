@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -14,6 +15,7 @@ import com.excilys.computerdatabase.model.pojo.type.AuthorityType;
 @Table(name = "AUTHORITIES")
 public class Authorities {
 
+  @Id
   @Enumerated(EnumType.STRING)
   @Column(name = "AUTHORITY")
   private AuthorityType authority;

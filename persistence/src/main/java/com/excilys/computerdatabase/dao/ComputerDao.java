@@ -33,7 +33,7 @@ public class ComputerDao extends AbstractDao {
   private static final QComputer MODEL = QComputer.computer;
 
   @Autowired
-  private ComputerDao(SessionFactory sessionFactory) {
+  public ComputerDao(SessionFactory sessionFactory) {
     super(sessionFactory);
   }
 

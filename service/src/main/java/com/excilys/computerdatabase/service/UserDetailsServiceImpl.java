@@ -18,7 +18,7 @@ public class UserDetailsServiceImpl implements org.springframework.security.core
   private UserDao userDao;
 
   @Autowired
-  private UserDetailsServiceImpl(UserDao userDao) {
+  public UserDetailsServiceImpl(UserDao userDao) {
     this.userDao = userDao;
   }
 
@@ -38,7 +38,7 @@ public class UserDetailsServiceImpl implements org.springframework.security.core
                                   
       userBuilder.authorities(authorities);
     } else {
-      throw new UsernameNotFoundException("Username not found");
+      throw new UsernameNotFoundException("User not found");
     }
     
     return userBuilder.build();

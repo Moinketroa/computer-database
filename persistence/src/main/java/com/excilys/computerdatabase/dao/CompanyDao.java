@@ -27,7 +27,7 @@ public class CompanyDao extends AbstractDao {
   private static final QCompany MODEL = QCompany.company;
   
   @Autowired
-  private CompanyDao(SessionFactory sessionFactory) {
+  public CompanyDao(SessionFactory sessionFactory) {
     super(sessionFactory);
   }
 

@@ -10,7 +10,7 @@ public abstract class AbstractDao {
 
   SessionFactory sessionFactory;
 
-  AbstractDao(SessionFactory sessionFactory) {
+  protected AbstractDao(SessionFactory sessionFactory) {
     this.sessionFactory = sessionFactory;
   }
   
