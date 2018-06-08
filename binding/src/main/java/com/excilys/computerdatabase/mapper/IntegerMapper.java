@@ -41,7 +41,7 @@ public class IntegerMapper {
 
   public List<Integer> listFromSelection(String selection) {
     String[] selectionArray = selection.split(",");
-    return Arrays.stream(selectionArray).map(selectionString -> Integer.parseInt(selectionString))
+    return Arrays.stream(selectionArray).map(Integer::parseInt)
         .collect(Collectors.toList());
   }
 

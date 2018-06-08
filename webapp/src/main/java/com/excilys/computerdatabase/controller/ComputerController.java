@@ -90,7 +90,7 @@ public class ComputerController {
     }
 
     modelAndView.addAllObjects(allParams);
-    modelAndView.addObject("page", page.convertToAnotherType(computer -> new ComputerDto(computer)));
+    modelAndView.addObject("page", page.convertToAnotherType(ComputerDto::new));
     modelAndView.addObject("mode", modeParameter.equals("desc") ? "desc" : "asc");
 
     return modelAndView;
