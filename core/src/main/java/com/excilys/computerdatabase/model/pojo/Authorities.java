@@ -12,16 +12,16 @@ import javax.persistence.Table;
 import com.excilys.computerdatabase.model.pojo.type.AuthorityType;
 
 @Entity
-@Table(name = "AUTHORITIES")
+@Table(name = "authorities")
 public class Authorities {
 
   @Id
+  @Column(name = "authority")
   @Enumerated(EnumType.STRING)
-  @Column(name = "AUTHORITY")
   private AuthorityType authority;
 
   @ManyToOne
-  @JoinColumn(name = "USERNAME")
+  @JoinColumn(name = "username")
   private User user;
 
   public Authorities() {

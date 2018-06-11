@@ -25,7 +25,8 @@ public class UserDao extends AbstractDao {
    * @return The found user
    */
   public User fetchOneByUsername(String username) {
-    return createQueryFactory().selectFrom(MODEL).where(MODEL.username.eq(username)).fetchOne();
+    User user = createQueryFactory().selectFrom(MODEL).where(MODEL.username.eq(username)).fetchOne();
+    return user;
   }
 
 }

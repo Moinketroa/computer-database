@@ -35,6 +35,10 @@
 			<cdb:deleteComputer path="${ path }" computerId="${ computerId }"/>
 		</c:when>
 
+		<c:when test="${ target.equals('logout') }">
+			<cdb:logout path="${ path }"/>
+		</c:when>
+
 		<c:otherwise>
 			<cdb:dashboard path="${ path }"/>
 		</c:otherwise>

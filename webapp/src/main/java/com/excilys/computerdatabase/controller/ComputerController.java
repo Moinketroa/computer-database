@@ -1,5 +1,6 @@
 package com.excilys.computerdatabase.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +25,6 @@ import com.excilys.computerdatabase.dto.CompanyDto;
 import com.excilys.computerdatabase.dto.ComputerDto;
 import com.excilys.computerdatabase.exceptions.CDBException;
 import com.excilys.computerdatabase.exceptions.badrequest.BadRequestException;
-import com.excilys.computerdatabase.exceptions.badrequest.NegativeNumberException;
-import com.excilys.computerdatabase.exceptions.badrequest.WrongFormatOfSelectionException;
 import com.excilys.computerdatabase.exceptions.badrequest.WrongPageParameterException;
 import com.excilys.computerdatabase.mapper.ComputerMapper;
 import com.excilys.computerdatabase.mapper.IntegerMapper;
@@ -72,7 +71,8 @@ public class ComputerController {
       @RequestParam(value = "keyword", defaultValue = "") String keyword,
       @RequestParam(value = "order", defaultValue = "id") String orderParameter,
       @RequestParam(value = "mode", defaultValue = "asc") String modeParameter,
-      @RequestParam Map<String, Object> allParams) throws BadRequestException {
+      @RequestParam Map<String, Object> allParams,
+      Principal principal) throws BadRequestException {
     ModelAndView modelAndView = new ModelAndView(View.DASHBOARD.toString());
 
     integerValidator.mustBePositive(offset, "Offset");
@@ -92,6 +92,7 @@ public class ComputerController {
     modelAndView.addAllObjects(allParams);
     modelAndView.addObject("page", page.convertToAnotherType(ComputerDto::new));
     modelAndView.addObject("mode", modeParameter.equals("desc") ? "desc" : "asc");
+    modelAndView.addObject("username", principal.getName());
 
     return modelAndView;
   }

@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="utf-8">
 <!-- Bootstrap -->
-<link href="static/css/bootstrap.min.css" rel="stylesheet"
+<link href="static/css/bootstrap.css" rel="stylesheet"
 	media="screen">
 <link rel="stylesheet"
 	href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
@@ -19,22 +19,33 @@
 </head>
 
 <body>
+	<section id="main">
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-8 col-xs-offset-2 box">
+				<h1>Welcome to Computer Database</h1>
+				<h4>Please log in</h4>
+				<c:if test="${ not empty error }">
+					<div id="errorMsg" class="alert alert-danger">Login failed ! Please re-try</div>
+				</c:if>
 
-	<form action="<cdb:link target="dashboard"/>" method="GET">
-		<table class="table table-striped table-bordered">
-			<tr>
-				<td>Username</td>
-				<td><input type="text" name="username"></td>
-			</tr>
-			<tr>
-				<td>Password</td>
-				<td><input type="password" name="password"></td>
-			</tr>
-			<tr>
-				<td><button type="submit">Login</button></td>
-			</tr>
-		</table>
-	</form>
+				<form action="<cdb:link target="dashboard"/>" method="POST">
+					<div class="form-group">
+						<div>Username</div>
+						<input class="form-control" type="text" name="username">
+					</div>
+					<div class="form-group">
+						<div>Password</div>
+						<input class="form-control" type="password" name="password">
+					</div>
+					<div class="actions pull-right">
+						<button class="btn btn-primary" type="submit">Login</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	</section>
 
 </body>
 </html>

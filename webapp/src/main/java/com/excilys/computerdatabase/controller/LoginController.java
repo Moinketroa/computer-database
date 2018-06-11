@@ -17,7 +17,7 @@ public class LoginController {
   
   @RequestMapping(value = "/logout", method = RequestMethod.GET)
   public ModelAndView showLogout() {
-    ModelAndView modelAndView = new ModelAndView(View.LOGIN.toString());
+    ModelAndView modelAndView = new ModelAndView(View.LOGOUT.toString());
     
     return modelAndView;
   }

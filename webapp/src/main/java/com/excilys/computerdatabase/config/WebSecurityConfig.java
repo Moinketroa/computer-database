@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.excilys.computerdatabase.model.pojo.type.AuthorityType;
 
+@Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -36,11 +38,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     String[] authorities = Arrays.stream(AuthorityType.values()).map(a -> a.name()).toArray(String[]::new);
-    http.authorizeRequests().anyRequest().hasAnyRole(authorities)
+    http.authorizeRequests().antMatchers("/login**", "/static/**").permitAll()
     .and()
-    .authorizeRequests().antMatchers("/login**").permitAll()
+    .authorizeRequests().anyRequest().hasAnyAuthority(authorities)
     .and()
-    .formLogin().loginPage("/login").loginProcessingUrl("/loginAction").permitAll()
+    .formLogin().defaultSuccessUrl("/dashboard",true)
+    .and()
+    .formLogin().loginPage("/login").loginProcessingUrl("/dashboard")
     .and()
     .logout().logoutSuccessUrl("/login").permitAll()
     .and()
